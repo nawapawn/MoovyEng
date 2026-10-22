@@ -1,0 +1,1729 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Move0nyoung — AI Studio & Clip Editor</title>
+    <link rel="icon" type="image/png" href="icon.png">
+    <link rel="apple-touch-icon" href="icon.png">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: EB Garamond (Waldenburg substitute), Inter (ElevenLabs), Prompt, Itim, Fredoka, and Noto Serif Thai -->
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@300;400;500&family=Fredoka:wght@500;600&family=Inter:wght@300;400;500;600;700&family=Itim&family=Noto+Serif+Thai:wght@400;500;600;700&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+      body {
+        font-family: 'Inter', 'Prompt', -apple-system, BlinkMacSystemFont, sans-serif;
+        letter-spacing: 0.16px;
+        background-color: #f5f5f5;
+        color: #0c0a09;
+      }
+      .editorial-display {
+        font-family: 'EB Garamond', 'Times New Roman', serif;
+        font-weight: 300;
+        letter-spacing: -0.96px;
+      }
+      .vocab-font {
+        font-family: 'Fredoka', 'Itim', cursive, sans-serif;
+      }
+      .thai-vocab-font {
+        font-family: 'Itim', cursive, sans-serif;
+      }
+      .grammar-card-thai-font {
+        font-family: 'Fredoka', 'Noto Serif Thai', serif;
+      }
+      .noto-serif-thai {
+        font-family: 'Noto Serif Thai', serif;
+      }
+      .highlight-yellow {
+        background-color: #fde047;
+        color: #0c0a09;
+        padding: 0 3px;
+        border-radius: 0px;
+        font-weight: 700;
+        box-decoration-break: clone;
+        -webkit-box-decoration-break: clone;
+      }
+      /* Smooth scrolling & Scroll-Reveal / Collapsible Card Animations */
+      html {
+        scroll-behavior: smooth;
+      }
+      .tool-section-card {
+        transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+                    opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+                    box-shadow 0.25s ease;
+        will-change: transform, opacity;
+      }
+      .tool-section-card:hover {
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+      }
+      .tool-section-card.scroll-reveal-hidden {
+        opacity: 0;
+        transform: translateY(18px) scale(0.985);
+      }
+      .tool-section-card.scroll-reveal-visible {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+      .tool-card-body {
+        display: grid;
+        grid-template-rows: 1fr;
+        opacity: 1;
+        transition: grid-template-rows 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+                    opacity 0.25s ease,
+                    padding-top 0.25s ease;
+      }
+      .tool-card-body > .tool-card-inner {
+        overflow: hidden;
+      }
+      .tool-section-card:not(.is-collapsed):not(.card-is-collapsed) > .tool-card-body > .tool-card-inner {
+        overflow: visible;
+      }
+      .tool-section-card.is-collapsed .tool-card-body {
+        grid-template-rows: 0fr;
+        opacity: 0;
+        padding-top: 0 !important;
+      }
+      .tool-section-card.is-collapsed .tool-card-header {
+        margin-bottom: 0 !important;
+        padding-bottom: 0 !important;
+        border-bottom-color: transparent !important;
+      }
+      .tool-collapse-chevron {
+        transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      .tool-section-card.is-collapsed .tool-collapse-chevron {
+        transform: rotate(-90deg);
+      }
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #f0efed;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #d6d3d1;
+        border-radius: 9999px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #a8a29e;
+      }
+    </style>
+  </head>
+  <body class="bg-[#f5f5f5] text-[#292524] min-h-screen flex flex-col items-center pb-24 sm:pb-16 pt-0 sm:pt-4 px-3 sm:px-6 relative overflow-x-hidden">
+
+    <!-- ElevenLabs Atmospheric Pastel Gradient Orbs (Mint, Peach, Lavender) -->
+    <div class="pointer-events-none fixed -top-28 -left-28 w-96 h-96 rounded-full opacity-40 blur-3xl z-0" style="background: radial-gradient(circle, #a7e5d3 0%, transparent 70%);"></div>
+    <div class="pointer-events-none fixed top-1/3 -right-28 w-96 h-96 rounded-full opacity-40 blur-3xl z-0" style="background: radial-gradient(circle, #f4c5a8 0%, transparent 70%);"></div>
+    <div class="pointer-events-none fixed -bottom-28 left-1/4 w-96 h-96 rounded-full opacity-35 blur-3xl z-0" style="background: radial-gradient(circle, #c8b8e0 0%, transparent 70%);"></div>
+
+    <!-- Top Sticky Header (Follows Scroll on Mobile + Quick Tool Search & Preview Button) -->
+    <header class="w-full max-w-2xl sticky top-0 z-40 bg-white/95 backdrop-blur-md border border-[#e7e5e4] rounded-b-2xl sm:rounded-2xl p-3 mb-4 shadow-[0_6px_20px_rgba(0,0,0,0.06)] space-y-2.5">
+      <div class="flex items-center justify-between gap-2">
+        <div class="flex items-center space-x-2">
+          <a href="index.html" onclick="autoSaveDraft()" class="w-9 h-9 rounded-full bg-white border border-[#d6d3d1] hover:border-[#0c0a09] flex items-center justify-center text-[#292524] hover:text-[#0c0a09] shadow-2xs transition flex-shrink-0" title="Back to Preview" aria-label="กลับหน้า Preview">
+            <i class="fa-solid fa-arrow-left text-xs"></i>
+          </a>
+          <img src="icon.png" alt="Logo" class="w-8 h-8 rounded-lg object-contain border border-[#e7e5e4] bg-white p-0.5 flex-shrink-0">
+          <div>
+            <h1 class="editorial-display text-xl sm:text-2xl text-[#0c0a09] leading-none">
+              Clip Studio
+            </h1>
+            <p class="text-[10px] text-[#777169] mt-0.5">AI Vocab & Movie Clip Editor</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-1">
+          <!-- Quick Jump Tool Icons -->
+          <button type="button" onclick="jumpToToolSection('tool-sec-ai')" class="w-7 h-7 rounded-full bg-[#f0efed] hover:bg-[#0c0a09] hover:text-white text-[#292524] transition flex items-center justify-center" title="1. AI Model">
+            <i class="fa-solid fa-microchip text-[10px]"></i>
+          </button>
+          <button type="button" onclick="jumpToToolSection('tool-sec-vocab')" class="w-7 h-7 rounded-full bg-[#f0efed] hover:bg-[#0c0a09] hover:text-white text-[#292524] transition flex items-center justify-center" title="2. Vocabulary & Clips">
+            <i class="fa-solid fa-wand-magic-sparkles text-[10px]"></i>
+          </button>
+          <button type="button" onclick="jumpToToolSection('tool-sec-ratio')" class="w-7 h-7 rounded-full bg-[#f0efed] hover:bg-[#0c0a09] hover:text-white text-[#292524] transition flex items-center justify-center" title="3. Aspect Ratio & Queue">
+            <i class="fa-solid fa-crop-simple text-[10px]"></i>
+          </button>
+          <button type="button" onclick="jumpToToolSection('tool-sec-social')" class="w-7 h-7 rounded-full bg-[#f0efed] hover:bg-[#0c0a09] hover:text-white text-[#292524] transition flex items-center justify-center" title="4. Profile & Caption">
+            <i class="fa-solid fa-user text-[10px]"></i>
+          </button>
+          <button type="button" onclick="toggleAllToolSections()" class="w-7 h-7 rounded-full bg-[#f0efed] hover:bg-[#0c0a09] hover:text-white text-[#292524] transition flex items-center justify-center" title="Expand / Collapse All Cards">
+            <i id="toggle-all-cards-icon" class="fa-solid fa-compress text-[10px]"></i>
+          </button>
+          <!-- Sticky Preview Button (Follows while scrolling) -->
+          <a href="index.html" onclick="autoSaveDraft()" class="w-9 h-9 bg-[#0c0a09] hover:bg-[#292524] text-white rounded-full shadow-xs transition flex items-center justify-center flex-shrink-0" title="ดู Preview" aria-label="ดู Preview">
+            <i class="fa-solid fa-eye text-xs"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Mobile Tool Search Bar -->
+      <div class="relative w-full">
+        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-[#777169] text-xs"></i>
+        <input type="text" id="mobile-tool-search" oninput="filterStudioTools(this.value)" placeholder="Search tools (AI, Vocab, Ratio, Queue, Profile)..." class="w-full bg-[#fafafa] border border-[#d6d3d1] rounded-full pl-8 pr-8 py-1.5 text-xs text-[#0c0a09] focus:bg-white focus:border-[#0c0a09] focus:outline-none transition">
+        <button type="button" onclick="document.getElementById('mobile-tool-search').value=''; filterStudioTools('');" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#a8a29e] hover:text-[#0c0a09] text-xs" title="Clear Search">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Main Container (ElevenLabs Minimal Editorial Canvas) -->
+    <main class="w-full max-w-2xl relative z-10 space-y-4">
+
+      <!-- STEP 1: AI Model -->
+      <section id="tool-sec-ai" data-tool-keywords="1 ai model api key provider gemini openai groq deepseek claude" class="tool-section-card bg-white border border-[#e7e5e4] rounded-2xl p-4 sm:p-5 shadow-[0_4px_16px_rgba(0,0,0,0.04)]">
+        <div class="tool-card-header flex items-center justify-between gap-2 mb-3 pb-2 border-b border-[#f0efed] cursor-pointer select-none" onclick="toggleToolCard('tool-sec-ai')">
+          <div class="flex items-center space-x-2 text-[#0c0a09] font-semibold text-xs sm:text-sm">
+            <span class="w-5 h-5 rounded-full bg-[#0c0a09] text-white flex items-center justify-center text-[10px] font-mono flex-shrink-0">1</span>
+            <span>AI Model</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span id="detected-provider-badge" class="text-[10px] px-2 py-0.5 rounded-full bg-[#f0efed] text-[#777169] font-semibold uppercase tracking-wider whitespace-nowrap flex-shrink-0">
+              Ready
+            </span>
+            <button type="button" class="w-6 h-6 rounded-full hover:bg-[#f0efed] text-[#777169] hover:text-[#0c0a09] flex items-center justify-center transition" title="Collapse / Expand">
+              <i class="fa-solid fa-chevron-down text-[10px] tool-collapse-chevron"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="tool-card-body">
+          <div class="tool-card-inner space-y-2.5">
+            <div>
+              <label for="ai-vendor" class="block text-[11px] font-medium text-[#777169] mb-1">Provider</label>
+              <select id="ai-vendor" onchange="handleVendorChange()" class="w-full bg-white border border-[#d6d3d1] rounded-lg px-3 py-2 text-xs sm:text-sm text-[#0c0a09] focus:border-[#0c0a09] focus:outline-none transition font-medium">
+                <option value="gemini">Google Gemini</option>
+                <option value="openai">OpenAI (GPT)</option>
+                <option value="deepseek">DeepSeek AI</option>
+                <option value="groq">Groq Cloud</option>
+                <option value="anthropic">Anthropic (Claude)</option>
+                <option value="xai">xAI (Grok)</option>
+                <option value="mistral">Mistral AI</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="api-key" class="block text-[11px] font-medium text-[#777169] mb-1">API Key</label>
+              <div class="flex gap-2">
+                <div class="relative flex-1">
+                  <input type="password" id="api-key" oninput="handleApiKeyInput(this.value)" placeholder="Paste API Key..." class="w-full bg-white border border-[#d6d3d1] rounded-lg px-3 py-2 pr-9 text-xs sm:text-sm text-[#0c0a09] focus:border-[#0c0a09] focus:outline-none font-mono transition">
+                  <button type="button" onclick="toggleApiKeyVisibility()" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#777169] hover:text-[#0c0a09] text-xs" aria-label="Toggle password visibility">
+                    <i id="eye-icon" class="fa-solid fa-eye"></i>
+                  </button>
+                </div>
+                <button type="button" id="btn-verify-key" onclick="detectProviderAndFetchModels(document.getElementById('api-key').value)" class="w-10 h-10 bg-[#292524] hover:bg-[#0c0a09] text-white rounded-lg shadow-xs transition flex items-center justify-center flex-shrink-0" title="Verify Key & Fetch Models" aria-label="Verify Key">
+                  <i class="fa-solid fa-circle-check text-xs"></i>
+                </button>
+              </div>
+            </div>
+
+            <div id="model-selector-wrapper" class="hidden pt-1 transition-all">
+              <label for="ai-provider" class="block text-[11px] font-medium text-[#0c0a09] mb-1 flex items-center justify-between">
+                <span id="model-selector-label">Model</span>
+                <span id="model-count-badge" class="text-[10px] text-[#777169]"></span>
+              </label>
+              <select id="ai-provider" class="w-full bg-white border border-[#0c0a09] rounded-lg px-3 py-2 text-xs sm:text-sm text-[#0c0a09] focus:outline-none transition">
+              </select>
+            </div>
+
+            <p id="openrouter-status" class="text-[10px] text-[#777169]"></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 2: Vocabulary & Clips -->
+      <section id="tool-sec-vocab" data-tool-keywords="2 vocabulary word clip movie search translate phonetic meaning grammar examples คำศัพท์ คลิปหนัง แปล ไวยากรณ์" class="tool-section-card bg-white border border-[#e7e5e4] rounded-2xl p-4 sm:p-5 shadow-xs">
+        <div class="tool-card-header flex items-center justify-between mb-3 pb-2 border-b border-[#f0efed] cursor-pointer select-none" onclick="toggleToolCard('tool-sec-vocab')">
+          <div class="flex items-center space-x-2 text-[#0c0a09] font-semibold text-xs sm:text-sm">
+            <span class="w-5 h-5 rounded-full bg-[#0c0a09] text-white flex items-center justify-center text-[10px] font-mono">2</span>
+            <span>Vocabulary & Clips</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span id="clip-source-indicator" class="text-[10px] px-2 py-0.5 rounded-full bg-[#f0efed] text-[#0c0a09] font-medium hidden"></span>
+            <button type="button" class="w-6 h-6 rounded-full hover:bg-[#f0efed] text-[#777169] hover:text-[#0c0a09] flex items-center justify-center transition" title="Collapse / Expand">
+              <i class="fa-solid fa-chevron-down text-[10px] tool-collapse-chevron"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="tool-card-body">
+          <div class="tool-card-inner space-y-3">
+            <div class="flex items-center gap-2">
+              <div class="relative flex-1">
+                <input type="text" id="target-word" value="" placeholder="English word or idiom..." class="w-full bg-[#fafafa] border border-[#e7e5e4] rounded-xl px-3.5 py-2 text-sm sm:text-base font-serif text-[#0c0a09] focus:bg-white focus:border-[#0c0a09] focus:outline-none transition" oninput="document.getElementById('clip-query').value = this.value; updateLiveCardPreview()">
+                <input type="hidden" id="clip-query" value="">
+              </div>
+              <button type="button" id="btn-ai-generate" onclick="runAiAgentGeneration()" class="w-10 h-10 bg-[#0c0a09] hover:bg-[#292524] active:scale-[0.98] text-white rounded-full shadow-xs transition flex items-center justify-center flex-shrink-0" title="AI Translate & Find Movie Clips" aria-label="AI Generate">
+                <i class="fa-solid fa-wand-magic-sparkles text-xs"></i>
+              </button>
+              <button type="button" onclick="searchCafeClips(true)" class="w-10 h-10 bg-white hover:bg-[#f0efed] text-[#0c0a09] border border-[#d6d3d1] rounded-full transition flex items-center justify-center flex-shrink-0" title="Search Clips Only" aria-label="Search Clips Only">
+                <i class="fa-solid fa-film text-xs"></i>
+              </button>
+            </div>
+
+            <div id="ai-loading" class="hidden p-2.5 bg-[#fafafa] border border-[#e7e5e4] rounded-xl text-center">
+              <div class="flex items-center justify-center space-x-2 text-[#292524] text-xs font-medium">
+                <i class="fa-solid fa-circle-notch fa-spin"></i>
+                <span id="ai-loading-text">Searching clips & translating...</span>
+              </div>
+            </div>
+
+            <!-- Clip Grid Container -->
+            <div class="space-y-1.5">
+              <div class="flex items-center justify-between">
+                <span class="text-[11px] text-[#777169] font-medium">Movie Clips (clip.cafe)</span>
+                <button type="button" id="btn-load-more" onclick="loadMoreCafeClips()" class="w-7 h-7 bg-white hover:bg-[#fafafa] text-[#292524] rounded-full border border-[#e7e5e4] shadow-xs transition flex items-center justify-center flex-shrink-0" title="Load More Clips" aria-label="Load More Clips">
+                  <i class="fa-solid fa-arrows-rotate text-[11px] text-[#777169]"></i>
+                </button>
+              </div>
+              <div id="clip-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-[260px] overflow-y-auto p-2 bg-[#fafafa] rounded-xl border border-[#e7e5e4]">
+                <div class="col-span-full py-6 text-center text-[#777169] text-xs">
+                  Enter a word and tap <i class="fa-solid fa-wand-magic-sparkles mx-0.5 text-[#0c0a09]"></i> to fetch clips
+                </div>
+              </div>
+            </div>
+
+            <!-- Generated Vocab Result Form -->
+            <div class="pt-2 border-t border-[#f0efed] space-y-2.5">
+              <div class="grid grid-cols-2 gap-2">
+                <div>
+                  <label class="block text-[11px] font-medium text-[#777169] mb-1">IPA Phonetic</label>
+                  <input type="text" id="res-phonetic" value="" placeholder="/.../" class="w-full bg-[#fafafa] border border-[#e7e5e4] rounded-lg px-2.5 py-1.5 text-xs text-[#0c0a09] focus:bg-white focus:border-[#0c0a09] focus:outline-none">
+                </div>
+                <div>
+                  <label class="block text-[11px] font-medium text-[#777169] mb-1">Thai Reading</label>
+                  <input type="text" id="res-thai-read" value="" placeholder="(คำอ่านไทย)" class="w-full bg-[#fafafa] border border-[#e7e5e4] rounded-lg px-2.5 py-1.5 text-xs text-[#0c0a09] font-medium focus:bg-white focus:border-[#0c0a09] focus:outline-none">
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-medium text-[#777169] mb-1">Meaning (TH)</label>
+                <input type="text" id="res-meaning" value="" placeholder="Thai meaning..." class="w-full bg-[#fafafa] border border-[#e7e5e4] rounded-lg px-2.5 py-1.5 text-xs text-[#0c0a09] focus:bg-white focus:border-[#0c0a09] focus:outline-none">
+              </div>
+
+              <div>
+                <label class="block text-[11px] font-medium text-[#777169] mb-1">Grammar Formula</label>
+                <input type="text" id="res-grammar" value="" placeholder="[Subject] + Verb..." class="w-full bg-[#fafafa] border border-[#e7e5e4] rounded-lg px-2.5 py-1.5 text-xs text-[#0c0a09] focus:bg-white focus:border-[#0c0a09] focus:outline-none" oninput="updateLiveCardPreview()">
+              </div>
+
+              <div>
+                <div class="flex items-center justify-between mb-1">
+                  <label class="block text-[11px] font-medium text-[#777169]">Examples (1–3)</label>
+                  <button type="button" onclick="craftSentencesFromSelectedClip()" class="w-7 h-7 rounded-full bg-[#f0efed] hover:bg-[#e7e5e4] text-[#0c0a09] flex items-center justify-center transition flex-shrink-0" title="Regenerate Examples" aria-label="Regenerate Examples">
+                    <i class="fa-solid fa-wand-magic-sparkles text-[10px]"></i>
+                  </button>
+                </div>
+                <div class="space-y-1.5">
+                  <div class="grid grid-cols-2 gap-1.5">
+                    <input type="text" id="res-ex1-en" value="" placeholder="1. EN sentence" class="bg-[#fafafa] border border-[#e7e5e4] rounded-lg px-2.5 py-1.5 text-xs text-[#0c0a09] focus:bg-white focus:border-[#0c0a09] focus:outline-none" oninput="updateLiveCardPreview()">
+                    <input type="text" id="res-ex1-th" value="" placeholder="1. TH translation" class="bg-[#fafafa] border border-[#e7e5e4] rounded-lg px-2.5 py-1.5 text-xs text-[#777169] focus:bg-white focus:border-[#0c0a09] focus:outline-none" oninput="updateLiveCardPreview()">
+                  </div>
+                  <div class="grid grid-cols-2 gap-1.5">
+                    <input type="text" id="res-ex2-en" value="" placeholder="2. EN sentence" class="bg-[#fafafa] border border-[#e7e5e4] rounded-lg px-2.5 py-1.5 text-xs text-[#0c0a09] focus:bg-white focus:border-[#0c0a09] focus:outline-none" oninput="updateLiveCardPreview()">
+                    <input type="text" id="res-ex2-th" value="" placeholder="2. TH translation" class="bg-[#fafafa] border border-[#e7e5e4] rounded-lg px-2.5 py-1.5 text-xs text-[#777169] focus:bg-white focus:border-[#0c0a09] focus:outline-none" oninput="updateLiveCardPreview()">
+                  </div>
+                  <div class="grid grid-cols-2 gap-1.5">
+                    <input type="text" id="res-ex3-en" value="" placeholder="3. EN sentence" class="bg-[#fafafa] border border-[#e7e5e4] rounded-lg px-2.5 py-1.5 text-xs text-[#0c0a09] focus:bg-white focus:border-[#0c0a09] focus:outline-none" oninput="updateLiveCardPreview()">
+                    <input type="text" id="res-ex3-th" value="" placeholder="3. TH translation" class="bg-[#fafafa] border border-[#e7e5e4] rounded-lg px-2.5 py-1.5 text-xs text-[#777169] focus:bg-white focus:border-[#0c0a09] focus:outline-none" oninput="updateLiveCardPreview()">
+                  </div>
+                </div>
+              </div>
+
+              <!-- Live Card Preview -->
+              <div class="pt-2 border-t border-[#f0efed]">
+                <span class="block text-[11px] font-medium text-[#777169] mb-1.5">Card Preview</span>
+                <div class="p-2.5 bg-[#fafafa] rounded-xl border border-[#e7e5e4] flex justify-center">
+                  <div class="text-left w-full max-w-[340px] bg-white p-3 rounded-2xl border border-[#e7e5e4] shadow-xs space-y-1.5 grammar-card-thai-font text-[12px] text-[#292524]">
+                    <div class="leading-snug">
+                      <span class="font-bold text-[#dc2626] noto-serif-thai">▸ โครงสร้าง:</span> <span id="card-preview-grammar" class="text-[#0c0a09]"></span>
+                    </div>
+                    <div class="border-t border-[#f0efed] pt-1.5">
+                      <span class="font-bold text-[#0f766e] noto-serif-thai">▸ ตัวอย่าง:</span>
+                      <ul class="space-y-1 text-[#0c0a09] mt-1 pl-0.5 leading-snug">
+                        <li id="card-preview-ex1"></li>
+                        <li id="card-preview-ex2"></li>
+                        <li id="card-preview-ex3"></li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 3: Aspect Ratio & Queue -->
+      <section id="tool-sec-ratio" data-tool-keywords="3 aspect ratio queue size tiktok reels shorts youtube สัดส่วน ขนาด คิวคลิป" class="tool-section-card bg-white border border-[#e7e5e4] rounded-2xl p-4 sm:p-5 shadow-xs">
+        <div class="tool-card-header flex items-center justify-between mb-3 pb-2 border-b border-[#f0efed] cursor-pointer select-none" onclick="toggleToolCard('tool-sec-ratio')">
+          <div class="flex items-center space-x-2 text-[#0c0a09] font-semibold text-xs sm:text-sm">
+            <span class="w-5 h-5 rounded-full bg-[#0c0a09] text-white flex items-center justify-center text-[10px] font-mono">3</span>
+            <span>Aspect Ratio & Queue</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <span id="selected-badge" class="text-[10px] px-2 py-0.5 rounded-full bg-[#f0efed] text-[#0c0a09] font-medium">0 clips</span>
+            <button type="button" class="w-6 h-6 rounded-full hover:bg-[#f0efed] text-[#777169] hover:text-[#0c0a09] flex items-center justify-center transition" title="Collapse / Expand">
+              <i class="fa-solid fa-chevron-down text-[10px] tool-collapse-chevron"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="tool-card-body">
+          <div class="tool-card-inner space-y-3">
+            <div>
+              <!-- Brown Rectangle Aspect Ratio Dropdown Selector (Proportional Brown Box + Clean Dropdown) -->
+              <div class="relative" id="aspect-ratio-dropdown-wrap">
+                <button type="button" onclick="toggleAspectRatioDropdown(event)" id="btn-ratio-dropdown" class="w-full px-3 py-2 rounded-xl border border-[#d6d3d1] hover:border-[#0c0a09] bg-[#fafafa] hover:bg-white transition flex items-center justify-between gap-2 shadow-2xs">
+                  <div class="flex items-center gap-2.5">
+                    <div id="current-ratio-brown-box" class="w-6 h-9 rounded-[5px] bg-[#78716c] text-white flex items-center justify-center text-[10px] font-bold tracking-tight shadow-2xs transition-all flex-shrink-0">9:16</div>
+                    <span id="current-ratio-label-text" class="text-xs font-semibold text-[#0c0a09]">9:16 • Reels / TikTok / Shorts</span>
+                  </div>
+                  <i id="ratio-dropdown-chevron" class="fa-solid fa-chevron-down text-[10px] text-[#777169] transition-transform"></i>
+                </button>
+
+                <!-- Dropdown Menu with ONLY Proportional Brown Rectangles -->
+                <div id="aspect-ratio-dropdown-menu" class="hidden absolute left-0 right-0 mt-1.5 p-2.5 bg-white rounded-xl border border-[#e7e5e4] shadow-[0_10px_28px_rgba(0,0,0,0.12)] z-40 grid grid-cols-3 gap-2 place-items-center">
+                  <button type="button" onclick="selectClipAspectRatio('9:16'); closeAspectRatioDropdown();" data-ratio="9:16" class="ratio-opt-btn flex items-center justify-center transition transform hover:scale-105">
+                    <div class="ratio-brown-shape w-6 h-10 rounded-[5px] bg-[#78716c] text-white flex items-center justify-center text-[10px] font-bold shadow-2xs">9:16</div>
+                  </button>
+                  <button type="button" onclick="selectClipAspectRatio('2:3'); closeAspectRatioDropdown();" data-ratio="2:3" class="ratio-opt-btn flex items-center justify-center transition transform hover:scale-105">
+                    <div class="ratio-brown-shape w-7 h-10 rounded-[5px] bg-[#78716c] text-white flex items-center justify-center text-[10px] font-bold shadow-2xs">2:3</div>
+                  </button>
+                  <button type="button" onclick="selectClipAspectRatio('4:5'); closeAspectRatioDropdown();" data-ratio="4:5" class="ratio-opt-btn flex items-center justify-center transition transform hover:scale-105">
+                    <div class="ratio-brown-shape w-8 h-10 rounded-[5px] bg-[#78716c] text-white flex items-center justify-center text-[10px] font-bold shadow-2xs">4:5</div>
+                  </button>
+                  <button type="button" onclick="selectClipAspectRatio('1:1'); closeAspectRatioDropdown();" data-ratio="1:1" class="ratio-opt-btn flex items-center justify-center transition transform hover:scale-105">
+                    <div class="ratio-brown-shape w-8 h-8 rounded-[5px] bg-[#78716c] text-white flex items-center justify-center text-[10px] font-bold shadow-2xs">1:1</div>
+                  </button>
+                  <button type="button" onclick="selectClipAspectRatio('3:2'); closeAspectRatioDropdown();" data-ratio="3:2" class="ratio-opt-btn flex items-center justify-center transition transform hover:scale-105">
+                    <div class="ratio-brown-shape w-11 h-7 rounded-[5px] bg-[#78716c] text-white flex items-center justify-center text-[10px] font-bold shadow-2xs">3:2</div>
+                  </button>
+                  <button type="button" onclick="selectClipAspectRatio('16:9'); closeAspectRatioDropdown();" data-ratio="16:9" class="ratio-opt-btn flex items-center justify-center transition transform hover:scale-105">
+                    <div class="ratio-brown-shape w-12 h-7 rounded-[5px] bg-[#78716c] text-white flex items-center justify-center text-[10px] font-bold shadow-2xs">16:9</div>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div class="pt-2 border-t border-[#f0efed]">
+              <span class="block text-[11px] font-medium text-[#777169] mb-1.5">Play Queue</span>
+              <div id="sequence-list" class="space-y-1.5">
+                <div class="text-center py-2 text-xs text-[#777169]">No clips in queue</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- STEP 4: Profile & Caption -->
+      <section id="tool-sec-social" data-tool-keywords="4 profile avatar channel handle caption hashtag โปรไฟล์ ช่อง แคปชั่น" class="tool-section-card bg-white border border-[#e7e5e4] rounded-2xl p-4 sm:p-5 shadow-xs">
+        <div class="tool-card-header flex items-center justify-between mb-3 pb-2 border-b border-[#f0efed] cursor-pointer select-none" onclick="toggleToolCard('tool-sec-social')">
+          <div class="flex items-center space-x-2 text-[#0c0a09] font-semibold text-xs sm:text-sm">
+            <span class="w-5 h-5 rounded-full bg-[#0c0a09] text-white flex items-center justify-center text-[10px] font-mono">4</span>
+            <span>Profile & Caption</span>
+          </div>
+          <button type="button" class="w-6 h-6 rounded-full hover:bg-[#f0efed] text-[#777169] hover:text-[#0c0a09] flex items-center justify-center transition" title="Collapse / Expand">
+            <i class="fa-solid fa-chevron-down text-[10px] tool-collapse-chevron"></i>
+          </button>
+        </div>
+
+        <div class="tool-card-body">
+          <div class="tool-card-inner space-y-2.5">
+            <div class="flex items-center gap-2.5 p-2.5 bg-[#fafafa] rounded-xl border border-[#e7e5e4]">
+              <div class="w-10 h-10 rounded-full bg-[#292524] text-white flex items-center justify-center overflow-hidden border border-[#d6d3d1] flex-shrink-0">
+                <img id="editor-avatar-preview" src="" alt="Avatar" class="w-full h-full object-cover hidden">
+                <i id="editor-avatar-icon" class="fa-solid fa-user text-xs"></i>
+              </div>
+              <div class="flex-1 min-w-0 flex items-center gap-1.5">
+                <label class="w-8 h-8 bg-[#292524] hover:bg-[#0c0a09] text-white rounded-full cursor-pointer transition inline-flex items-center justify-center flex-shrink-0" title="Upload Avatar" aria-label="Upload Avatar">
+                  <i class="fa-solid fa-upload text-xs"></i>
+                  <input type="file" accept="image/*" class="hidden" onchange="handleAvatarUpload(event)">
+                </label>
+                <input type="text" id="social-avatar-url" oninput="handleAvatarUrlInput(this.value)" placeholder="Avatar image URL..." class="flex-1 min-w-0 bg-white border border-[#d6d3d1] rounded-lg px-2.5 py-1 text-xs text-[#0c0a09] focus:border-[#0c0a09] focus:outline-none">
+                <button type="button" onclick="clearAvatar()" class="w-8 h-8 rounded-full bg-white border border-[#e7e5e4] text-[#777169] hover:text-[#dc2626] hover:border-[#dc2626] transition flex items-center justify-center flex-shrink-0" title="Remove Avatar" aria-label="Remove Avatar">
+                  <i class="fa-solid fa-trash-can text-xs"></i>
+                </button>
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-medium text-[#777169] mb-1">Channel (@username)</label>
+              <input type="text" id="social-handle" value="" placeholder="@username" class="w-full bg-[#fafafa] border border-[#e7e5e4] rounded-lg px-3 py-1.5 text-xs sm:text-sm text-[#0c0a09] focus:bg-white focus:border-[#0c0a09] focus:outline-none">
+            </div>
+
+            <div>
+              <label class="block text-[11px] font-medium text-[#777169] mb-1">Social Caption</label>
+              <textarea id="social-description" rows="2" placeholder="Caption & hashtags..." class="w-full bg-[#fafafa] border border-[#e7e5e4] rounded-lg px-3 py-1.5 text-xs text-[#0c0a09] focus:bg-white focus:border-[#0c0a09] focus:outline-none leading-relaxed"></textarea>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Bottom Sticky Floating Bar (Includes Sticky "ดู Preview" Icon Button on the left + Reset & Save on the right) -->
+    <div class="fixed bottom-0 left-0 w-full bg-white/95 border-t border-[#e7e5e4] p-3 sm:py-3.5 sm:px-6 z-50 backdrop-blur-md flex items-center justify-center shadow-[0_-4px_16px_rgba(0,0,0,0.04)]">
+      <div class="w-full max-w-2xl flex items-center justify-between gap-3">
+        <a href="index.html" onclick="autoSaveDraft()" class="w-11 h-11 bg-[#0c0a09] hover:bg-[#292524] text-white rounded-full shadow-xs transition flex items-center justify-center" title="ดู Preview" aria-label="ดู Preview">
+          <i class="fa-solid fa-eye text-sm"></i>
+        </a>
+        <div class="flex items-center gap-2.5">
+          <button type="button" onclick="resetToInitialState()" class="w-11 h-11 bg-white hover:bg-[#f0efed] text-[#0c0a09] rounded-full border border-[#d6d3d1] transition flex items-center justify-center shadow-2xs" title="Reset All" aria-label="ล้างข้อมูล">
+            <i class="fa-solid fa-trash-can text-sm"></i>
+          </button>
+          <button type="button" onclick="saveAllAndPreview()" class="w-14 h-11 bg-[#292524] hover:bg-[#0c0a09] active:scale-[0.99] text-white rounded-full shadow-xs transition flex items-center justify-center" title="Save & Open Preview" aria-label="บันทึกและส่งข้อมูลไปหน้า Preview">
+            <i class="fa-solid fa-floppy-disk text-sm"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Custom Styled Browser Dialog Modal (ElevenLabs Editorial Dialog) -->
+    <div id="custom-browser-dialog" class="fixed inset-0 z-[60] bg-[#0c0a09]/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
+      <div class="bg-white rounded-2xl max-w-sm w-full p-5 border border-[#e7e5e4] shadow-[0_12px_36px_rgba(0,0,0,0.12)] space-y-4 transform transition-all text-left">
+        <div class="flex items-start space-x-3">
+          <div id="custom-dialog-icon-wrap" class="w-9 h-9 rounded-full bg-[#f0efed] text-[#0c0a09] flex items-center justify-center flex-shrink-0">
+            <i id="custom-dialog-icon" class="fa-solid fa-triangle-exclamation text-sm"></i>
+          </div>
+          <div class="flex-1 min-w-0">
+            <h3 id="custom-dialog-title" class="text-sm font-semibold text-[#0c0a09]">ยืนยันการดำเนินการ</h3>
+            <p id="custom-dialog-message" class="text-xs text-[#777169] mt-1 leading-relaxed">ต้องการล้างข้อมูลทั้งหมดใช่หรือไม่?</p>
+          </div>
+        </div>
+        <div class="flex items-center justify-end gap-2 pt-2 border-t border-[#f0efed]">
+          <button type="button" id="custom-dialog-cancel" onclick="closeCustomDialog(false)" class="w-9 h-9 rounded-full bg-[#f0efed] hover:bg-[#e7e5e4] text-[#292524] flex items-center justify-center transition" title="ยกเลิก" aria-label="ยกเลิก">
+            <i class="fa-solid fa-xmark text-xs"></i>
+          </button>
+          <button type="button" id="custom-dialog-confirm" onclick="closeCustomDialog(true)" class="w-9 h-9 rounded-full bg-[#0c0a09] hover:bg-[#292524] text-white flex items-center justify-center transition shadow-xs" title="ตกลง / ยืนยัน" aria-label="ยืนยัน">
+            <i class="fa-solid fa-check text-xs"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 bg-[#0c0a09] text-white px-5 py-2.5 rounded-full shadow-lg text-xs sm:text-sm font-medium flex items-center space-x-2 opacity-0 pointer-events-none transition-all duration-300 border border-[#292524]">
+      <i class="fa-solid fa-circle-check text-xs"></i>
+      <span id="toast-msg">บันทึกเรียบร้อย!</span>
+    </div>
+
+    <!-- Application Controller Logic -->
+    <script>
+      const STORAGE_KEY = 'tiktok_vocab_data';
+
+      let cafeClipPool = [];
+      let selectedClips = [];
+      let currentPage = 1;
+      let isScrapingClips = false;
+      let currentAvatarData = '';
+      let currentClipAspectRatio = '9:16';
+      let detectedProviderType = '';
+      let apiKeyDetectTimer = null;
+
+      const ASPECT_RATIO_LABELS = {
+        '9:16': '9:16 • Reels / TikTok',
+        '2:3': '2:3 • Portrait',
+        '4:5': '4:5 • IG / FB Feed',
+        '1:1': '1:1 • Square Post',
+        '16:9': '16:9 • YouTube / X',
+        '3:2': '3:2 • Landscape'
+      };
+
+      function normalizeThumbUrl(url, slug) {
+        if (slug) return `http://127.0.0.1:3001/api/cafe/thumb?slug=${encodeURIComponent(slug)}`;
+        if (!url) return '';
+        const m = String(url).match(/clip\.cafe\/img800\/([^.?/]+)\.jpg/i);
+        if (m && m[1]) {
+          return `http://127.0.0.1:3001/api/cafe/thumb?slug=${encodeURIComponent(m[1])}`;
+        }
+        return url;
+      }
+
+      function toggleToolCard(sectionId) {
+        const card = document.getElementById(sectionId);
+        if (!card) return;
+        const body = card.querySelector('.tool-card-body');
+        if (!body) return;
+        const isCollapsed = body.classList.toggle('collapsed');
+        card.classList.toggle('card-is-collapsed', isCollapsed);
+        updateToggleAllCardsIcon();
+      }
+
+      function toggleAllToolSections() {
+        const bodies = Array.from(document.querySelectorAll('.tool-card-body'));
+        const anyExpanded = bodies.some(b => !b.classList.contains('collapsed'));
+        bodies.forEach(body => {
+          const card = body.closest('.tool-section-card');
+          if (anyExpanded) {
+            body.classList.add('collapsed');
+            if (card) card.classList.add('card-is-collapsed');
+          } else {
+            body.classList.remove('collapsed');
+            if (card) card.classList.remove('card-is-collapsed');
+          }
+        });
+        updateToggleAllCardsIcon();
+      }
+
+      function updateToggleAllCardsIcon() {
+        const bodies = Array.from(document.querySelectorAll('.tool-card-body'));
+        const allCollapsed = bodies.length > 0 && bodies.every(b => b.classList.contains('collapsed'));
+        const icon = document.getElementById('icon-toggle-all-cards');
+        if (icon) {
+          icon.className = allCollapsed
+            ? 'fa-solid fa-up-right-and-down-left-from-center text-xs'
+            : 'fa-solid fa-down-left-and-up-right-to-center text-xs';
+        }
+      }
+
+      function filterStudioTools(query) {
+        const q = (query || '').trim().toLowerCase();
+        const sections = document.querySelectorAll('.tool-section-card');
+        sections.forEach(sec => {
+          if (!q) {
+            sec.classList.remove('hidden');
+            return;
+          }
+          const kw = (sec.getAttribute('data-tool-keywords') || '').toLowerCase();
+          const text = (sec.textContent || '').toLowerCase();
+          if (kw.includes(q) || text.includes(q)) {
+            sec.classList.remove('hidden');
+            const body = sec.querySelector('.tool-card-body');
+            if (body && body.classList.contains('collapsed')) {
+              body.classList.remove('collapsed');
+              sec.classList.remove('card-is-collapsed');
+            }
+          } else {
+            sec.classList.add('hidden');
+          }
+        });
+      }
+
+      function jumpToToolSection(sectionId) {
+        const searchInput = document.getElementById('mobile-tool-search');
+        if (searchInput && searchInput.value) {
+          searchInput.value = '';
+          filterStudioTools('');
+        }
+        const el = document.getElementById(sectionId);
+        if (!el) return;
+        const body = el.querySelector('.tool-card-body');
+        if (body && body.classList.contains('collapsed')) {
+          body.classList.remove('collapsed');
+          el.classList.remove('card-is-collapsed');
+          updateToggleAllCardsIcon();
+        }
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        el.classList.add('ring-2', 'ring-[#0c0a09]');
+        setTimeout(() => el.classList.remove('ring-2', 'ring-[#0c0a09]'), 1200);
+      }
+
+      function initScrollRevealAnimations() {
+        const cards = document.querySelectorAll('.tool-section-card');
+        if (!('IntersectionObserver' in window)) return;
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.remove('scroll-reveal-hidden');
+              entry.target.classList.add('scroll-reveal-visible');
+            }
+          });
+        }, { threshold: 0.08, rootMargin: '0px 0px -20px 0px' });
+
+        cards.forEach((card, idx) => {
+          card.style.transitionDelay = `${idx * 45}ms`;
+          observer.observe(card);
+          setTimeout(() => { card.style.transitionDelay = '0ms'; }, 600);
+        });
+      }
+
+      function autoSaveDraft() {
+        const primaryClip = selectedClips[0] || {};
+        const payload = {
+          word: document.getElementById('target-word')?.value.trim() || '',
+          phonetic: document.getElementById('res-phonetic')?.value.trim() || '',
+          thaiRead: document.getElementById('res-thai-read')?.value.trim() || '',
+          meaning: document.getElementById('res-meaning')?.value.trim() || '',
+          grammar: document.getElementById('res-grammar')?.value.trim() || '',
+          ex1En: document.getElementById('res-ex1-en')?.value.trim() || '',
+          ex1Th: document.getElementById('res-ex1-th')?.value.trim() || '',
+          ex2En: document.getElementById('res-ex2-en')?.value.trim() || '',
+          ex2Th: document.getElementById('res-ex2-th')?.value.trim() || '',
+          ex3En: document.getElementById('res-ex3-en')?.value.trim() || '',
+          ex3Th: document.getElementById('res-ex3-th')?.value.trim() || '',
+          movieTitle: primaryClip.title || '',
+          movieImg: primaryClip.thumb || '',
+          movieVideo: primaryClip.videoUrl || '',
+          channel: document.getElementById('social-handle')?.value.trim() || '',
+          avatar: currentAvatarData || '',
+          caption: document.getElementById('social-description')?.value.trim() || '',
+          selectedClipsSequence: selectedClips,
+          clipAspectRatio: currentClipAspectRatio || '9:16',
+          aiVendor: document.getElementById('ai-vendor')?.value || 'gemini',
+          aiModel: document.getElementById('ai-provider')?.value || '',
+          apiKey: document.getElementById('api-key')?.value || ''
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+      }
+
+      function selectClipAspectRatio(ratio) {
+        currentClipAspectRatio = ASPECT_RATIO_LABELS[ratio] ? ratio : '9:16';
+        const RATIO_META = {
+          '9:16': { boxClass: 'w-6 h-9', text: '9:16 • Reels / TikTok / Shorts' },
+          '2:3':  { boxClass: 'w-7 h-9', text: '2:3 • Portrait Post' },
+          '4:5':  { boxClass: 'w-8 h-9', text: '4:5 • IG / FB Feed' },
+          '1:1':  { boxClass: 'w-8 h-8', text: '1:1 • Square Post' },
+          '3:2':  { boxClass: 'w-11 h-7', text: '3:2 • Landscape' },
+          '16:9': { boxClass: 'w-12 h-7', text: '16:9 • YouTube / X' }
+        };
+        const meta = RATIO_META[currentClipAspectRatio] || RATIO_META['9:16'];
+
+        const brownBox = document.getElementById('current-ratio-brown-box');
+        if (brownBox) {
+          brownBox.className = `${meta.boxClass} rounded-[5px] bg-[#78716c] text-white flex items-center justify-center text-[10px] font-bold tracking-tight shadow-2xs transition-all flex-shrink-0`;
+          brownBox.textContent = currentClipAspectRatio;
+        }
+        const labelEl = document.getElementById('current-ratio-label-text');
+        if (labelEl) labelEl.textContent = meta.text;
+
+        const badge = document.getElementById('aspect-ratio-guide-badge');
+        if (badge) badge.textContent = ASPECT_RATIO_LABELS[currentClipAspectRatio];
+        document.querySelectorAll('[data-ratio]').forEach(btn => {
+          const isMatch = btn.getAttribute('data-ratio') === currentClipAspectRatio;
+          const shape = btn.querySelector('.ratio-brown-shape');
+          if (shape) {
+            shape.classList.toggle('ring-2', isMatch);
+            shape.classList.toggle('ring-[#0c0a09]', isMatch);
+            shape.classList.toggle('ring-offset-2', isMatch);
+          }
+        });
+        autoSaveDraft();
+      }
+
+      function toggleAspectRatioDropdown(e) {
+        if (e) e.stopPropagation();
+        const menu = document.getElementById('aspect-ratio-dropdown-menu');
+        if (menu) menu.classList.toggle('hidden');
+      }
+
+      function closeAspectRatioDropdown() {
+        const menu = document.getElementById('aspect-ratio-dropdown-menu');
+        if (menu) menu.classList.add('hidden');
+      }
+
+      document.addEventListener('click', (e) => {
+        const wrap = document.getElementById('aspect-ratio-dropdown-wrap');
+        if (wrap && !wrap.contains(e.target)) closeAspectRatioDropdown();
+      });
+
+      function highlightKeyword(text, keyword) {
+        if (!text || !keyword) return text || '';
+        const escaped = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        return text.replace(new RegExp(`(${escaped})`, 'gi'), '<span class="highlight-yellow">$1</span>');
+      }
+
+      function formatGrammarHtml(text, keyword) {
+        if (!text) return '';
+        let formatted = highlightKeyword(text, keyword);
+        formatted = formatted.replace(/-&gt;|->/g, '→');
+        formatted = formatted.replace(/(\bVerb to be\b|\bIdiom\b|\bPhrasal Verb\b|\bSlang\b|\bNoun\b|\bVerb\b|\bAdjective\b|\bAdverb\b|\bSubject\b|\bObject\b|\bV\.ing\b|\bV\.1\b|\bV\.2\b|\bV\.3\b|\[[^\]]+\])/gi, '<strong class="text-[#2563eb] font-bold">$1</strong>');
+        formatted = formatted.replace(/(\+|→)/g, '<strong class="text-[#d97706] font-bold mx-0.5">$1</strong>');
+        return formatted;
+      }
+
+      function updateLiveCardPreview() {
+        const grammarVal = document.getElementById('res-grammar')?.value || '';
+        const ex1En = document.getElementById('res-ex1-en')?.value || '';
+        const ex1Th = document.getElementById('res-ex1-th')?.value || '';
+        const ex2En = document.getElementById('res-ex2-en')?.value || '';
+        const ex2Th = document.getElementById('res-ex2-th')?.value || '';
+        const ex3En = document.getElementById('res-ex3-en')?.value || '';
+        const ex3Th = document.getElementById('res-ex3-th')?.value || '';
+        const targetWord = document.getElementById('target-word')?.value?.replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, '').trim() || '';
+
+        const previewGrammar = document.getElementById('card-preview-grammar');
+        const previewEx1 = document.getElementById('card-preview-ex1');
+        const previewEx2 = document.getElementById('card-preview-ex2');
+        const previewEx3 = document.getElementById('card-preview-ex3');
+
+        const cleanTh = (str) => (str || '').replace(/^\s*\((.*)\)\s*$/, '$1').trim();
+
+        if (previewGrammar) previewGrammar.innerHTML = formatGrammarHtml(grammarVal, targetWord);
+        if (previewEx1) previewEx1.innerHTML = (ex1En || ex1Th) ? `<span class="font-bold text-[#0f766e]">1.</span> <span class="font-bold text-[#0c0a09]">${highlightKeyword(ex1En, targetWord)}</span> ${ex1Th ? `<span class="text-[#d97706] font-bold mx-0.5">→</span> <span class="text-[#57534e] noto-serif-thai">${cleanTh(ex1Th)}</span>` : ''}` : '';
+        if (previewEx2) previewEx2.innerHTML = (ex2En || ex2Th) ? `<span class="font-bold text-[#0f766e]">2.</span> <span class="font-bold text-[#0c0a09]">${highlightKeyword(ex2En, targetWord)}</span> ${ex2Th ? `<span class="text-[#d97706] font-bold mx-0.5">→</span> <span class="text-[#57534e] noto-serif-thai">${cleanTh(ex2Th)}</span>` : ''}` : '';
+        if (previewEx3) previewEx3.innerHTML = (ex3En || ex3Th) ? `<span class="font-bold text-[#0f766e]">3.</span> <span class="font-bold text-[#0c0a09]">${highlightKeyword(ex3En, targetWord)}</span> ${ex3Th ? `<span class="text-[#d97706] font-bold mx-0.5">→</span> <span class="text-[#57534e] noto-serif-thai">${cleanTh(ex3Th)}</span>` : ''}` : '';
+      }
+
+      function updateAvatarPreviewUI() {
+        const img = document.getElementById('editor-avatar-preview');
+        const icon = document.getElementById('editor-avatar-icon');
+        if (currentAvatarData) {
+          img.src = currentAvatarData;
+          img.classList.remove('hidden');
+          icon.classList.add('hidden');
+        } else {
+          img.src = '';
+          img.classList.add('hidden');
+          icon.classList.remove('hidden');
+        }
+      }
+
+      function handleAvatarUpload(event) {
+        const file = event.target.files?.[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          currentAvatarData = e.target.result;
+          document.getElementById('social-avatar-url').value = '';
+          updateAvatarPreviewUI();
+          showToast('อัปเดตรูปโปรไฟล์เรียบร้อย!');
+        };
+        reader.readAsDataURL(file);
+      }
+
+      function handleAvatarUrlInput(url) {
+        currentAvatarData = url.trim();
+        updateAvatarPreviewUI();
+      }
+
+      function clearAvatar() {
+        currentAvatarData = '';
+        document.getElementById('social-avatar-url').value = '';
+        updateAvatarPreviewUI();
+      }
+
+      const VENDOR_LABELS = {
+        gemini: 'Google Gemini',
+        openai: 'OpenAI',
+        deepseek: 'DeepSeek AI',
+        groq: 'Groq Cloud',
+        anthropic: 'Anthropic Claude',
+        xai: 'xAI (Grok)',
+        mistral: 'Mistral AI'
+      };
+
+      function handleVendorChange() {
+        const key = document.getElementById('api-key')?.value.trim();
+        const wrapper = document.getElementById('model-selector-wrapper');
+        if (wrapper) wrapper.classList.add('hidden');
+        if (key) {
+          detectProviderAndFetchModels(key);
+        }
+      }
+
+      function handleApiKeyInput(val) {
+        if (apiKeyDetectTimer) clearTimeout(apiKeyDetectTimer);
+        apiKeyDetectTimer = setTimeout(() => {
+          detectProviderAndFetchModels(val);
+        }, 450);
+      }
+
+      function populateModelSelect(models, preferredModel = '') {
+        const wrapper = document.getElementById('model-selector-wrapper');
+        const selectEl = document.getElementById('ai-provider');
+        const countBadge = document.getElementById('model-count-badge');
+        if (!selectEl || !wrapper) return;
+
+        selectEl.innerHTML = '';
+        models.forEach(m => {
+          const opt = document.createElement('option');
+          opt.value = m.id;
+          opt.textContent = m.label || m.id;
+          selectEl.appendChild(opt);
+        });
+
+        if (models.length > 0) {
+          wrapper.classList.remove('hidden');
+          if (preferredModel && models.some(m => m.id === preferredModel)) {
+            selectEl.value = preferredModel;
+          } else {
+            selectEl.value = models[0].id;
+          }
+          if (countBadge) countBadge.textContent = `พบ ${models.length} โมเดล`;
+        } else {
+          wrapper.classList.add('hidden');
+          if (countBadge) countBadge.textContent = '';
+        }
+      }
+
+      async function detectProviderAndFetchModels(rawKey, preferredModel = '') {
+        const key = (rawKey || '').trim();
+        const vendorSelect = document.getElementById('ai-vendor');
+        const badge = document.getElementById('detected-provider-badge');
+        const statusEl = document.getElementById('openrouter-status');
+        const wrapper = document.getElementById('model-selector-wrapper');
+        const labelEl = document.getElementById('model-selector-label');
+
+        if (!key) {
+          detectedProviderType = '';
+          if (wrapper) wrapper.classList.add('hidden');
+          if (badge) {
+            badge.textContent = 'Ready';
+            badge.className = 'text-[10px] px-2 py-0.5 rounded-full bg-[#f0efed] text-[#777169] font-semibold uppercase tracking-wider whitespace-nowrap flex-shrink-0';
+          }
+          if (statusEl) statusEl.textContent = '';
+          return;
+        }
+
+        if (vendorSelect) {
+          if (key.startsWith('AIza') || key.startsWith('AQ.')) vendorSelect.value = 'gemini';
+          else if (key.startsWith('gsk_')) vendorSelect.value = 'groq';
+          else if (key.startsWith('sk-ant-')) vendorSelect.value = 'anthropic';
+          else if (key.startsWith('xai-')) vendorSelect.value = 'xai';
+        }
+
+        const vendor = vendorSelect ? vendorSelect.value : 'gemini';
+        const vendorName = VENDOR_LABELS[vendor] || vendor.toUpperCase();
+
+        if (badge) {
+          badge.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin mr-1"></i>กำลังตรวจคีย์ ${vendorName}...`;
+          badge.className = 'text-[10px] px-2.5 py-0.5 rounded-full bg-[#f0efed] text-[#0c0a09] font-semibold uppercase tracking-wider whitespace-nowrap flex-shrink-0';
+        }
+        if (statusEl) {
+          statusEl.textContent = `กำลังตรวจสอบ API Key และดึงโมเดลจาก ${vendorName}...`;
+        }
+
+        try {
+          let models = [];
+
+          if (vendor === 'gemini') {
+            const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(key)}`);
+            if (!resp.ok) {
+              const err = await resp.json().catch(() => ({}));
+              throw new Error(err.error?.message || `HTTP ${resp.status}`);
+            }
+            const json = await resp.json();
+            const priorityIds = [
+              'gemini-3.6-flash',
+              'gemini-3.5-flash',
+              'gemini-3-flash-preview',
+              'gemini-3.8-flash',
+              'gemini-3.7-flash',
+              'gemini-3.5-flash-lite',
+              'gemini-flash-lite-latest',
+              'gemma-4-31b-it',
+              'gemini-flash-latest',
+              'gemini-2.5-flash',
+              'gemini-2.5-pro'
+            ];
+            models = (json.models || [])
+              .filter(m => {
+                const methods = m.supportedGenerationMethods || [];
+                const id = (m.name || '').replace(/^models\//, '');
+                if (!methods.includes('generateContent')) return false;
+                if (id.includes('tts') || id.includes('image') || id.includes('banana') || id.includes('lyria') || id.includes('transcribe') || id.includes('robotics') || id.includes('computer-use')) return false;
+                return true;
+              })
+              .map(m => {
+                const cleanId = m.name.replace(/^models\//, '');
+                return { id: cleanId, label: `${cleanId} — ${m.displayName || cleanId}` };
+              })
+              .sort((a, b) => {
+                const idxA = priorityIds.indexOf(a.id);
+                const idxB = priorityIds.indexOf(b.id);
+                if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+                if (idxA !== -1) return -1;
+                if (idxB !== -1) return 1;
+                return a.id.localeCompare(b.id);
+              });
+          } else if (vendor === 'openai') {
+            const resp = await fetch('https://api.openai.com/v1/models', {
+              headers: { 'Authorization': `Bearer ${key}` }
+            });
+            if (!resp.ok) {
+              const err = await resp.json().catch(() => ({}));
+              throw new Error(err.error?.message || `HTTP ${resp.status}`);
+            }
+            const json = await resp.json();
+            const all = json.data || [];
+            const filtered = all.filter(m => m.id.startsWith('gpt-') || m.id.startsWith('o1') || m.id.startsWith('o3') || m.id.startsWith('o4') || m.id.startsWith('chatgpt-'));
+            models = (filtered.length > 0 ? filtered : all)
+              .sort((a, b) => (b.created || 0) - (a.created || 0))
+              .map(m => ({ id: m.id, label: m.id }));
+          } else if (vendor === 'deepseek') {
+            const resp = await fetch('https://api.deepseek.com/models', {
+              headers: { 'Authorization': `Bearer ${key}` }
+            });
+            if (!resp.ok) {
+              const err = await resp.json().catch(() => ({}));
+              throw new Error(err.error?.message || `HTTP ${resp.status}`);
+            }
+            const json = await resp.json();
+            models = (json.data || []).map(m => ({ id: m.id, label: m.id }));
+          } else if (vendor === 'groq') {
+            const resp = await fetch('https://api.groq.com/openai/v1/models', {
+              headers: { 'Authorization': `Bearer ${key}` }
+            });
+            if (!resp.ok) {
+              const err = await resp.json().catch(() => ({}));
+              throw new Error(err.error?.message || `HTTP ${resp.status}`);
+            }
+            const json = await resp.json();
+            models = (json.data || []).map(m => ({ id: m.id, label: m.id }));
+          } else if (vendor === 'anthropic') {
+            const resp = await fetch('https://api.anthropic.com/v1/models', {
+              headers: {
+                'x-api-key': key,
+                'anthropic-version': '2023-06-01',
+                'anthropic-dangerous-direct-browser-access': 'true'
+              }
+            });
+            if (!resp.ok) {
+              const err = await resp.json().catch(() => ({}));
+              throw new Error(err.error?.message || `HTTP ${resp.status}`);
+            }
+            const json = await resp.json();
+            models = (json.data || []).map(m => ({ id: m.id, label: `${m.id} — ${m.display_name || m.id}` }));
+          } else if (vendor === 'xai') {
+            const resp = await fetch('https://api.x.ai/v1/models', {
+              headers: { 'Authorization': `Bearer ${key}` }
+            });
+            if (!resp.ok) {
+              const err = await resp.json().catch(() => ({}));
+              throw new Error(err.error?.message || `HTTP ${resp.status}`);
+            }
+            const json = await resp.json();
+            models = (json.data || []).map(m => ({ id: m.id, label: m.id }));
+          } else if (vendor === 'mistral') {
+            const resp = await fetch('https://api.mistral.ai/v1/models', {
+              headers: { 'Authorization': `Bearer ${key}` }
+            });
+            if (!resp.ok) {
+              const err = await resp.json().catch(() => ({}));
+              throw new Error(err.error?.message || `HTTP ${resp.status}`);
+            }
+            const json = await resp.json();
+            models = (json.data || []).map(m => ({ id: m.id, label: m.id }));
+          }
+
+          if (models.length === 0) {
+            throw new Error('ไม่พบโมเดลที่รองรับจาก API Key นี้');
+          }
+
+          detectedProviderType = vendor;
+          if (badge) {
+            badge.textContent = `✓ ${vendorName}`;
+            badge.className = 'text-[10px] px-2.5 py-0.5 rounded-full bg-[#0c0a09] text-white font-semibold uppercase tracking-wider whitespace-nowrap flex-shrink-0';
+          }
+          if (labelEl) labelEl.textContent = `3. เลือกโมเดลจาก ${vendorName}`;
+          populateModelSelect(models, preferredModel);
+          if (statusEl) statusEl.textContent = `✓ ตรวจสอบ API Key ของ ${vendorName} สำเร็จ! ดึงโมเดลพร้อมใช้งาน ${models.length} รุ่น`;
+        } catch (e) {
+          detectedProviderType = '';
+          if (wrapper) wrapper.classList.add('hidden');
+          if (badge) {
+            badge.textContent = 'คีย์ไม่ถูกต้อง / ไม่ตรงค่าย';
+            badge.className = 'text-[10px] px-2.5 py-0.5 rounded-full bg-[#f0efed] text-[#777169] font-semibold uppercase tracking-wider whitespace-nowrap flex-shrink-0';
+          }
+          if (statusEl) {
+            statusEl.textContent = `✗ ตรวจสอบคีย์กับ ${vendorName} ไม่สำเร็จ (${e.message || 'Invalid API Key'}) กรุณาเช็คค่ายที่เลือกและ API Key`;
+          }
+        }
+      }
+
+      window.addEventListener('DOMContentLoaded', () => {
+        loadSavedConfig();
+        updateLiveCardPreview();
+        initScrollRevealAnimations();
+      });
+
+      function toggleApiKeyVisibility() {
+        const input = document.getElementById('api-key');
+        const icon = document.getElementById('eye-icon');
+        if (input.type === 'password') {
+          input.type = 'text';
+          icon.classList.replace('fa-eye', 'fa-eye-slash');
+        } else {
+          input.type = 'password';
+          icon.classList.replace('fa-eye-slash', 'fa-eye');
+        }
+      }
+
+      async function invokeSelectedAiModel(prompt, loadingTextEl) {
+        const apiKey = document.getElementById('api-key').value.trim();
+        if (!detectedProviderType) {
+          await detectProviderAndFetchModels(apiKey);
+        }
+        const vendor = document.getElementById('ai-vendor')?.value || detectedProviderType || 'gemini';
+        let model = document.getElementById('ai-provider').value;
+        if (!model) {
+          throw new Error('กรุณาตรวจสอบ API Key และเลือกโมเดลก่อน');
+        }
+
+        let rawContent = '';
+        if (vendor === 'gemini') {
+          const callGemini = async (targetModel) => {
+            return fetch(`https://generativelanguage.googleapis.com/v1beta/models/${targetModel}:generateContent?key=${encodeURIComponent(apiKey)}`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                contents: [{ parts: [{ text: prompt }] }],
+                generationConfig: { responseMimeType: "application/json" }
+              })
+            });
+          };
+          let resp = await callGemini(model);
+          if (!resp.ok && [404, 429, 500, 503].includes(resp.status)) {
+            const fallbackChain = [
+              'gemini-3.6-flash',
+              'gemini-3.5-flash',
+              'gemini-3-flash-preview',
+              'gemini-3.8-flash',
+              'gemini-3.7-flash',
+              'gemini-3.5-flash-lite',
+              'gemini-flash-lite-latest',
+              'gemma-4-31b-it'
+            ].filter(m => m !== model);
+
+            for (const fbModel of fallbackChain) {
+              if (loadingTextEl) loadingTextEl.textContent = `โมเดลเดิมคิวเต็ม กำลังสลับไปใช้ ${fbModel} อัตโนมัติ...`;
+              resp = await callGemini(fbModel);
+              if (resp.ok) {
+                model = fbModel;
+                const selectEl = document.getElementById('ai-provider');
+                if (selectEl && Array.from(selectEl.options).some(o => o.value === model)) {
+                  selectEl.value = model;
+                }
+                break;
+              }
+            }
+          }
+          if (!resp.ok) {
+            const errData = await resp.json().catch(() => ({}));
+            throw new Error(errData.error?.message || `HTTP ${resp.status}`);
+          }
+          const resJson = await resp.json();
+          rawContent = resJson.candidates?.[0]?.content?.parts?.[0]?.text || '';
+        } else if (vendor === 'anthropic') {
+          const resp = await fetch('https://api.anthropic.com/v1/messages', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'x-api-key': apiKey,
+              'anthropic-version': '2023-06-01',
+              'anthropic-dangerous-direct-browser-access': 'true'
+            },
+            body: JSON.stringify({
+              model: model,
+              max_tokens: 1024,
+              messages: [{ role: 'user', content: prompt }]
+            })
+          });
+          if (!resp.ok) {
+            const errData = await resp.json().catch(() => ({}));
+            throw new Error(errData.error?.message || `HTTP ${resp.status}`);
+          }
+          const resJson = await resp.json();
+          rawContent = resJson.content?.[0]?.text || '';
+        } else {
+          let endpoint = 'https://api.openai.com/v1/chat/completions';
+          if (vendor === 'deepseek') endpoint = 'https://api.deepseek.com/chat/completions';
+          else if (vendor === 'groq') endpoint = 'https://api.groq.com/openai/v1/chat/completions';
+          else if (vendor === 'xai') endpoint = 'https://api.x.ai/v1/chat/completions';
+          else if (vendor === 'mistral') endpoint = 'https://api.mistral.ai/v1/chat/completions';
+
+          const resp = await fetch(endpoint, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${apiKey}`
+            },
+            body: JSON.stringify({
+              model: model,
+              messages: [{ role: 'user', content: prompt }]
+            })
+          });
+          if (!resp.ok) {
+            const errData = await resp.json().catch(() => ({}));
+            throw new Error(errData.error?.message || `HTTP ${resp.status}`);
+          }
+          const resJson = await resp.json();
+          rawContent = resJson.choices?.[0]?.message?.content || '';
+        }
+
+        rawContent = rawContent.replace(/```json\s*/gi, '').replace(/```\s*/g, '').trim();
+        const firstBrace = rawContent.indexOf('{');
+        const lastBrace = rawContent.lastIndexOf('}');
+        if (firstBrace !== -1 && lastBrace !== -1) {
+          rawContent = rawContent.substring(firstBrace, lastBrace + 1);
+        }
+        return JSON.parse(rawContent);
+      }
+
+      function buildMovieContextualPrompt(word, primaryClip, otherClips = []) {
+        const hasClip = primaryClip && primaryClip.title;
+        const clipSection = hasClip
+          ? `
+REAL SCRAPED ENGLISH MOVIE CLIP FROM CLIP.CAFE:
+- Movie Title: ${primaryClip.title}
+- Genres: ${primaryClip.genres || 'English Feature Film'}
+- Spoken Dialogue in Clip (Transcript): ${primaryClip.quote || primaryClip.fullTranscript || word}
+- Movie Summary / Plot Description: ${primaryClip.movieSummary || 'An English movie scene where the character uses this expression.'}
+
+CRITICAL INSTRUCTION FOR SHORT, PUNCHY, MEMORABLE EXAMPLES (NO EMOJIS):
+1. DO NOT write long sentences! Every English example ("ex1En", "ex2En", "ex3En") MUST be VERY SHORT (4 to 8 words maximum), natural, punchy, and super easy to memorize!
+2. Connect the examples subtly to the mood/theme of "${primaryClip.movieTitle || primaryClip.title}" (${primaryClip.quote || ''}) so they match the clip, but keep each sentence short and snappy (4-8 words).
+3. Thai translations ("ex1Th", "ex2Th", "ex3Th") MUST be short, direct, and natural (no parentheses needed).
+4. "grammar": Write a very concise 1-line grammar formula using non-emoji symbols like [Subject] + Verb to be + ${word} → แปลว่า... (No emojis!).`
+          : `
+CRITICAL INSTRUCTION FOR SHORT, PUNCHY, MEMORABLE EXAMPLES (NO EMOJIS):
+1. Every English example ("ex1En", "ex2En", "ex3En") MUST be VERY SHORT (4 to 8 words maximum), punchy, and super easy to memorize!
+2. "grammar": Write a very concise 1-line grammar formula using non-emoji symbols like [Subject] + ... → ... (No emojis!).`;
+
+        return `You are an expert English language tutor creating viral educational flashcards for Thai students.
+Analyze this English word/phrase: "${word}".
+${clipSection}
+
+Respond with ONLY valid JSON with no markdown formatting and NO emojis in grammar or examples:
+{
+  "phonetic": "/.../ (IPA phonetic format)",
+  "thaiRead": "(คำอ่านออกเสียงภาษาไทย)",
+  "meaning": "คำแปลความหมายภาษาไทยสั้นๆ กระชับ จำง่าย",
+  "grammar": "[โครงสร้างสั้นๆ เช่น Subject + Verb to be + ${word}] → คำอธิบายสั้นกระชับใน 1 บรรทัด",
+  "ex1En": "Short sentence 1 (4-8 words, using ${word})",
+  "ex1Th": "คำแปลไทยสั้นๆ กระชับ",
+  "ex2En": "Short sentence 2 (4-8 words, using ${word})",
+  "ex2Th": "คำแปลไทยสั้นๆ กระชับ",
+  "ex3En": "Short sentence 3 (4-8 words, using ${word})",
+  "ex3Th": "คำแปลไทยสั้นๆ กระชับ",
+  "socialCaption": "แคปชั่นสำหรับโพสต์โซเชียลภาษาไทยที่สอนคำศัพท์/สำนวน ${word} ล้วนๆ (ห้ามเขียนถึงหนัง ห้ามใส่ชื่อหนัง หรือตัวละครเด็ดขาด) อธิบายความหมายสั้นๆ + วิธีใช้จริง พร้อมแฮชแท็กเรียนภาษาอังกฤษ"
+}`;
+      }
+
+      async function runAiAgentGeneration() {
+        const word = document.getElementById('target-word').value.trim();
+        if (!word) {
+          showToast("กรุณากรอกคำศัพท์ภาษาอังกฤษก่อน");
+          return;
+        }
+
+        const apiKey = document.getElementById('api-key').value.trim();
+        if (!apiKey) {
+          showToast("กรุณาใส่ API Key ก่อนเรียกใช้งาน AI");
+          document.getElementById('api-key').focus();
+          return;
+        }
+
+        const loadingBox = document.getElementById('ai-loading');
+        const loadingText = document.getElementById('ai-loading-text');
+        loadingBox.classList.remove('hidden');
+
+        try {
+          const currentClipQuery = document.getElementById('clip-query').value.trim();
+          document.getElementById('clip-query').value = word;
+          if (cafeClipPool.length === 0 && selectedClips.length === 0) {
+            loadingText.textContent = `กำลังดึงคลิปหนังภาษาอังกฤษ & คำอธิบายเนื้อเรื่องจาก clip.cafe สำหรับ "${word}"...`;
+            await searchCafeClips(true);
+          } else if (currentClipQuery && currentClipQuery.toLowerCase() !== word.toLowerCase() && selectedClips.length === 0) {
+            loadingText.textContent = `กำลังดึงคลิปหนังภาษาอังกฤษ & คำอธิบายเนื้อเรื่องจาก clip.cafe สำหรับ "${word}"...`;
+            await searchCafeClips(true);
+          }
+
+          const primaryClip = selectedClips[0] || cafeClipPool[0] || null;
+          const otherClips = cafeClipPool.slice(1, 3);
+          const vendor = document.getElementById('ai-vendor')?.value || detectedProviderType || 'gemini';
+          const model = document.getElementById('ai-provider').value || '';
+
+          loadingText.textContent = primaryClip
+            ? `กำลังแต่งประโยคจากเนื้อเรื่องหนัง "${primaryClip.movieTitle || primaryClip.title}" ด้วย ${VENDOR_LABELS[vendor] || vendor} (${model})...`
+            : `กำลังสร้างเนื้อหาด้วย ${VENDOR_LABELS[vendor] || vendor} (${model})...`;
+
+          const prompt = buildMovieContextualPrompt(word, primaryClip, otherClips);
+          const aiResult = await invokeSelectedAiModel(prompt, loadingText);
+
+          document.getElementById('res-phonetic').value = aiResult.phonetic || '';
+          document.getElementById('res-thai-read').value = aiResult.thaiRead || '';
+          document.getElementById('res-meaning').value = aiResult.meaning || '';
+          document.getElementById('res-grammar').value = aiResult.grammar || '';
+          if (document.getElementById('res-movie-context')) {
+            document.getElementById('res-movie-context').value = aiResult.movieContextTh || '';
+          }
+          document.getElementById('res-ex1-en').value = aiResult.ex1En || '';
+          document.getElementById('res-ex1-th').value = aiResult.ex1Th || '';
+          document.getElementById('res-ex2-en').value = aiResult.ex2En || '';
+          document.getElementById('res-ex2-th').value = aiResult.ex2Th || '';
+          document.getElementById('res-ex3-en').value = aiResult.ex3En || '';
+          document.getElementById('res-ex3-th').value = aiResult.ex3Th || '';
+          if (aiResult.socialCaption) {
+            document.getElementById('social-description').value = aiResult.socialCaption;
+          }
+
+          updateScrapedMovieContextUI();
+          updateLiveCardPreview();
+
+          showToast(primaryClip
+            ? `AI แต่งประโยคสอดคล้องกับหนัง "${primaryClip.movieTitle}" สำเร็จ!`
+            : "AI แปลและสร้างเนื้อหาเรียบร้อยแล้ว!");
+        } catch (e) {
+          console.error(e);
+          showToast(`เรียก AI ไม่สำเร็จ: ${e.message}`);
+        } finally {
+          loadingBox.classList.add('hidden');
+        }
+      }
+
+      async function craftSentencesFromSelectedClip() {
+        const primaryClip = selectedClips[0] || cafeClipPool[0];
+        if (!primaryClip) {
+          showToast("กรุณาค้นหาและเลือกคลิปหนังภาษาอังกฤษก่อน");
+          return;
+        }
+        const word = document.getElementById('target-word').value.trim() || document.getElementById('clip-query').value.trim();
+        if (!word) {
+          showToast("กรุณาพิมพ์คำศัพท์ภาษาอังกฤษก่อน");
+          return;
+        }
+        if (!document.getElementById('target-word').value.trim()) {
+          document.getElementById('target-word').value = word;
+        }
+        await runAiAgentGeneration();
+      }
+
+      function updateScrapedMovieContextUI() {
+        const box = document.getElementById('scraped-movie-context-box');
+        if (!box) return;
+        const clip = selectedClips[0] || cafeClipPool[0];
+        if (!clip) {
+          box.classList.add('hidden');
+          return;
+        }
+        box.classList.remove('hidden');
+        const titleEl = document.getElementById('ctx-movie-title');
+        const genresEl = document.getElementById('ctx-movie-genres');
+        const prodEl = document.getElementById('ctx-movie-prod');
+        const quoteEl = document.getElementById('ctx-movie-quote');
+        const sumEl = document.getElementById('ctx-movie-summary');
+
+        if (titleEl) titleEl.textContent = clip.title || clip.movieTitle || '';
+        if (genresEl) {
+          genresEl.textContent = clip.genres || 'English Film';
+          genresEl.classList.toggle('hidden', !clip.genres);
+        }
+        if (prodEl) {
+          prodEl.textContent = clip.production && clip.production !== 'N/A' ? `ค่ายผู้สร้าง: ${clip.production}` : 'ภาพยนตร์เสียงภาษาอังกฤษ (Audio: EN)';
+        }
+        if (quoteEl) quoteEl.textContent = clip.quote || clip.fullTranscript || '-';
+        if (sumEl) {
+          sumEl.textContent = clip.movieSummary || 'ฉากภาพยนตร์ภาษาอังกฤษจาก clip.cafe ที่มีบทพูดตรงกับคำศัพท์';
+        }
+      }
+
+      // Real Web Scraping Parser for Clip.Cafe HTML (Filtered for English Movies)
+      function parseCafeClipHtml(html) {
+        const clips = [];
+        const blocks = (html || '').split('<div class="searchResultClip">').slice(1);
+        for (const b of blocks) {
+          const slug = (b.match(/data-slug=["']([^"']+)["']/) || [])[1];
+          const link = (b.match(/data-link=["']([^"']+)["']/) || [])[1];
+          if (!slug || !link) continue;
+
+          const isEnglishAudio = /title=["']Audio:\s*English["']/i.test(b) || /<span class=["']pill-code["']>EN<\/span>/i.test(b);
+          if (!isEnglishAudio) continue;
+
+          const isSeries = /Season\s+\d+|Episode\s+\d+|clipEpisodeBadge/i.test(b);
+          const duration = ((b.match(/<span class=["']videoDuration["']>([^<]+)<\/span>/) || [])[1] || '').trim();
+          const movieTitle = ((b.match(/<div class=["']clipMovie["']>\s*<a[^>]*>([^<]+)<\/a>/) || [])[1] || 'Movie Scene').trim();
+          const movieDivMatch = b.match(/<div class=["']clipMovie["']>([\s\S]*?)<\/div>/);
+          const movieMetaText = movieDivMatch ? movieDivMatch[1].replace(/<[^>]+>/g, ' ') : '';
+          const yearMatch = movieMetaText.match(/\b(19\d{2}|20\d{2})\b/);
+          const year = yearMatch ? parseInt(yearMatch[1], 10) : new Date().getFullYear();
+
+          const transMatch = b.match(/<div class=["']clipTrans["']>\s*<p>(?:<b>Transcript:<\/b><br>)?([\s\S]*?)<\/p>/i);
+          const transcript = transMatch ? transMatch[1].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim() : '';
+
+          clips.push({
+            id: `cafe_${slug}`,
+            slug,
+            link,
+            title: `${movieTitle} (${year})`,
+            movieTitle,
+            year,
+            duration,
+            isMovie: !isSeries,
+            audioLang: 'EN',
+            quote: transcript ? `"${transcript}"` : `Scene from ${movieTitle}`,
+            movieSummary: '',
+            thumb: `https://clip.cafe/img800/${slug}.jpg`,
+            videoUrl: `https://clip.cafe/videos/${slug}.mp4`,
+            pageUrl: `https://clip.cafe/${link}`,
+            isRealCafeClip: true
+          });
+        }
+        return clips.sort((a, b) => (a.isMovie === b.isMovie ? 0 : a.isMovie ? -1 : 1));
+      }
+
+      async function scrapeRealCafeClips(query, page = 1) {
+        const cleanQuery = encodeURIComponent(query.trim());
+        const localEndpoints = [
+          `http://127.0.0.1:3001/api/cafe/search?q=${cleanQuery}&page=${page}`,
+          `http://localhost:3001/api/cafe/search?q=${cleanQuery}&page=${page}`
+        ];
+
+        for (const ep of localEndpoints) {
+          try {
+            const localResp = await fetch(ep, {
+              signal: AbortSignal.timeout(15000)
+            });
+            if (localResp.ok) {
+              const data = await localResp.json();
+              if (data.success && data.clips && data.clips.length > 0) return data.clips;
+            }
+          } catch (e) {}
+        }
+
+        const targetUrl = page > 1 
+          ? `https://clip.cafe/page/${page}/?s=${cleanQuery}&usersearch=1`
+          : `https://clip.cafe/?s=${cleanQuery}&usersearch=1`;
+
+        const proxies = [
+          `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`,
+          `https://corsproxy.io/?url=${encodeURIComponent(targetUrl)}`
+        ];
+
+        for (const proxyUrl of proxies) {
+          try {
+            const proxyResp = await fetch(proxyUrl, { signal: AbortSignal.timeout(8000) });
+            if (proxyResp.ok) {
+              const html = await proxyResp.text();
+              const scrapedClips = parseCafeClipHtml(html);
+              if (scrapedClips.length > 0) return scrapedClips;
+            }
+          } catch (err) {}
+        }
+
+        return [];
+      }
+
+      async function searchCafeClips(reset = false) {
+        if (isScrapingClips) return;
+        const wordVal = document.getElementById('target-word')?.value.trim() || '';
+        const clipQEl = document.getElementById('clip-query');
+        if (clipQEl && wordVal && !clipQEl.value.trim()) {
+          clipQEl.value = wordVal;
+        }
+        const query = clipQEl?.value.trim() || wordVal;
+        if (!query) {
+          showToast("กรุณาพิมพ์คำศัพท์ที่ต้องการค้นหาคลิปก่อน");
+          return;
+        }
+
+        if (reset) {
+          currentPage = 1;
+          cafeClipPool = [];
+          const grid = document.getElementById('clip-grid');
+          if (grid) {
+            grid.innerHTML = `
+              <div class="col-span-full py-8 text-center text-[#777169] space-y-2">
+                <i class="fa-solid fa-spinner fa-spin text-lg text-[#0c0a09]"></i>
+                <p class="text-xs font-medium">กำลัง Scrape คลิปหนังภาษาอังกฤษ & คำอธิบายเนื้อเรื่องจาก clip.cafe...</p>
+              </div>
+            `;
+          }
+        }
+
+        const indicator = document.getElementById('clip-source-indicator');
+
+        isScrapingClips = true;
+        try {
+          const scraped = await scrapeRealCafeClips(query, currentPage);
+
+          if (scraped.length > 0) {
+            cafeClipPool = cafeClipPool.concat(scraped);
+            const movieCount = cafeClipPool.filter(c => c.isMovie).length;
+            if (indicator) {
+              indicator.textContent = `${movieCount || cafeClipPool.length} clips`;
+              indicator.classList.remove('hidden');
+            }
+            // Preserve existing selected clips unless selectedClips is completely empty
+            if (selectedClips.length === 0) {
+              selectedClips = [cafeClipPool[0]];
+            }
+            renderClipGrid();
+            renderSequenceList();
+            updateScrapedMovieContextUI();
+            autoSaveDraft();
+          } else if (cafeClipPool.length === 0) {
+            const grid = document.getElementById('clip-grid');
+            if (grid) {
+              grid.innerHTML = `
+                <div class="col-span-full py-6 text-center text-[#777169] text-xs">
+                  No clips found
+                </div>
+              `;
+            }
+          }
+        } finally {
+          isScrapingClips = false;
+        }
+      }
+
+      function loadMoreCafeClips() {
+        currentPage++;
+        searchCafeClips(false);
+      }
+
+      function formatDurationLabel(dur) {
+        if (!dur) return '';
+        const clean = String(dur).trim();
+        if (!clean) return '';
+        if (/^\d+$/.test(clean)) return `${clean}s`;
+        return clean;
+      }
+
+      function renderClipGrid() {
+        const grid = document.getElementById('clip-grid');
+        grid.innerHTML = '';
+
+        cafeClipPool.forEach(clip => {
+          const seqIdx = selectedClips.findIndex(s => s.id === clip.id);
+          const isSelected = seqIdx !== -1;
+          const durText = formatDurationLabel(clip.duration);
+          const thumbSrc = normalizeThumbUrl(clip.thumb, clip.slug);
+          const card = document.createElement('div');
+          card.className = `relative aspect-[3/2] rounded-xl overflow-hidden border-2 cursor-pointer transition transform hover:scale-[1.01] ${
+            isSelected ? 'border-[#0c0a09] ring-2 ring-[#0c0a09]/20 shadow-sm' : 'border-[#e7e5e4] opacity-80 hover:opacity-100'
+          }`;
+          card.onclick = () => toggleSelectClip(clip);
+
+          card.innerHTML = `
+            <img src="${thumbSrc}" alt="${clip.title}" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent flex flex-col justify-between p-2">
+              <div class="flex justify-between items-start gap-1">
+                <div class="flex items-center gap-1 flex-wrap">
+                  <span class="text-[9px] px-2 py-0.5 rounded-full bg-black/60 text-white font-mono backdrop-blur">${clip.year}</span>
+                  ${durText ? `<span class="text-[9px] px-1.5 py-0.5 rounded-full bg-[#0c0a09]/85 text-amber-300 font-mono font-semibold flex items-center gap-0.5"><i class="fa-regular fa-clock text-[8px]"></i>${durText}</span>` : ''}
+                </div>
+                <div class="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 text-[9px] font-bold ${isSelected ? 'bg-[#0c0a09] text-white ring-1 ring-white/50' : 'bg-black/60 text-white/70 border border-white/30'}">
+                  ${isSelected ? `<i class="fa-solid fa-check text-[8px] mr-0.5"></i>${seqIdx + 1}` : '<i class="fa-solid fa-plus text-[9px]"></i>'}
+                </div>
+              </div>
+              <div class="text-left space-y-0.5">
+                <p class="text-[10px] font-medium text-white truncate">${clip.title}</p>
+                <p class="text-[8.5px] text-amber-200/95 truncate">${clip.quote}</p>
+              </div>
+            </div>
+          `;
+          grid.appendChild(card);
+        });
+      }
+
+      function toggleSelectClip(clip) {
+        const idx = selectedClips.findIndex(s => s.id === clip.id);
+        if (idx !== -1) {
+          if (selectedClips.length > 1) {
+            selectedClips.splice(idx, 1);
+          } else {
+            showToast('เลือกคลิปนี้อยู่แล้วในคิวลำดับที่ 1');
+          }
+        } else {
+          selectedClips.push(clip);
+        }
+        renderClipGrid();
+        renderSequenceList();
+        updateScrapedMovieContextUI();
+        autoSaveDraft();
+      }
+
+      function renderSequenceList() {
+        const container = document.getElementById('sequence-list');
+        const badge = document.getElementById('selected-badge');
+        badge.textContent = `${selectedClips.length} clips`;
+        container.innerHTML = '';
+
+        if (selectedClips.length === 0) {
+          container.innerHTML = '<div class="text-center py-2 text-xs text-[#777169]">No clips in queue</div>';
+          return;
+        }
+
+        selectedClips.forEach((clip, index) => {
+          const durText = formatDurationLabel(clip.duration);
+          const thumbSrc = normalizeThumbUrl(clip.thumb, clip.slug);
+          const item = document.createElement('div');
+          item.className = 'flex items-center justify-between p-2 bg-white border border-[#e7e5e4] rounded-xl space-x-2 shadow-2xs';
+          item.innerHTML = `
+            <div class="flex items-center space-x-2 min-w-0">
+              <span class="w-5 h-5 rounded-full bg-[#f0efed] text-[#0c0a09] border border-[#e7e5e4] flex items-center justify-center text-[10px] font-medium font-mono flex-shrink-0">
+                ${index + 1}
+              </span>
+              <img src="${thumbSrc}" class="w-10 h-7 rounded object-cover border border-[#e7e5e4] flex-shrink-0" alt="thumb">
+              <div class="truncate text-left min-w-0">
+                <div class="flex items-center gap-1.5">
+                  <p class="text-xs font-medium text-[#0c0a09] truncate">${clip.title}</p>
+                  ${durText ? `<span class="text-[9px] px-1.5 py-0.5 rounded-full bg-[#f0efed] text-[#0c0a09] font-mono font-semibold flex-shrink-0"><i class="fa-regular fa-clock mr-0.5 text-[8px]"></i>${durText}</span>` : ''}
+                </div>
+              </div>
+            </div>
+            <div class="flex items-center space-x-1 flex-shrink-0">
+              <button type="button" onclick="moveSequence(${index}, -1)" ${index === 0 ? 'disabled class="opacity-20"' : 'class="hover:bg-[#f0efed] text-[#292524]"'} class="w-6 h-6 rounded-full flex items-center justify-center transition">
+                <i class="fa-solid fa-arrow-up text-[10px]"></i>
+              </button>
+              <button type="button" onclick="moveSequence(${index}, 1)" ${index === selectedClips.length - 1 ? 'disabled class="opacity-20"' : 'class="hover:bg-[#f0efed] text-[#292524]"'} class="w-6 h-7 rounded-full flex items-center justify-center transition">
+                <i class="fa-solid fa-arrow-down text-[10px]"></i>
+              </button>
+              <button type="button" onclick="removeSequence(${index})" class="w-6 h-6 rounded-full hover:bg-rose-50 text-rose-600 flex items-center justify-center transition">
+                <i class="fa-solid fa-trash-can text-[10px]"></i>
+              </button>
+            </div>
+          `;
+          container.appendChild(item);
+        });
+      }
+
+      function moveSequence(index, direction) {
+        const target = index + direction;
+        if (target < 0 || target >= selectedClips.length) return;
+        const temp = selectedClips[index];
+        selectedClips[index] = selectedClips[target];
+        selectedClips[target] = temp;
+        renderSequenceList();
+        renderClipGrid();
+      }
+
+      function removeSequence(index) {
+        selectedClips.splice(index, 1);
+        renderSequenceList();
+        renderClipGrid();
+      }
+
+      function saveAllAndPreview() {
+        const primaryClip = selectedClips[0] || {};
+
+        const payload = {
+          word: document.getElementById('target-word').value.trim(),
+          phonetic: document.getElementById('res-phonetic').value.trim(),
+          thaiRead: document.getElementById('res-thai-read').value.trim(),
+          meaning: document.getElementById('res-meaning').value.trim(),
+          grammar: document.getElementById('res-grammar').value.trim(),
+          movieContextTh: document.getElementById('res-movie-context')?.value.trim() || '',
+          ex1En: document.getElementById('res-ex1-en').value.trim(),
+          ex1Th: document.getElementById('res-ex1-th').value.trim(),
+          ex2En: document.getElementById('res-ex2-en').value.trim(),
+          ex2Th: document.getElementById('res-ex2-th').value.trim(),
+          ex3En: document.getElementById('res-ex3-en').value.trim(),
+          ex3Th: document.getElementById('res-ex3-th').value.trim(),
+          movieTitle: primaryClip.title || '',
+          movieImg: primaryClip.thumb || '',
+          movieVideo: primaryClip.videoUrl || '',
+          channel: document.getElementById('social-handle').value.trim(),
+          avatar: currentAvatarData || '',
+          caption: document.getElementById('social-description').value.trim(),
+          selectedClipsSequence: selectedClips,
+          clipAspectRatio: currentClipAspectRatio || '9:16',
+          aiVendor: document.getElementById('ai-vendor')?.value || 'gemini',
+          aiModel: document.getElementById('ai-provider').value,
+          apiKey: document.getElementById('api-key').value
+        };
+
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+        showToast("บันทึกข้อมูลเรียบร้อย! กำลังไปหน้า Preview...");
+        setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 500);
+      }
+
+      function loadSavedConfig() {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (!saved) return;
+        try {
+          const d = JSON.parse(saved);
+          if (d.word) {
+            document.getElementById('target-word').value = d.word;
+            if (document.getElementById('clip-query')) document.getElementById('clip-query').value = d.word;
+          }
+          if (d.clipAspectRatio) {
+            selectClipAspectRatio(d.clipAspectRatio);
+          }
+          if (d.phonetic) document.getElementById('res-phonetic').value = d.phonetic;
+          if (d.thaiRead) document.getElementById('res-thai-read').value = d.thaiRead;
+          if (d.meaning) document.getElementById('res-meaning').value = d.meaning;
+          if (d.grammar) document.getElementById('res-grammar').value = d.grammar;
+          if (d.movieContextTh && document.getElementById('res-movie-context')) {
+            document.getElementById('res-movie-context').value = d.movieContextTh;
+          }
+          if (d.ex1En) document.getElementById('res-ex1-en').value = d.ex1En;
+          if (d.ex1Th) document.getElementById('res-ex1-th').value = d.ex1Th;
+          if (d.ex2En) document.getElementById('res-ex2-en').value = d.ex2En;
+          if (d.ex2Th) document.getElementById('res-ex2-th').value = d.ex2Th;
+          if (d.ex3En) document.getElementById('res-ex3-en').value = d.ex3En;
+          if (d.ex3Th) document.getElementById('res-ex3-th').value = d.ex3Th;
+          if (d.channel) document.getElementById('social-handle').value = d.channel;
+          if (d.caption) document.getElementById('social-description').value = d.caption;
+          if (d.avatar) {
+            currentAvatarData = d.avatar;
+            if (!d.avatar.startsWith('data:')) {
+              document.getElementById('social-avatar-url').value = d.avatar;
+            }
+            updateAvatarPreviewUI();
+          }
+          if (d.aiVendor && document.getElementById('ai-vendor')) {
+            document.getElementById('ai-vendor').value = d.aiVendor;
+          }
+          if (d.apiKey) {
+            document.getElementById('api-key').value = d.apiKey;
+            detectProviderAndFetchModels(d.apiKey, d.aiModel);
+          }
+          if (d.selectedClipsSequence && Array.isArray(d.selectedClipsSequence)) {
+            selectedClips = d.selectedClipsSequence;
+            renderSequenceList();
+          }
+        } catch (e) {
+          console.error("Error loading config", e);
+        }
+      }
+
+      let customDialogResolver = null;
+
+      function showCustomDialog({ title = 'ยืนยันการดำเนินการ', message = '', showCancel = true, icon = 'fa-triangle-exclamation' } = {}) {
+        return new Promise((resolve) => {
+          customDialogResolver = resolve;
+          const modal = document.getElementById('custom-browser-dialog');
+          const titleEl = document.getElementById('custom-dialog-title');
+          const msgEl = document.getElementById('custom-dialog-message');
+          const cancelBtn = document.getElementById('custom-dialog-cancel');
+          const iconEl = document.getElementById('custom-dialog-icon');
+
+          if (titleEl) titleEl.textContent = title;
+          if (msgEl) msgEl.textContent = message;
+          if (iconEl) iconEl.className = `fa-solid ${icon} text-sm`;
+          if (cancelBtn) cancelBtn.classList.toggle('hidden', !showCancel);
+          if (modal) modal.classList.remove('hidden');
+        });
+      }
+
+      function closeCustomDialog(confirmed) {
+        const modal = document.getElementById('custom-browser-dialog');
+        if (modal) modal.classList.add('hidden');
+        if (customDialogResolver) {
+          const r = customDialogResolver;
+          customDialogResolver = null;
+          r(Boolean(confirmed));
+        }
+      }
+
+      async function resetToInitialState() {
+        const confirmed = await showCustomDialog({
+          title: 'ล้างข้อมูลทั้งหมด',
+          message: 'ต้องการล้างข้อมูลคำศัพท์ คลิปหนัง และการตั้งค่าทั้งหมดใช่หรือไม่?',
+          showCancel: true,
+          icon: 'fa-trash-can'
+        });
+        if (confirmed) {
+          localStorage.removeItem(STORAGE_KEY);
+          location.reload();
+        }
+      }
+
+      function showToast(msg) {
+        const toast = document.getElementById('toast');
+        document.getElementById('toast-msg').textContent = msg;
+        toast.classList.remove('opacity-0', 'pointer-events-none');
+        toast.classList.add('opacity-100');
+        setTimeout(() => {
+          toast.classList.remove('opacity-100');
+          toast.classList.add('opacity-0', 'pointer-events-none');
+        }, 2200);
+      }
+    </script>
+  </body>
+</html>

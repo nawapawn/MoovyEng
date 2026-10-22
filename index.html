@@ -1,0 +1,2491 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Move0nyoung — AI Vocab & Movie Clip Studio</title>
+    <link rel="icon" type="image/png" href="icon.png">
+    <link rel="apple-touch-icon" href="icon.png">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: EB Garamond (Waldenburg substitute), Inter (ElevenLabs), Noto Serif Thai, Prompt, Itim, and Fredoka -->
+    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@300;400;500&family=Fredoka:wght@500;600&family=Inter:wght@300;400;500;600&family=Itim&family=Noto+Serif+Thai:wght@400;500;600;700&family=Prompt:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- html2canvas for High-Res PNG Slide Export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <style>
+      body {
+        font-family: 'Inter', 'Prompt', -apple-system, BlinkMacSystemFont, sans-serif;
+        background-color: #f5f5f5;
+        color: #0c0a09;
+        letter-spacing: 0.16px;
+        user-select: none;
+      }
+      .editorial-display {
+        font-family: 'EB Garamond', 'Times New Roman', serif;
+        font-weight: 300;
+        letter-spacing: -0.96px;
+      }
+      .vocab-font {
+        font-family: 'Fredoka', 'Itim', cursive, sans-serif;
+      }
+      .thai-vocab-font {
+        font-family: 'Itim', cursive, sans-serif;
+      }
+      .grammar-card-thai-font {
+        font-family: 'Fredoka', 'Noto Serif Thai', serif;
+      }
+      .noto-serif-thai {
+        font-family: 'Noto Serif Thai', serif;
+      }
+      .highlight-yellow {
+        background-color: #fde047;
+        color: #0c0a09;
+        padding: 0 3px;
+        border-radius: 0px;
+        font-weight: 700;
+        box-decoration-break: clone;
+        -webkit-box-decoration-break: clone;
+      }
+      /* ElevenLabs-inspired atmospheric audio waves */
+      @keyframes soundwave {
+        0%, 100% { height: 4px; }
+        50% { height: 16px; }
+      }
+      .wave-bar {
+        display: inline-block;
+        width: 3px;
+        background: #292524;
+        border-radius: 9999px;
+        animation: soundwave 1.2s ease-in-out infinite;
+      }
+      .wave-bar:nth-child(2) { animation-delay: 0.15s; }
+      .wave-bar:nth-child(3) { animation-delay: 0.3s; }
+      .wave-bar:nth-child(4) { animation-delay: 0.45s; }
+
+      /* Smooth scrolling & Scroll-Reveal / Collapsible Card Animations */
+      html {
+        scroll-behavior: smooth;
+      }
+      .tool-section-card {
+        transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+                    opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+                    box-shadow 0.25s ease;
+        will-change: transform, opacity;
+      }
+      .tool-section-card:hover {
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+      }
+      .tool-section-card.scroll-reveal-hidden {
+        opacity: 0;
+        transform: translateY(18px) scale(0.985);
+      }
+      .tool-section-card.scroll-reveal-visible {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+      .tool-card-body {
+        display: grid;
+        grid-template-rows: 1fr;
+        opacity: 1;
+        transition: grid-template-rows 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+                    opacity 0.25s ease,
+                    padding-top 0.25s ease;
+      }
+      .tool-card-body > .tool-card-inner {
+        overflow: hidden;
+      }
+      .tool-section-card:not(.is-collapsed) > .tool-card-body > .tool-card-inner {
+        overflow: visible;
+      }
+      .tool-section-card.is-collapsed .tool-card-body {
+        grid-template-rows: 0fr;
+        opacity: 0;
+        padding-top: 0 !important;
+      }
+      .tool-section-card.is-collapsed .tool-card-header {
+        margin-bottom: 0 !important;
+        padding-bottom: 0 !important;
+        border-bottom-color: transparent !important;
+      }
+      .tool-collapse-chevron {
+        transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      .tool-section-card.is-collapsed .tool-collapse-chevron {
+        transform: rotate(-90deg);
+      }
+      /* Force movie clip video and thumbnail to fill 16:9 frame uniformly with zero black bars */
+      .movie-uniform-fill {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+      }
+
+      /* Clean Scrollbar */
+      ::-webkit-scrollbar {
+        width: 6px;
+        height: 6px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #f0efed;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #d6d3d1;
+        border-radius: 9999px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #a8a29e;
+      }
+    </style>
+  </head>
+  <body class="bg-[#f5f5f5] text-[#0c0a09] min-h-[100dvh] w-full flex justify-start items-start overflow-x-hidden lg:py-5 lg:px-6 relative">
+
+    <!-- ElevenLabs Atmospheric Pastel Gradient Orbs (Mint, Peach, Lavender, Sky) -->
+    <div class="pointer-events-none fixed -top-24 -left-24 w-96 h-96 rounded-full opacity-45 blur-3xl z-0" style="background: radial-gradient(circle, #a7e5d3 0%, transparent 70%);"></div>
+    <div class="pointer-events-none fixed top-1/3 -right-24 w-96 h-96 rounded-full opacity-45 blur-3xl z-0" style="background: radial-gradient(circle, #f4c5a8 0%, transparent 70%);"></div>
+    <div class="pointer-events-none fixed -bottom-24 left-1/4 w-96 h-96 rounded-full opacity-40 blur-3xl z-0" style="background: radial-gradient(circle, #c8b8e0 0%, transparent 70%);"></div>
+
+    <!-- Responsive Master Container:
+         - Mobile (< lg): Displays Phone Preview full-screen, with 'Studio' button to navigate to edit.html (separate page).
+         - Desktop / PC (>= lg): Pins Phone Preview on the FAR LEFT + 2-Column Studio Tools Workspace on the right! -->
+    <div class="relative z-10 w-full flex flex-col lg:flex-row items-center lg:items-start justify-start gap-6">
+
+      <!-- LEFT COLUMN: Phone Canvas (Pinned Far Left & Sticky on Desktop, Fullscreen on Mobile) -->
+      <div class="w-full lg:w-auto flex justify-center lg:justify-start lg:sticky lg:top-5 flex-shrink-0">
+        <div id="phone-container" class="relative w-full h-[100dvh] sm:w-[414px] sm:h-[736px] sm:rounded-[32px] sm:border sm:border-[#e7e5e4] bg-[#fafafa] overflow-hidden shadow-[0_4px_16px_rgba(0,0,0,0.04)] flex flex-col justify-center transition-all duration-300">
+          
+          <!-- Subtle Internal Atmospheric Orbs inside Card -->
+          <div class="pointer-events-none absolute -top-16 -right-16 w-56 h-56 rounded-full opacity-35 blur-2xl" style="background: radial-gradient(circle, #a8c8e8 0%, transparent 70%);"></div>
+          <div class="pointer-events-none absolute -bottom-16 -left-16 w-56 h-56 rounded-full opacity-35 blur-2xl" style="background: radial-gradient(circle, #e8b8c4 0%, transparent 70%);"></div>
+
+          <!-- Top iOS Status Bar (ElevenLabs Crisp Minimalist) -->
+          <div id="preview-ios-statusbar" class="hidden sm:flex absolute top-0 left-0 w-full z-30 justify-between items-center px-7 pt-3.5 text-[#292524] text-xs font-medium">
+            <span class="tracking-tight">9:41</span>
+            <div class="w-16 h-3 bg-[#0c0a09] rounded-full mx-auto -mt-0.5"></div>
+            <div class="flex items-center space-x-1.5 text-[11px] text-[#292524]">
+              <i class="fa-solid fa-signal"></i>
+              <i class="fa-solid fa-wifi"></i>
+              <i class="fa-solid fa-battery-full text-sm"></i>
+            </div>
+          </div>
+
+          <!-- Top Navigation & Controls Header (ElevenLabs Clean Editorial Header) -->
+          <div id="preview-top-header" class="absolute top-0 left-0 w-full z-20 flex items-center justify-between px-4 pt-3 sm:pt-9 pb-2">
+            <!-- Brand Signature with Custom Profile Picture -->
+            <div class="flex items-center space-x-2 min-w-0">
+              <div class="w-7 h-7 rounded-full bg-[#292524] text-white flex items-center justify-center text-[10px] font-bold overflow-hidden border border-[#e7e5e4] flex-shrink-0">
+                <img id="preview-top-avatar" crossorigin="anonymous" src="" alt="Profile" class="w-full h-full object-cover hidden">
+                <i id="preview-top-avatar-icon" class="fa-solid fa-user text-[10px]"></i>
+              </div>
+              <span id="preview-top-channel" class="text-[#0c0a09] font-medium text-xs tracking-tight truncate"></span>
+            </div>
+
+            <div data-export-ignore="true" class="flex items-center space-x-1.5 flex-shrink-0">
+              <!-- Export Button (Icon Only) -->
+              <button type="button" onclick="openExportModal()" class="w-8 h-8 rounded-full bg-white/90 hover:bg-[#f0efed] text-[#0c0a09] border border-[#d6d3d1] transition flex items-center justify-center shadow-2xs" title="Export" aria-label="Export">
+                <i class="fa-solid fa-cloud-arrow-down text-xs"></i>
+              </button>
+              
+              <!-- AI Studio Entry Icon (Visible on Mobile/Tablet to open separate page) -->
+              <a href="edit.html" class="lg:hidden w-8 h-8 rounded-full bg-[#292524] hover:bg-[#0c0a09] text-white flex items-center justify-center transition shadow-2xs" title="Studio Tools" aria-label="Studio">
+                <i class="fa-solid fa-pen-to-square text-xs"></i>
+              </a>
+            </div>
+          </div>
+
+          <!-- Central Content Stream (Compact Grouping: Vocab, 16:9 Movie Clip, Meaning & Always-Visible Grammar) -->
+          <div id="video-canvas-area" class="w-full h-full relative z-10 flex flex-col items-center justify-center gap-2.5 px-5 pt-14 pb-5 overflow-y-auto">
+            
+            <!-- TOP SECTION: English Word, Phonetic, and Red Thai Reading (Close to Movie Clip) -->
+            <div id="preview-top-vocab-block" class="w-full flex flex-col items-center justify-center space-y-0.5 text-center">
+              <div class="flex items-center justify-center">
+                <h1 id="preview-word" class="vocab-font text-[36px] sm:text-[42px] font-bold text-[#0c0a09] tracking-tight text-center leading-none"></h1>
+              </div>
+
+              <!-- IPA Phonetic Guide -->
+              <div class="flex items-center justify-center pt-0.5">
+                <p id="preview-phonetic" class="text-xs sm:text-sm text-[#4e4e4e] font-mono tracking-wide text-center"></p>
+              </div>
+
+              <!-- Thai Pronunciation in Bold Red -->
+              <p id="preview-thai-read" class="thai-vocab-font text-base sm:text-lg font-bold text-[#dc2626] text-center"></p>
+            </div>
+
+            <!-- MIDDLE SECTION: Movie Clip Card (Always Uniformly Cropped to 16:9 with Zero Black Bars) -->
+            <div id="preview-middle-clip-block" class="w-full flex flex-col items-center justify-center py-0.5">
+              <div id="movie-clip-box" class="w-full max-w-[360px] aspect-[16/9] bg-[#0c0a09] rounded-2xl overflow-hidden shadow-[0_4px_16px_rgba(0,0,0,0.06)] relative border border-[#e7e5e4] flex-shrink-0 cursor-pointer group transition-all duration-300" onclick="toggleClipPlayback()">
+                <!-- Video element for Python-streamed playback with audio (Cropped & Expanded 16:9 - No Black Bars) -->
+                <video id="preview-video" class="movie-uniform-fill bg-[#0c0a09] hidden scale-[1.03]" playsinline></video>
+                <!-- Static Image thumbnail (Cropped & Expanded 16:9 - No Black Bars) -->
+                <img id="preview-movie-img" crossorigin="anonymous" src="" alt="" onerror="handlePreviewImgError(this)" class="movie-uniform-fill hidden transition duration-300 scale-[1.03] group-hover:scale-[1.05]">
+                <!-- Empty state when no clip selected yet -->
+                <div id="preview-movie-empty" class="w-full h-full flex flex-col items-center justify-center text-[#a8a29e] p-4 text-center">
+                  <i class="fa-solid fa-film text-2xl mb-1.5"></i>
+                  <span class="text-[11px]">No clip selected</span>
+                </div>
+                
+                <!-- Movie Title Watermark Top Left (Text Only - No Logo) -->
+                <div class="absolute top-2.5 left-3.5 drop-shadow-md z-10 pointer-events-none">
+                  <span id="preview-movie-title" class="text-white text-[11px] font-semibold tracking-wide drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]"></span>
+                </div>
+
+                <!-- Play Overlay Indicator -->
+                <div id="play-indicator" data-export-ignore="true" class="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 group-hover:opacity-100 transition z-10">
+                  <div class="w-10 h-10 rounded-full bg-[#0c0a09]/70 text-white flex items-center justify-center backdrop-blur-sm">
+                    <i id="play-indicator-icon" class="fa-solid fa-play text-sm ml-0.5"></i>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- BOTTOM SECTION: Thai Meaning & Always-Visible Grammar Card -->
+            <div id="preview-bottom-grammar-block" class="w-full flex flex-col items-center justify-center space-y-2 pt-0.5">
+              
+              <!-- Thai Meaning (Big, Bold, Clean) -->
+              <div class="text-center w-full px-2">
+                <h2 id="preview-meaning" class="thai-vocab-font text-2xl sm:text-[28px] font-bold text-[#0c0a09] tracking-wide leading-tight"></h2>
+              </div>
+
+              <!-- Grammar & Example Card (Always Visible - Noto Serif Thai for Thai text only) -->
+              <div id="grammar-detail-card" class="w-full max-w-[360px] bg-white p-3.5 rounded-2xl border border-[#e7e5e4] shadow-[0_4px_16px_rgba(0,0,0,0.04)] space-y-2 grammar-card-thai-font text-[12px] text-[#292524] transition-all text-left">
+                <div class="leading-relaxed">
+                  <span class="font-bold text-[#dc2626] noto-serif-thai">▸ โครงสร้าง:</span> <span id="preview-grammar" class="text-[#0c0a09]"></span>
+                </div>
+                <div class="border-t border-[#f0efed] pt-2">
+                  <span class="font-bold text-[#0f766e] noto-serif-thai">▸ ตัวอย่าง:</span>
+                  <ul class="space-y-1.5 text-[#0c0a09] mt-1 pl-0.5 leading-relaxed">
+                    <li id="preview-ex1"></li>
+                    <li id="preview-ex2"></li>
+                    <li id="preview-ex3"></li>
+                  </ul>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- RIGHT COLUMN: Full All-in-One Studio Tools for PC / Large Screens (hidden on mobile, visible on lg+) -->
+      <div class="hidden lg:flex flex-col flex-1 min-w-0 w-full space-y-3.5 pb-10">
+        
+        <!-- PC Studio Header + Quick Tool Search Bar -->
+        <header class="w-full bg-white/85 backdrop-blur-md border border-[#e7e5e4] rounded-2xl px-4 py-3 shadow-2xs flex flex-wrap items-center justify-between gap-3 sticky top-5 z-30">
+          <div class="flex items-center gap-3">
+            <img src="icon.png" alt="Logo" class="w-8 h-8 rounded-lg object-contain border border-[#e7e5e4] bg-white p-0.5 flex-shrink-0">
+            <h2 class="editorial-display text-2xl text-[#0c0a09] leading-none">
+              Studio Workspace
+            </h2>
+            <!-- Quick Jump Tool Pills + Expand/Collapse All (Icon-Only with Tooltip) -->
+            <div class="flex items-center gap-1 pl-2 border-l border-[#e7e5e4]">
+              <button type="button" onclick="jumpToToolSection('tool-sec-ai')" class="w-8 h-8 rounded-full bg-[#f0efed] hover:bg-[#0c0a09] hover:text-white text-[#0c0a09] transition flex items-center justify-center" title="1. AI Model">
+                <i class="fa-solid fa-microchip text-xs"></i>
+              </button>
+              <button type="button" onclick="jumpToToolSection('tool-sec-vocab')" class="w-8 h-8 rounded-full bg-[#f0efed] hover:bg-[#0c0a09] hover:text-white text-[#0c0a09] transition flex items-center justify-center" title="2. Vocabulary & Clips">
+                <i class="fa-solid fa-wand-magic-sparkles text-xs"></i>
+              </button>
+              <button type="button" onclick="jumpToToolSection('tool-sec-ratio')" class="w-8 h-8 rounded-full bg-[#f0efed] hover:bg-[#0c0a09] hover:text-white text-[#0c0a09] transition flex items-center justify-center" title="3. Aspect Ratio & Queue">
+                <i class="fa-solid fa-crop-simple text-xs"></i>
+              </button>
+              <button type="button" onclick="jumpToToolSection('tool-sec-social')" class="w-8 h-8 rounded-full bg-[#f0efed] hover:bg-[#0c0a09] hover:text-white text-[#0c0a09] transition flex items-center justify-center" title="4. Profile & Caption">
+                <i class="fa-solid fa-user text-xs"></i>
+              </button>
+              <button type="button" onclick="toggleAllToolSections()" class="w-8 h-8 rounded-full bg-[#f0efed] hover:bg-[#0c0a09] hover:text-white text-[#0c0a09] transition flex items-center justify-center" title="Expand / Collapse All Cards">
+                <i id="toggle-all-cards-icon" class="fa-solid fa-compress text-xs"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2 flex-1 max-w-xs">
+            <div class="relative flex-1">
+              <i class="fa-solid fa-magnifying-glass text-[11px] text-[#777169] absolute left-3 top-1/2 -translate-y-1/2"></i>
+              <input type="text" id="desktop-tool-search" oninput="filterStudioTools(this.value)" placeholder="Search tools (AI, Vocab, Ratio, Profile)..." class="w-full bg-[#fafafa] border border-[#d6d3d1] rounded-full pl-8 pr-8 py-1.5 text-xs text-[#0c0a09] focus:bg-white focus:border-[#0c0a09] focus:outline-none transition">
+              <button type="button" id="btn-clear-tool-search" onclick="filterStudioTools('')" class="hidden w-5 h-5 rounded-full text-[#777169] hover:text-[#0c0a09] absolute right-2 top-1/2 -translate-y-1/2 items-center justify-center" title="Clear">
+                <i class="fa-solid fa-xmark text-[10px]"></i>
+              </button>
+            </div>
+            <button type="button" onclick="resetToInitialState()" class="w-9 h-9 bg-transparent hover:bg-[#f0efed] text-[#0c0a09] rounded-full border border-[#d6d3d1] transition flex items-center justify-center flex-shrink-0" title="Reset All" aria-label="Reset">
+              <i class="fa-solid fa-trash-can text-xs"></i>
+            </button>
+            <button type="button" onclick="openExportModal()" class="w-9 h-9 bg-[#292524] hover:bg-[#0c0a09] text-white rounded-full shadow-xs transition flex items-center justify-center flex-shrink-0" title="Export Video / PNG" aria-label="Export">
+              <i class="fa-solid fa-cloud-arrow-down text-xs"></i>
+            </button>
+          </div>
+        </header>
+
+        <!-- Responsive 2-Column Tool Grid on Desktop for Easy All-in-One Access -->
+        <div class="grid grid-cols-1 xl:grid-cols-12 gap-4 items-start">
+
+          <!-- LEFT TOOL SUB-COLUMN (7 cols on xl): Step 1 (AI Model) + Step 2 (Vocab & Clips) -->
+          <div class="xl:col-span-7 space-y-4">
+            <!-- STEP 1: AI Model -->
+            <section id="tool-sec-ai" data-tool-keywords="1 ai model provider api key gemini openai groq deepseek claude ค่าย โมเดล คีย์" class="tool-section-card bg-white border border-[#e7e5e4] rounded-2xl p-4 shadow-[0_4px_16px_rgba(0,0,0,0.04)]">
+              <div class="tool-card-header flex items-center justify-between gap-2 mb-3 pb-2 border-b border-[#f0efed] cursor-pointer select-none" onclick="toggleToolCard('tool-sec-ai')">
+                <div class="flex items-center space-x-2 text-[#0c0a09] font-semibold text-sm">
+                  <span class="w-5 h-5 rounded-full bg-[#0c0a09] text-white flex items-center justify-center text-[10px] font-mono">1</span>
+                  <span>AI Model</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span id="detected-provider-badge" class="text-[10px] px-2 py-0.5 rounded-full bg-[#f0efed] text-[#777169] font-semibold uppercase tracking-wider">
+                    Ready
+                  </span>
+                  <button type="button" class="w-6 h-6 rounded-full hover:bg-[#f0efed] text-[#777169] hover:text-[#0c0a09] flex items-center justify-center transition" title="Collapse / Expand">
+                    <i class="fa-solid fa-chevron-down text-[10px] tool-collapse-chevron"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="tool-card-body">
+                <div class="tool-card-inner space-y-2.5">
+                  <div class="grid grid-cols-1 sm:grid-cols-12 gap-2.5">
+                    <div class="sm:col-span-4">
+                      <label for="ai-vendor" class="block text-[11px] font-medium text-[#777169] mb-1">Provider</label>
+                      <select id="ai-vendor" onchange="handleVendorChange()" class="w-full bg-white border border-[#d6d3d1] rounded-lg px-2.5 py-1.5 text-xs text-[#0c0a09] focus:border-[#0c0a09] focus:outline-none transition font-medium">
+                        <option value="gemini">Google Gemini</option>
+                        <option value="openai">OpenAI (GPT)</option>
+                        <option value="deepseek">DeepSeek AI</option>
+                        <option value="groq">Groq Cloud</option>
+                        <option value="anthropic">Anthropic Claude</option>
+                        <option value="xai">xAI Grok</option>
+                        <option value="mistral">Mistral AI</option>
+                      </select>
+                    </div>
+
+                    <div class="sm:col-span-8">
+                      <label for="api-key" class="block text-[11px] font-medium text-[#777169] mb-1">API Key</label>
+                      <div class="flex gap-1.5">
+                        <div class="relative flex-1">
+                          <input type="password" id="api-key" oninput="handleApiKeyInput(this.value)" placeholder="Paste API Key..." class="w-full bg-white border border-[#d6d3d1] rounded-lg px-3 py-1.5 pr-8 text-xs text-[#0c0a09] focus:border-[#0c0a09] focus:outline-none font-mono transition">
+                          <button type="button" onclick="toggleApiKeyVisibility()" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#777169] hover:text-[#0c0a09] text-xs">
+                            <i id="eye-icon" class="fa-solid fa-eye"></i>
+                          </button>
+                        </div>
+                        <button type="button" id="btn-verify-key" onclick="detectProviderAndFetchModels(document.getElementById('api-key').value)" class="w-8 h-8 bg-[#292524] hover:bg-[#0c0a09] text-white rounded-lg shadow-xs transition flex items-center justify-center flex-shrink-0" title="Verify API Key" aria-label="Verify API Key">
+                          <i class="fa-solid fa-circle-check text-xs"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div id="model-selector-wrapper" class="hidden pt-0.5 transition-all">
+                    <label for="ai-provider" class="block text-[11px] font-medium text-[#0c0a09] mb-1 flex items-center justify-between">
+                      <span id="model-selector-label">Model</span>
+                      <span id="model-count-badge" class="text-[10px] text-[#777169]"></span>
+                    </label>
+                    <select id="ai-provider" onchange="syncFromDesktopForm()" class="w-full bg-white border border-[#0c0a09] rounded-lg px-3 py-1.5 text-xs text-[#0c0a09] focus:outline-none transition">
+                    </select>
+                  </div>
+
+                  <p id="openrouter-status" class="text-[10px] text-[#777169]"></p>
+                </div>
+              </div>
+            </section>
+
+            <!-- STEP 2: Vocabulary & Clips -->
+            <section id="tool-sec-vocab" data-tool-keywords="2 vocabulary clips word translate phonetic meaning grammar examples คำศัพท์ คลิปหนัง แปล ประโยค" class="tool-section-card bg-white border border-[#e7e5e4] rounded-2xl p-4 shadow-[0_4px_16px_rgba(0,0,0,0.04)]">
+              <div class="tool-card-header flex items-center justify-between mb-3 pb-2 border-b border-[#f0efed] cursor-pointer select-none" onclick="toggleToolCard('tool-sec-vocab')">
+                <div class="flex items-center space-x-2 text-[#0c0a09] font-semibold text-sm">
+                  <span class="w-5 h-5 rounded-full bg-[#0c0a09] text-white flex items-center justify-center text-[10px] font-mono">2</span>
+                  <span>Vocabulary & Clips</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span id="clip-source-indicator" class="text-[10px] px-2 py-0.5 rounded-full bg-[#f0efed] text-[#0c0a09] font-semibold uppercase tracking-wider"></span>
+                  <button type="button" class="w-6 h-6 rounded-full hover:bg-[#f0efed] text-[#777169] hover:text-[#0c0a09] flex items-center justify-center transition" title="Collapse / Expand">
+                    <i class="fa-solid fa-chevron-down text-[10px] tool-collapse-chevron"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="tool-card-body">
+                <div class="tool-card-inner space-y-3">
+                  <!-- Unified Input: Search English Movie Clips & Translate Simultaneously -->
+                  <div class="flex items-center gap-2">
+                    <input type="text" id="target-word" oninput="handleUnifiedWordInput(this.value)" placeholder="Enter English word or idiom..." class="flex-1 bg-white border border-[#d6d3d1] rounded-lg px-3.5 py-2 text-sm font-serif text-[#0c0a09] focus:border-[#0c0a09] focus:outline-none transition">
+                    <input type="hidden" id="clip-query" value="">
+                    <button type="button" onclick="runAiAgentGeneration()" class="w-9 h-9 bg-[#0c0a09] hover:bg-[#292524] text-white rounded-full shadow-xs transition flex items-center justify-center flex-shrink-0" title="Search Clips & Translate" aria-label="Search Clips & Translate">
+                      <i class="fa-solid fa-wand-magic-sparkles text-xs"></i>
+                    </button>
+                    <button type="button" onclick="searchCafeClips(true)" class="w-9 h-9 bg-white hover:bg-[#f0efed] text-[#0c0a09] border border-[#d6d3d1] rounded-full transition flex items-center justify-center flex-shrink-0" title="Search Clips Only" aria-label="Search Clips Only">
+                      <i class="fa-solid fa-film text-xs"></i>
+                    </button>
+                  </div>
+
+                  <div id="ai-loading" class="hidden p-2.5 bg-[#fafafa] border border-[#e7e5e4] rounded-xl text-center">
+                    <div class="flex items-center justify-center space-x-2 text-[#292524] text-xs font-medium">
+                      <i class="fa-solid fa-circle-notch fa-spin"></i>
+                      <span id="ai-loading-text">Searching clips & translating...</span>
+                    </div>
+                  </div>
+
+                  <!-- Scraped English Movie Clips Grid -->
+                  <div class="space-y-1.5">
+                    <div class="flex items-center justify-between">
+                      <label class="block text-[11px] font-medium text-[#777169]">Movie Clips</label>
+                      <button type="button" id="btn-load-more" onclick="loadMoreCafeClips()" class="w-7 h-7 bg-white hover:bg-[#f0efed] text-[#292524] rounded-full border border-[#d6d3d1] transition flex items-center justify-center" title="Load More Clips" aria-label="Load More Clips">
+                        <i class="fa-solid fa-arrows-rotate text-[11px] text-[#777169]"></i>
+                      </button>
+                    </div>
+                    <div id="clip-grid" class="grid grid-cols-3 gap-2 max-h-[210px] overflow-y-auto p-2 bg-[#fafafa] rounded-xl border border-[#e7e5e4]">
+                      <div class="col-span-full py-5 text-center text-[#777169] text-xs">
+                        Enter a word and click <i class="fa-solid fa-wand-magic-sparkles mx-0.5"></i> to fetch clips & translate
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Vocabulary & Short Examples Form -->
+                  <div class="pt-2 border-t border-[#f0efed] space-y-2.5">
+                    <div class="grid grid-cols-2 gap-2.5">
+                      <div>
+                        <label class="block text-[11px] font-medium text-[#777169] mb-1">IPA Phonetic</label>
+                        <input type="text" id="res-phonetic" oninput="syncFromDesktopForm()" placeholder="/.../" class="w-full bg-white border border-[#d6d3d1] rounded-lg px-3 py-1.5 text-xs text-[#0c0a09] focus:border-[#0c0a09] focus:outline-none">
+                      </div>
+                      <div>
+                        <label class="block text-[11px] font-medium text-[#777169] mb-1">Thai Reading</label>
+                        <input type="text" id="res-thai-read" oninput="syncFromDesktopForm()" placeholder="คำอ่านไทย" class="w-full bg-white border border-[#d6d3d1] rounded-lg px-3 py-1.5 text-xs text-[#0c0a09] font-medium focus:border-[#0c0a09] focus:outline-none">
+                      </div>
+                    </div>
+
+                    <div>
+                      <label class="block text-[11px] font-medium text-[#777169] mb-1">Meaning (TH)</label>
+                      <input type="text" id="res-meaning" oninput="syncFromDesktopForm()" placeholder="คำแปลภาษาไทย..." class="w-full bg-white border border-[#d6d3d1] rounded-lg px-3 py-1.5 text-xs text-[#0c0a09] focus:border-[#0c0a09] focus:outline-none">
+                    </div>
+
+                    <div>
+                      <label class="block text-[11px] font-medium text-[#777169] mb-1">Grammar Formula</label>
+                      <input type="text" id="res-grammar" oninput="syncFromDesktopForm()" placeholder="[Subject] + ..." class="w-full bg-white border border-[#d6d3d1] rounded-lg px-3 py-1.5 text-xs text-[#0c0a09] focus:border-[#0c0a09] focus:outline-none">
+                    </div>
+
+                    <div>
+                      <div class="flex items-center justify-between mb-1">
+                        <label class="block text-[11px] font-medium text-[#777169]">Examples (1–3)</label>
+                        <button type="button" onclick="craftSentencesFromSelectedClip()" class="w-7 h-7 rounded-full bg-[#f0efed] hover:bg-[#e7e5e4] text-[#0c0a09] flex items-center justify-center transition" title="Regenerate Examples" aria-label="Regenerate Examples">
+                          <i class="fa-solid fa-wand-magic-sparkles text-[10px]"></i>
+                        </button>
+                      </div>
+                      <div class="space-y-1.5">
+                        <div class="grid grid-cols-2 gap-2">
+                          <input type="text" id="res-ex1-en" oninput="syncFromDesktopForm()" placeholder="1. Sentence (EN)" class="bg-white border border-[#d6d3d1] rounded-lg px-2.5 py-1.5 text-xs text-[#0c0a09] focus:border-[#0c0a09] focus:outline-none">
+                          <input type="text" id="res-ex1-th" oninput="syncFromDesktopForm()" placeholder="คำแปล 1 (TH)" class="bg-white border border-[#d6d3d1] rounded-lg px-2.5 py-1.5 text-xs text-[#777169] focus:border-[#0c0a09] focus:outline-none">
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                          <input type="text" id="res-ex2-en" oninput="syncFromDesktopForm()" placeholder="2. Sentence (EN)" class="bg-white border border-[#d6d3d1] rounded-lg px-2.5 py-1.5 text-xs text-[#0c0a09] focus:border-[#0c0a09] focus:outline-none">
+                          <input type="text" id="res-ex2-th" oninput="syncFromDesktopForm()" placeholder="คำแปล 2 (TH)" class="bg-white border border-[#d6d3d1] rounded-lg px-2.5 py-1.5 text-xs text-[#777169] focus:border-[#0c0a09] focus:outline-none">
+                        </div>
+                        <div class="grid grid-cols-2 gap-2">
+                          <input type="text" id="res-ex3-en" oninput="syncFromDesktopForm()" placeholder="3. Sentence (EN)" class="bg-white border border-[#d6d3d1] rounded-lg px-2.5 py-1.5 text-xs text-[#0c0a09] focus:border-[#0c0a09] focus:outline-none">
+                          <input type="text" id="res-ex3-th" oninput="syncFromDesktopForm()" placeholder="คำแปล 3 (TH)" class="bg-white border border-[#d6d3d1] rounded-lg px-2.5 py-1.5 text-xs text-[#777169] focus:border-[#0c0a09] focus:outline-none">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+          </div>
+
+          <!-- RIGHT TOOL SUB-COLUMN (5 cols on xl): Step 3 (Aspect Ratio & Queue) + Step 4 (Profile & Caption) -->
+          <div class="xl:col-span-5 space-y-4">
+
+            <!-- STEP 3: Aspect Ratio & Queue -->
+            <section id="tool-sec-ratio" data-tool-keywords="3 aspect ratio queue size tiktok reels shorts youtube สัดส่วน ขนาด คิวคลิป" class="tool-section-card bg-white border border-[#e7e5e4] rounded-2xl p-4 shadow-[0_4px_16px_rgba(0,0,0,0.04)]">
+              <div class="tool-card-header flex items-center justify-between mb-3 pb-2 border-b border-[#f0efed] cursor-pointer select-none" onclick="toggleToolCard('tool-sec-ratio')">
+                <div class="flex items-center space-x-2 text-[#0c0a09] font-semibold text-sm">
+                  <span class="w-5 h-5 rounded-full bg-[#0c0a09] text-white flex items-center justify-center text-[10px] font-mono">3</span>
+                  <span>Aspect Ratio & Queue</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span id="selected-badge" class="text-[10px] px-2 py-0.5 rounded-full bg-[#f0efed] text-[#0c0a09] font-medium">0 clips</span>
+                  <button type="button" class="w-6 h-6 rounded-full hover:bg-[#f0efed] text-[#777169] hover:text-[#0c0a09] flex items-center justify-center transition" title="Collapse / Expand">
+                    <i class="fa-solid fa-chevron-down text-[10px] tool-collapse-chevron"></i>
+                  </button>
+                </div>
+              </div>
+
+              <div class="tool-card-body">
+                <div class="tool-card-inner space-y-3">
+                  <div>
+                    <!-- Brown Rectangle Aspect Ratio Dropdown Selector (Proportional Brown Box + Clean Dropdown) -->
+                    <div class="relative" id="aspect-ratio-dropdown-wrap">
+                      <button type="button" onclick="toggleAspectRatioDropdown(event)" id="btn-ratio-dropdown" class="w-full px-3 py-2 rounded-xl border border-[#d6d3d1] hover:border-[#0c0a09] bg-[#fafafa] hover:bg-white transition flex items-center justify-between gap-2 shadow-2xs">
+                        <div class="flex items-center gap-2.5">
+                          <div id="current-ratio-brown-box" class="w-6 h-9 rounded-[5px] bg-[#78716c] text-white flex items-center justify-center text-[10px] font-bold tracking-tight shadow-2xs transition-all flex-shrink-0">9:16</div>
+                          <span id="current-ratio-label-text" class="text-xs font-semibold text-[#0c0a09]">9:16 • Reels / TikTok / Shorts</span>
+                        </div>
+                        <i id="ratio-dropdown-chevron" class="fa-solid fa-chevron-down text-[10px] text-[#777169] transition-transform"></i>
+                      </button>
+
+                      <!-- Dropdown Menu with ONLY Proportional Brown Rectangles -->
+                      <div id="aspect-ratio-dropdown-menu" class="hidden absolute left-0 right-0 mt-1.5 p-2.5 bg-white rounded-xl border border-[#e7e5e4] shadow-[0_10px_28px_rgba(0,0,0,0.12)] z-40 grid grid-cols-3 gap-2 place-items-center">
+                        <button type="button" onclick="selectClipAspectRatio('9:16'); closeAspectRatioDropdown();" data-ratio="9:16" class="ratio-opt-btn flex items-center justify-center transition transform hover:scale-105">
+                          <div class="ratio-brown-shape w-6 h-10 rounded-[5px] bg-[#78716c] text-white flex items-center justify-center text-[10px] font-bold shadow-2xs">9:16</div>
+                        </button>
+                        <button type="button" onclick="selectClipAspectRatio('2:3'); closeAspectRatioDropdown();" data-ratio="2:3" class="ratio-opt-btn flex items-center justify-center transition transform hover:scale-105">
+                          <div class="ratio-brown-shape w-7 h-10 rounded-[5px] bg-[#78716c] text-white flex items-center justify-center text-[10px] font-bold shadow-2xs">2:3</div>
+                        </button>
+                        <button type="button" onclick="selectClipAspectRatio('4:5'); closeAspectRatioDropdown();" data-ratio="4:5" class="ratio-opt-btn flex items-center justify-center transition transform hover:scale-105">
+                          <div class="ratio-brown-shape w-8 h-10 rounded-[5px] bg-[#78716c] text-white flex items-center justify-center text-[10px] font-bold shadow-2xs">4:5</div>
+                        </button>
+                        <button type="button" onclick="selectClipAspectRatio('1:1'); closeAspectRatioDropdown();" data-ratio="1:1" class="ratio-opt-btn flex items-center justify-center transition transform hover:scale-105">
+                          <div class="ratio-brown-shape w-8 h-8 rounded-[5px] bg-[#78716c] text-white flex items-center justify-center text-[10px] font-bold shadow-2xs">1:1</div>
+                        </button>
+                        <button type="button" onclick="selectClipAspectRatio('3:2'); closeAspectRatioDropdown();" data-ratio="3:2" class="ratio-opt-btn flex items-center justify-center transition transform hover:scale-105">
+                          <div class="ratio-brown-shape w-11 h-7 rounded-[5px] bg-[#78716c] text-white flex items-center justify-center text-[10px] font-bold shadow-2xs">3:2</div>
+                        </button>
+                        <button type="button" onclick="selectClipAspectRatio('16:9'); closeAspectRatioDropdown();" data-ratio="16:9" class="ratio-opt-btn flex items-center justify-center transition transform hover:scale-105">
+                          <div class="ratio-brown-shape w-12 h-7 rounded-[5px] bg-[#78716c] text-white flex items-center justify-center text-[10px] font-bold shadow-2xs">16:9</div>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Selected Clips Sequence & Python Play Queue Controls -->
+                  <div class="pt-2 border-t border-[#f0efed]">
+                    <div class="flex items-center justify-between mb-1.5">
+                      <span class="text-[11px] font-medium text-[#777169]">Play Queue</span>
+                      <button type="button" onclick="playAllClipsWithPython()" class="w-7 h-7 bg-[#0c0a09] hover:bg-[#292524] text-white rounded-full transition flex items-center justify-center shadow-2xs" title="Play Queue" aria-label="Play Queue">
+                        <i class="fa-solid fa-play text-[9px] ml-0.5"></i>
+                      </button>
+                    </div>
+                    <div id="sequence-list" class="space-y-1.5">
+                      <div class="text-center py-2 text-xs text-[#777169]">No clips in queue</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- STEP 4: Profile & Caption -->
+            <section id="tool-sec-social" data-tool-keywords="4 profile avatar channel handle caption hashtag โปรไฟล์ ช่อง แคปชั่น" class="tool-section-card bg-white border border-[#e7e5e4] rounded-2xl p-4 shadow-[0_4px_16px_rgba(0,0,0,0.04)]">
+              <div class="tool-card-header flex items-center justify-between mb-3 pb-2 border-b border-[#f0efed] cursor-pointer select-none" onclick="toggleToolCard('tool-sec-social')">
+                <div class="flex items-center space-x-2 text-[#0c0a09] font-semibold text-sm">
+                  <span class="w-5 h-5 rounded-full bg-[#0c0a09] text-white flex items-center justify-center text-[10px] font-mono">4</span>
+                  <span>Profile & Caption</span>
+                </div>
+                <button type="button" class="w-6 h-6 rounded-full hover:bg-[#f0efed] text-[#777169] hover:text-[#0c0a09] flex items-center justify-center transition" title="Collapse / Expand">
+                  <i class="fa-solid fa-chevron-down text-[10px] tool-collapse-chevron"></i>
+                </button>
+              </div>
+
+              <div class="tool-card-body">
+                <div class="tool-card-inner space-y-2.5">
+                  <!-- Profile Avatar Upload + URL -->
+                  <div class="flex items-center gap-2.5 p-2.5 bg-[#fafafa] rounded-xl border border-[#e7e5e4]">
+                    <div class="w-10 h-10 rounded-full bg-[#292524] text-white flex items-center justify-center overflow-hidden border border-[#d6d3d1] flex-shrink-0">
+                      <img id="editor-avatar-preview" src="" alt="Avatar" class="w-full h-full object-cover hidden">
+                      <i id="editor-avatar-icon" class="fa-solid fa-user text-xs"></i>
+                    </div>
+                    <div class="flex-1 min-w-0 flex items-center gap-1.5">
+                      <label class="w-8 h-8 bg-[#292524] hover:bg-[#0c0a09] text-white rounded-full cursor-pointer transition inline-flex items-center justify-center flex-shrink-0" title="Upload Avatar" aria-label="Upload Avatar">
+                        <i class="fa-solid fa-upload text-xs"></i>
+                        <input type="file" accept="image/*" class="hidden" onchange="handleAvatarUpload(event)">
+                      </label>
+                      <input type="text" id="social-avatar-url" oninput="handleAvatarUrlInput(this.value)" placeholder="Avatar image URL..." class="flex-1 min-w-0 bg-white border border-[#d6d3d1] rounded-lg px-2.5 py-1 text-xs text-[#0c0a09] focus:border-[#0c0a09] focus:outline-none">
+                      <button type="button" onclick="clearAvatar()" class="w-8 h-8 rounded-full bg-white border border-[#e7e5e4] text-[#777169] hover:text-[#dc2626] hover:border-[#dc2626] transition flex items-center justify-center flex-shrink-0" title="Remove Avatar" aria-label="Remove Avatar">
+                        <i class="fa-solid fa-trash-can text-xs"></i>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label class="block text-[11px] font-medium text-[#777169] mb-1">Channel (@username)</label>
+                    <input type="text" id="social-handle" oninput="syncFromDesktopForm()" placeholder="@username" class="w-full bg-white border border-[#d6d3d1] rounded-lg px-3 py-1.5 text-xs text-[#0c0a09] focus:border-[#0c0a09] focus:outline-none">
+                  </div>
+
+                  <div>
+                    <label class="block text-[11px] font-medium text-[#777169] mb-1">Social Caption</label>
+                    <textarea id="social-description" oninput="syncFromDesktopForm()" rows="2" placeholder="Caption & hashtags..." class="w-full bg-white border border-[#d6d3d1] rounded-lg px-3 py-1.5 text-xs text-[#0c0a09] focus:border-[#0c0a09] focus:outline-none leading-relaxed"></textarea>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Export / Render Modal (ElevenLabs Editorial Design System + Aspect Ratio & Python Merger) -->
+    <div id="export-modal" class="fixed inset-0 z-50 bg-[#0c0a09]/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
+      <div class="bg-white rounded-2xl max-w-md w-full p-5 border border-[#e7e5e4] shadow-xl space-y-4 transform transition-all text-left">
+        
+        <div class="flex items-center justify-between pb-3 border-b border-[#f0efed]">
+          <div class="flex items-center space-x-2.5">
+            <span class="w-7 h-7 rounded-full bg-[#0c0a09] text-white flex items-center justify-center text-xs">
+              <i class="fa-solid fa-cloud-arrow-down"></i>
+            </span>
+            <div>
+              <h3 class="text-sm font-semibold text-[#0c0a09]">Export ทั้งหน้าพรีวิว (สไลด์คำศัพท์ + คลิปหนัง 16:9)</h3>
+              <p class="text-[10px] text-[#777169]">บันทึกเนื้อหาทั้งหมดจาก AI Agent พร้อมคลิปหนังลงโซเชียลตามสัดส่วนที่เลือก</p>
+            </div>
+          </div>
+          <button onclick="closeExportModal()" class="w-7 h-7 rounded-full bg-[#f0efed] hover:bg-[#e7e5e4] text-[#777169] flex items-center justify-center text-xs" title="ปิด" aria-label="ปิด">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <!-- Aspect Ratio Dropdown Selector inside Export Modal (Brown Rectangle Proportional Dropdown) -->
+        <div class="space-y-1.5">
+          <div class="flex items-center justify-between">
+            <label class="text-[11px] font-semibold text-[#0c0a09]">1. Aspect Ratio</label>
+            <span id="modal-ratio-recommend" class="text-[10px] font-semibold text-[#0c0a09]">9:16</span>
+          </div>
+          <div class="relative">
+            <button type="button" onclick="toggleModalRatioDropdown(event)" id="btn-modal-ratio-dropdown" class="w-full px-3 py-2 rounded-xl border border-[#d6d3d1] hover:border-[#0c0a09] bg-[#fafafa] hover:bg-white transition flex items-center justify-between gap-2 shadow-2xs">
+              <div class="flex items-center gap-2.5">
+                <div id="modal-current-ratio-brown-box" class="w-5 h-8 rounded-[4px] bg-[#78716c] text-white flex items-center justify-center text-[10px] font-bold tracking-tight shadow-2xs transition-all flex-shrink-0">9:16</div>
+                <span id="modal-current-ratio-label-text" class="text-xs font-semibold text-[#0c0a09]">9:16 • Reels / TikTok / Shorts</span>
+              </div>
+              <i class="fa-solid fa-chevron-down text-[10px] text-[#777169]"></i>
+            </button>
+            <div id="modal-ratio-dropdown-menu" class="hidden absolute left-0 right-0 mt-1.5 p-2 bg-white rounded-xl border border-[#e7e5e4] shadow-[0_10px_28px_rgba(0,0,0,0.14)] z-50 grid grid-cols-3 gap-1.5">
+              <button type="button" onclick="selectClipAspectRatio('9:16'); closeModalRatioDropdown();" data-modal-ratio="9:16" class="p-1.5 rounded-lg hover:bg-[#f5f5f4] flex flex-col items-center justify-center transition">
+                <div class="ratio-brown-shape w-5 h-9 rounded-[4px] bg-[#78716c] text-white flex items-center justify-center text-[10px] font-bold">9:16</div>
+              </button>
+              <button type="button" onclick="selectClipAspectRatio('2:3'); closeModalRatioDropdown();" data-modal-ratio="2:3" class="p-1.5 rounded-lg hover:bg-[#f5f5f4] flex flex-col items-center justify-center transition">
+                <div class="ratio-brown-shape w-6 h-9 rounded-[4px] bg-[#78716c] text-white flex items-center justify-center text-[10px] font-bold">2:3</div>
+              </button>
+              <button type="button" onclick="selectClipAspectRatio('4:5'); closeModalRatioDropdown();" data-modal-ratio="4:5" class="p-1.5 rounded-lg hover:bg-[#f5f5f4] flex flex-col items-center justify-center transition">
+                <div class="ratio-brown-shape w-7 h-9 rounded-[4px] bg-[#78716c] text-white flex items-center justify-center text-[10px] font-bold">4:5</div>
+              </button>
+              <button type="button" onclick="selectClipAspectRatio('1:1'); closeModalRatioDropdown();" data-modal-ratio="1:1" class="p-1.5 rounded-lg hover:bg-[#f5f5f4] flex flex-col items-center justify-center transition">
+                <div class="ratio-brown-shape w-7 h-7 rounded-[4px] bg-[#78716c] text-white flex items-center justify-center text-[10px] font-bold">1:1</div>
+              </button>
+              <button type="button" onclick="selectClipAspectRatio('3:2'); closeModalRatioDropdown();" data-modal-ratio="3:2" class="p-1.5 rounded-lg hover:bg-[#f5f5f4] flex flex-col items-center justify-center transition">
+                <div class="ratio-brown-shape w-10 h-7 rounded-[4px] bg-[#78716c] text-white flex items-center justify-center text-[10px] font-bold">3:2</div>
+              </button>
+              <button type="button" onclick="selectClipAspectRatio('16:9'); closeModalRatioDropdown();" data-modal-ratio="16:9" class="p-1.5 rounded-lg hover:bg-[#f5f5f4] flex flex-col items-center justify-center transition">
+                <div class="ratio-brown-shape w-12 h-7 rounded-[4px] bg-[#78716c] text-white flex items-center justify-center text-[10px] font-bold">16:9</div>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="space-y-2 pt-1">
+          <label class="text-[11px] font-semibold text-[#0c0a09] block">2. เลือกรูปแบบไฟล์ที่ต้องการ Export (บันทึกทั้งหน้าพรีวิว):</label>
+
+          <!-- Option 1: Python Merge & Export FULL PREVIEW Video Sequence (16:9 Movie Clip Fit inside Full Slide) -->
+          <button type="button" onclick="exportClipVideo('pad')" class="w-full p-3 rounded-xl border border-[#e7e5e4] hover:border-[#0c0a09] hover:bg-[#fafafa] transition flex items-center justify-between group text-left">
+            <div class="flex items-center space-x-3">
+              <div class="w-9 h-9 rounded-lg bg-[#0c0a09] text-white flex items-center justify-center text-sm flex-shrink-0">
+                <i class="fa-solid fa-film"></i>
+              </div>
+              <div>
+                <div class="text-xs font-semibold text-[#0c0a09]">บันทึกวิดีโอทั้งหน้าพรีวิว + รวมคิวคลิปหนัง 16:9 (MP4 Fit)</div>
+                <div class="text-[10px] text-[#777169]">ได้ทั้งคำศัพท์ ไวยากรณ์ ตัวอย่าง และคลิปหนังเล่นต่อกันในขนาด <span class="export-ratio-label font-semibold text-[#0c0a09]">9:16</span></div>
+              </div>
+            </div>
+            <i class="fa-solid fa-download text-[#a8a29e] group-hover:text-[#0c0a09] text-xs transition"></i>
+          </button>
+
+          <!-- Option 2: Python Merge & Export FULL PREVIEW Video Sequence (16:9 Movie Clip Fill inside Full Slide) -->
+          <button type="button" onclick="exportClipVideo('crop')" class="w-full p-3 rounded-xl border border-[#e7e5e4] hover:border-[#0c0a09] hover:bg-[#fafafa] transition flex items-center justify-between group text-left">
+            <div class="flex items-center space-x-3">
+              <div class="w-9 h-9 rounded-lg bg-[#f0efed] text-[#0c0a09] flex items-center justify-center text-sm flex-shrink-0">
+                <i class="fa-solid fa-crop-simple"></i>
+              </div>
+              <div>
+                <div class="text-xs font-semibold text-[#0c0a09]">บันทึกวิดีโอทั้งหน้าพรีวิว + คลิปหนังเต็มกรอบ 16:9 (MP4 Fill)</div>
+                <div class="text-[10px] text-[#777169]">ได้วิดีโอทั้งหน้าพรีวิวขนาด <span class="export-ratio-label font-semibold text-[#0c0a09]">9:16</span> พร้อมซูมคลิปเต็มกรอบ 16:9</div>
+              </div>
+            </div>
+            <i class="fa-solid fa-download text-[#a8a29e] group-hover:text-[#0c0a09] text-xs transition"></i>
+          </button>
+
+          <!-- Option 3: Download High-Res PNG Slide of Entire Preview -->
+          <button type="button" onclick="exportPhoneAsImage()" id="btn-export-img" class="w-full p-3 rounded-xl border border-[#e7e5e4] hover:border-[#0c0a09] hover:bg-[#fafafa] transition flex items-center justify-between group text-left">
+            <div class="flex items-center space-x-3">
+              <div class="w-9 h-9 rounded-lg bg-[#f0efed] text-[#0c0a09] flex items-center justify-center text-sm flex-shrink-0">
+                <i class="fa-solid fa-image"></i>
+              </div>
+              <div>
+                <div class="text-xs font-semibold text-[#0c0a09]">บันทึกรูปภาพทั้งหน้าพรีวิวความละเอียดสูง (PNG <span class="export-ratio-label">9:16</span>)</div>
+                <div class="text-[10px] text-[#777169]">ได้ภาพสไลด์คำศัพท์ + ไวยากรณ์ + เฟรมหนัง 16:9 ตามขนาด <span class="export-ratio-label font-semibold text-[#0c0a09]">9:16</span></div>
+              </div>
+            </div>
+            <i class="fa-solid fa-download text-[#a8a29e] group-hover:text-[#0c0a09] text-xs transition"></i>
+          </button>
+
+          <!-- Option 4: Copy Social Caption & Hashtags (Vocab Only, No Movie Mention) -->
+          <button type="button" onclick="copyTikTokCaption()" class="w-full p-3 rounded-xl border border-[#e7e5e4] hover:border-[#0c0a09] hover:bg-[#fafafa] transition flex items-center justify-between group text-left">
+            <div class="flex items-center space-x-3">
+              <div class="w-9 h-9 rounded-lg bg-[#f0efed] text-[#0c0a09] flex items-center justify-center text-sm flex-shrink-0">
+                <i class="fa-solid fa-hashtag"></i>
+              </div>
+              <div>
+                <div class="text-xs font-semibold text-[#0c0a09]">คัดลอกแคปชั่นคำศัพท์ + แฮชแท็กโซเชียล</div>
+                <div class="text-[10px] text-[#777169]">แคปชั่นสอนภาษาอังกฤษล้วน พร้อมนำไปวางโพสต์ทันที</div>
+              </div>
+            </div>
+            <i class="fa-solid fa-copy text-[#a8a29e] group-hover:text-[#0c0a09] text-xs transition"></i>
+          </button>
+        </div>
+
+        <!-- Export Status Feedback -->
+        <div id="export-status" class="hidden p-2.5 rounded-lg bg-[#f0efed] text-[#0c0a09] text-[11px] text-center font-medium">
+          <i class="fa-solid fa-circle-notch fa-spin mr-1"></i>กำลังประมวลผล...
+        </div>
+
+        <div class="pt-1 flex justify-end">
+          <button onclick="closeExportModal()" class="w-8 h-8 bg-[#f0efed] hover:bg-[#e7e5e4] text-[#292524] rounded-full transition flex items-center justify-center" title="ปิดหน้าต่าง" aria-label="ปิด">
+            <i class="fa-solid fa-check text-xs"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Custom Styled Browser Dialog Modal (ElevenLabs Editorial Dialog) -->
+    <div id="custom-browser-dialog" class="fixed inset-0 z-[60] bg-[#0c0a09]/50 backdrop-blur-sm hidden flex items-center justify-center p-4">
+      <div class="bg-white rounded-2xl max-w-sm w-full p-5 border border-[#e7e5e4] shadow-[0_12px_36px_rgba(0,0,0,0.12)] space-y-4 transform transition-all text-left">
+        <div class="flex items-start space-x-3">
+          <div id="custom-dialog-icon-wrap" class="w-9 h-9 rounded-full bg-[#f0efed] text-[#0c0a09] flex items-center justify-center flex-shrink-0">
+            <i id="custom-dialog-icon" class="fa-solid fa-triangle-exclamation text-sm"></i>
+          </div>
+          <div class="flex-1 min-w-0">
+            <h3 id="custom-dialog-title" class="text-sm font-semibold text-[#0c0a09]">ยืนยันการดำเนินการ</h3>
+            <p id="custom-dialog-message" class="text-xs text-[#777169] mt-1 leading-relaxed">ต้องการล้างข้อมูลทั้งหมดใช่หรือไม่?</p>
+          </div>
+        </div>
+        <div class="flex items-center justify-end gap-2 pt-2 border-t border-[#f0efed]">
+          <button type="button" id="custom-dialog-cancel" onclick="closeCustomDialog(false)" class="w-9 h-9 rounded-full bg-[#f0efed] hover:bg-[#e7e5e4] text-[#292524] flex items-center justify-center transition" title="ยกเลิก" aria-label="ยกเลิก">
+            <i class="fa-solid fa-xmark text-xs"></i>
+          </button>
+          <button type="button" id="custom-dialog-confirm" onclick="closeCustomDialog(true)" class="w-9 h-9 rounded-full bg-[#0c0a09] hover:bg-[#292524] text-white flex items-center justify-center transition shadow-xs" title="ตกลง / ยืนยัน" aria-label="ยืนยัน">
+            <i class="fa-solid fa-check text-xs"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 bg-[#0c0a09] text-white px-5 py-2.5 rounded-full shadow-lg text-xs sm:text-sm font-medium flex items-center space-x-2 opacity-0 pointer-events-none transition-all duration-300 border border-[#292524]">
+      <i class="fa-solid fa-circle-check text-xs"></i>
+      <span id="toast-msg">บันทึกเรียบร้อย!</span>
+    </div>
+
+    <!-- JavaScript Application Logic (Zero Mock Data, Live OpenRouter Free API + Real Clip.Cafe Scraper) -->
+    <script>
+      const STORAGE_KEY = 'tiktok_vocab_data';
+
+      let activeClipSequence = [];
+      let cafeClipPool = [];
+      let currentSequenceIndex = 0;
+      let isPlayingVideo = false;
+      let currentPage = 1;
+      let isScrapingClips = false;
+      let currentAvatarData = '';
+      let currentClipAspectRatio = '9:16';
+      let detectedProviderType = ''; // 'openrouter', 'gemini', 'groq', 'xai', 'openai', 'deepseek'
+      let apiKeyDetectTimer = null;
+
+      // Aspect Ratio controls the outer Preview Canvas (#phone-container) while #movie-clip-box stays 16:9!
+      const ASPECT_RATIO_CONFIG = {
+        '9:16': {
+          containerClass: 'relative w-full h-[100dvh] sm:w-[414px] sm:h-[736px] sm:rounded-[32px] sm:border sm:border-[#e7e5e4] bg-[#fafafa] overflow-hidden shadow-[0_4px_16px_rgba(0,0,0,0.04)] flex flex-col justify-center transition-all duration-300',
+          streamClass: 'w-full h-full relative z-10 flex flex-col items-center justify-center gap-2.5 px-5 pt-14 pb-5 overflow-y-auto',
+          clipBoxClass: 'w-full max-w-[356px] aspect-[16/9]',
+          grammarCardClass: 'w-full max-w-[356px] bg-white p-3.5 rounded-2xl border border-[#e7e5e4] shadow-[0_4px_16px_rgba(0,0,0,0.04)] space-y-2 grammar-card-thai-font text-[12px] text-[#292524] transition-all text-left',
+          wordClass: 'vocab-font text-[34px] sm:text-[40px] font-bold text-[#0c0a09] tracking-tight text-center leading-none',
+          meaningClass: 'thai-vocab-font text-2xl sm:text-[26px] font-bold text-[#0c0a09] tracking-wide leading-tight',
+          showStatusBar: true,
+          headerClass: 'absolute top-0 left-0 w-full z-20 flex items-center justify-between px-4 pt-3 sm:pt-9 pb-2',
+          badgeText: '9:16',
+          exportWidth: 1080,
+          exportHeight: 1920
+        },
+        '2:3': {
+          containerClass: 'relative w-full aspect-[2/3] max-w-[420px] sm:w-[420px] sm:h-[630px] sm:rounded-[28px] sm:border sm:border-[#e7e5e4] bg-[#fafafa] overflow-hidden shadow-[0_4px_16px_rgba(0,0,0,0.04)] flex flex-col justify-center transition-all duration-300',
+          streamClass: 'w-full h-full relative z-10 flex flex-col items-center justify-center gap-2 px-5 pt-11 pb-4 overflow-y-auto',
+          clipBoxClass: 'w-full max-w-[330px] aspect-[16/9]',
+          grammarCardClass: 'w-full max-w-[360px] bg-white p-3 rounded-xl border border-[#e7e5e4] shadow-[0_4px_16px_rgba(0,0,0,0.04)] space-y-1.5 grammar-card-thai-font text-[11.5px] text-[#292524] transition-all text-left',
+          wordClass: 'vocab-font text-[30px] sm:text-[34px] font-bold text-[#0c0a09] tracking-tight text-center leading-none',
+          meaningClass: 'thai-vocab-font text-xl sm:text-[24px] font-bold text-[#0c0a09] tracking-wide leading-tight',
+          showStatusBar: false,
+          headerClass: 'absolute top-0 left-0 w-full z-20 flex items-center justify-between px-4 pt-2.5 pb-1',
+          badgeText: '2:3',
+          exportWidth: 1080,
+          exportHeight: 1620
+        },
+        '4:5': {
+          containerClass: 'relative w-full aspect-[4/5] max-w-[440px] sm:w-[440px] sm:h-[550px] sm:rounded-[28px] sm:border sm:border-[#e7e5e4] bg-[#fafafa] overflow-hidden shadow-[0_4px_16px_rgba(0,0,0,0.04)] flex flex-col justify-center transition-all duration-300',
+          streamClass: 'w-full h-full relative z-10 flex flex-col items-center justify-center gap-1.5 px-4 pt-10 pb-3 overflow-y-auto',
+          clipBoxClass: 'w-full max-w-[300px] aspect-[16/9]',
+          grammarCardClass: 'w-full max-w-[380px] bg-white p-2.5 rounded-xl border border-[#e7e5e4] shadow-[0_4px_16px_rgba(0,0,0,0.04)] space-y-1 grammar-card-thai-font text-[11px] text-[#292524] transition-all text-left',
+          wordClass: 'vocab-font text-[28px] sm:text-[32px] font-bold text-[#0c0a09] tracking-tight text-center leading-none',
+          meaningClass: 'thai-vocab-font text-xl sm:text-[22px] font-bold text-[#0c0a09] tracking-wide leading-tight',
+          showStatusBar: false,
+          headerClass: 'absolute top-0 left-0 w-full z-20 flex items-center justify-between px-4 pt-2.5 pb-1',
+          badgeText: '4:5',
+          exportWidth: 1080,
+          exportHeight: 1350
+        },
+        '1:1': {
+          containerClass: 'relative w-full aspect-square max-w-[480px] sm:w-[480px] sm:h-[480px] sm:rounded-[28px] sm:border sm:border-[#e7e5e4] bg-[#fafafa] overflow-hidden shadow-[0_4px_16px_rgba(0,0,0,0.04)] flex flex-col justify-center transition-all duration-300',
+          streamClass: 'w-full h-full relative z-10 flex flex-col items-center justify-center gap-1 px-4 pt-9 pb-2.5 overflow-y-auto',
+          clipBoxClass: 'w-full max-w-[235px] aspect-[16/9]',
+          grammarCardClass: 'w-full max-w-[420px] bg-white p-2.5 rounded-xl border border-[#e7e5e4] shadow-[0_4px_16px_rgba(0,0,0,0.04)] space-y-1 grammar-card-thai-font text-[10.5px] text-[#292524] transition-all text-left',
+          wordClass: 'vocab-font text-[25px] sm:text-[28px] font-bold text-[#0c0a09] tracking-tight text-center leading-none',
+          meaningClass: 'thai-vocab-font text-lg sm:text-[19px] font-bold text-[#0c0a09] tracking-wide leading-tight',
+          showStatusBar: false,
+          headerClass: 'absolute top-0 left-0 w-full z-20 flex items-center justify-between px-4 pt-2 pb-1',
+          badgeText: '1:1',
+          exportWidth: 1080,
+          exportHeight: 1080
+        },
+        '16:9': {
+          containerClass: 'relative w-full aspect-[16/9] max-w-[600px] sm:w-[600px] sm:h-[338px] sm:rounded-[24px] sm:border sm:border-[#e7e5e4] bg-[#fafafa] overflow-hidden shadow-[0_4px_16px_rgba(0,0,0,0.04)] flex flex-col justify-center transition-all duration-300',
+          streamClass: 'w-full h-full relative z-10 grid grid-cols-12 items-center gap-3 px-5 pt-9 pb-3 overflow-hidden',
+          clipBoxClass: 'w-full aspect-[16/9]',
+          grammarCardClass: 'w-full bg-white p-2.5 rounded-xl border border-[#e7e5e4] shadow-[0_4px_16px_rgba(0,0,0,0.04)] space-y-1 grammar-card-thai-font text-[10.5px] text-[#292524] transition-all text-left',
+          wordClass: 'vocab-font text-[24px] sm:text-[26px] font-bold text-[#0c0a09] tracking-tight text-center leading-none',
+          meaningClass: 'thai-vocab-font text-base sm:text-[18px] font-bold text-[#0c0a09] tracking-wide leading-tight',
+          showStatusBar: false,
+          headerClass: 'absolute top-0 left-0 w-full z-20 flex items-center justify-between px-4 pt-2 pb-1',
+          badgeText: '16:9',
+          exportWidth: 1920,
+          exportHeight: 1080
+        },
+        '3:2': {
+          containerClass: 'relative w-full aspect-[3/2] max-w-[560px] sm:w-[560px] sm:h-[374px] sm:rounded-[24px] sm:border sm:border-[#e7e5e4] bg-[#fafafa] overflow-hidden shadow-[0_4px_16px_rgba(0,0,0,0.04)] flex flex-col justify-center transition-all duration-300',
+          streamClass: 'w-full h-full relative z-10 grid grid-cols-12 items-center gap-3 px-5 pt-9 pb-3 overflow-hidden',
+          clipBoxClass: 'w-full aspect-[16/9]',
+          grammarCardClass: 'w-full bg-white p-2.5 rounded-xl border border-[#e7e5e4] shadow-[0_4px_16px_rgba(0,0,0,0.04)] space-y-1 grammar-card-thai-font text-[10.5px] text-[#292524] transition-all text-left',
+          wordClass: 'vocab-font text-[24px] sm:text-[26px] font-bold text-[#0c0a09] tracking-tight text-center leading-none',
+          meaningClass: 'thai-vocab-font text-base sm:text-[18px] font-bold text-[#0c0a09] tracking-wide leading-tight',
+          showStatusBar: false,
+          headerClass: 'absolute top-0 left-0 w-full z-20 flex items-center justify-between px-4 pt-2 pb-1',
+          badgeText: '3:2',
+          exportWidth: 1620,
+          exportHeight: 1080
+        }
+      };
+
+      function toggleToolCard(sectionId) {
+        const el = document.getElementById(sectionId);
+        if (!el) return;
+        el.classList.toggle('is-collapsed');
+        updateToggleAllCardsIcon();
+      }
+
+      function toggleAllToolSections() {
+        const cards = Array.from(document.querySelectorAll('.tool-section-card'));
+        const anyExpanded = cards.some(c => !c.classList.contains('is-collapsed'));
+        cards.forEach(c => {
+          if (anyExpanded) c.classList.add('is-collapsed');
+          else c.classList.remove('is-collapsed');
+        });
+        updateToggleAllCardsIcon();
+      }
+
+      function updateToggleAllCardsIcon() {
+        const icon = document.getElementById('toggle-all-cards-icon');
+        if (!icon) return;
+        const cards = Array.from(document.querySelectorAll('.tool-section-card'));
+        const allCollapsed = cards.length > 0 && cards.every(c => c.classList.contains('is-collapsed'));
+        icon.className = allCollapsed ? 'fa-solid fa-expand text-xs' : 'fa-solid fa-compress text-xs';
+      }
+
+      function initScrollRevealAnimations() {
+        const cards = document.querySelectorAll('.tool-section-card');
+        if (!('IntersectionObserver' in window)) return;
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.remove('scroll-reveal-hidden');
+              entry.target.classList.add('scroll-reveal-visible');
+            }
+          });
+        }, { threshold: 0.08, rootMargin: '0px 0px -20px 0px' });
+
+        cards.forEach((card, idx) => {
+          card.style.transitionDelay = `${idx * 45}ms`;
+          observer.observe(card);
+          setTimeout(() => { card.style.transitionDelay = '0ms'; }, 600);
+        });
+      }
+
+      function normalizeThumbUrl(url, slug) {
+        if (slug) return `http://127.0.0.1:3001/api/cafe/thumb?slug=${encodeURIComponent(slug)}`;
+        if (!url) return '';
+        const m = String(url).match(/clip\.cafe\/img800\/([^.?/]+)\.jpg/i);
+        if (m && m[1]) {
+          return `http://127.0.0.1:3001/api/cafe/thumb?slug=${encodeURIComponent(m[1])}`;
+        }
+        return url;
+      }
+
+      function handlePreviewImgError(img) {
+        if (!img) return;
+        const src = img.getAttribute('src') || '';
+        const m = src.match(/clip\.cafe\/img800\/([^.?/]+)\.jpg/i);
+        if (m && m[1] && !img.dataset.proxied) {
+          img.dataset.proxied = '1';
+          img.src = `http://127.0.0.1:3001/api/cafe/thumb?slug=${encodeURIComponent(m[1])}`;
+          return;
+        }
+        img.classList.add('hidden');
+        const emptyEl = document.getElementById('preview-movie-empty');
+        if (emptyEl) emptyEl.classList.remove('hidden');
+      }
+
+      function filterStudioTools(query) {
+        const q = (query || '').trim().toLowerCase();
+        const sections = document.querySelectorAll('.tool-section-card');
+        sections.forEach(sec => {
+          if (!q) {
+            sec.classList.remove('hidden');
+            return;
+          }
+          const kw = (sec.getAttribute('data-tool-keywords') || '').toLowerCase();
+          const text = (sec.textContent || '').toLowerCase();
+          if (kw.includes(q) || text.includes(q)) {
+            sec.classList.remove('hidden');
+          } else {
+            sec.classList.add('hidden');
+          }
+        });
+      }
+
+      function jumpToToolSection(sectionId) {
+        const searchInput = document.getElementById('desktop-tool-search') || document.getElementById('mobile-tool-search');
+        if (searchInput && searchInput.value) {
+          searchInput.value = '';
+          filterStudioTools('');
+        }
+        const el = document.getElementById(sectionId);
+        if (!el) return;
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        el.classList.add('ring-2', 'ring-[#0c0a09]');
+        setTimeout(() => el.classList.remove('ring-2', 'ring-[#0c0a09]'), 1200);
+      }
+
+      function handleUnifiedWordInput(val) {
+        const clipQ = document.getElementById('clip-query');
+        if (clipQ) clipQ.value = val;
+        syncFromDesktopForm();
+      }
+
+      function applyAspectRatioUI(ratio) {
+        currentClipAspectRatio = ASPECT_RATIO_CONFIG[ratio] ? ratio : '9:16';
+        const cfg = ASPECT_RATIO_CONFIG[currentClipAspectRatio];
+
+        const phoneContainer = document.getElementById('phone-container');
+        if (phoneContainer) phoneContainer.className = cfg.containerClass;
+
+        const streamArea = document.getElementById('video-canvas-area');
+        if (streamArea) streamArea.className = cfg.streamClass;
+
+        const topBlock = document.getElementById('preview-top-vocab-block');
+        const midBlock = document.getElementById('preview-middle-clip-block');
+        const botBlock = document.getElementById('preview-bottom-grammar-block');
+        if (currentClipAspectRatio === '16:9' || currentClipAspectRatio === '3:2') {
+          if (topBlock) topBlock.className = 'col-span-5 flex flex-col items-center justify-center space-y-0.5 text-center';
+          if (midBlock) midBlock.className = 'col-span-5 flex flex-col items-center justify-center';
+          if (botBlock) botBlock.className = 'col-span-7 col-start-6 row-start-1 row-span-2 flex flex-col items-center justify-center space-y-1.5';
+          if (streamArea) streamArea.className = 'w-full h-full relative z-10 grid grid-cols-12 grid-rows-2 items-center gap-x-3 gap-y-1 px-4 pt-9 pb-2.5 overflow-hidden';
+        } else {
+          if (topBlock) topBlock.className = 'w-full flex flex-col items-center justify-center space-y-0.5 text-center';
+          if (midBlock) midBlock.className = 'w-full flex flex-col items-center justify-center py-0.5';
+          if (botBlock) botBlock.className = 'w-full flex flex-col items-center justify-center space-y-1.5 pt-0.5';
+        }
+
+        const statusBar = document.getElementById('preview-ios-statusbar');
+        if (statusBar) {
+          statusBar.className = cfg.showStatusBar
+            ? 'hidden sm:flex absolute top-0 left-0 w-full z-30 justify-between items-center px-7 pt-3.5 text-[#292524] text-xs font-medium'
+            : 'hidden';
+        }
+
+        const topHeader = document.getElementById('preview-top-header');
+        if (topHeader) topHeader.className = cfg.headerClass;
+
+        const clipBox = document.getElementById('movie-clip-box');
+        if (clipBox) {
+          clipBox.className = `${cfg.clipBoxClass} bg-[#0c0a09] rounded-2xl overflow-hidden shadow-[0_4px_16px_rgba(0,0,0,0.06)] relative border border-[#e7e5e4] flex-shrink-0 cursor-pointer group transition-all duration-300`;
+        }
+
+        const grammarCard = document.getElementById('grammar-detail-card');
+        if (grammarCard) grammarCard.className = cfg.grammarCardClass;
+
+        const wordEl = document.getElementById('preview-word');
+        if (wordEl) wordEl.className = cfg.wordClass;
+
+        const meaningEl = document.getElementById('preview-meaning');
+        if (meaningEl) meaningEl.className = cfg.meaningClass;
+
+        const guideBadge = document.getElementById('aspect-ratio-guide-badge');
+        if (guideBadge) guideBadge.textContent = cfg.badgeText;
+
+        const modalRec = document.getElementById('modal-ratio-recommend');
+        if (modalRec) modalRec.textContent = cfg.badgeText;
+
+        document.querySelectorAll('.export-ratio-label').forEach(el => {
+          el.textContent = currentClipAspectRatio;
+        });
+
+        const RATIO_META = {
+          '9:16': { boxClass: 'w-6 h-9', text: '9:16 • Reels / TikTok / Shorts' },
+          '2:3':  { boxClass: 'w-7 h-9', text: '2:3 • Portrait Post' },
+          '4:5':  { boxClass: 'w-8 h-9', text: '4:5 • IG / FB Feed' },
+          '1:1':  { boxClass: 'w-8 h-8', text: '1:1 • Square Post' },
+          '3:2':  { boxClass: 'w-11 h-7', text: '3:2 • Landscape' },
+          '16:9': { boxClass: 'w-12 h-7', text: '16:9 • YouTube / X' }
+        };
+        const meta = RATIO_META[currentClipAspectRatio] || RATIO_META['9:16'];
+
+        const brownBox = document.getElementById('current-ratio-brown-box');
+        if (brownBox) {
+          brownBox.className = `${meta.boxClass} rounded-[5px] bg-[#78716c] text-white flex items-center justify-center text-[10px] font-bold tracking-tight shadow-2xs transition-all flex-shrink-0`;
+          brownBox.textContent = currentClipAspectRatio;
+        }
+        const labelEl = document.getElementById('current-ratio-label-text');
+        if (labelEl) labelEl.textContent = meta.text;
+
+        const modalBrownBox = document.getElementById('modal-current-ratio-brown-box');
+        if (modalBrownBox) {
+          modalBrownBox.className = `${meta.boxClass} rounded-[5px] bg-[#78716c] text-white flex items-center justify-center text-[10px] font-bold tracking-tight shadow-2xs transition-all flex-shrink-0`;
+          modalBrownBox.textContent = currentClipAspectRatio;
+        }
+        const modalLabelEl = document.getElementById('modal-current-ratio-label-text');
+        if (modalLabelEl) modalLabelEl.textContent = meta.text;
+
+        document.querySelectorAll('[data-ratio]').forEach(btn => {
+          const r = btn.getAttribute('data-ratio');
+          const isMatch = r === currentClipAspectRatio;
+          const shape = btn.querySelector('.ratio-brown-shape');
+          if (shape) {
+            shape.classList.toggle('ring-2', isMatch);
+            shape.classList.toggle('ring-[#0c0a09]', isMatch);
+            shape.classList.toggle('ring-offset-2', isMatch);
+          }
+        });
+
+        document.querySelectorAll('[data-modal-ratio]').forEach(btn => {
+          const isMatch = btn.getAttribute('data-modal-ratio') === currentClipAspectRatio;
+          const shape = btn.querySelector('.ratio-brown-shape');
+          if (shape) {
+            shape.classList.toggle('ring-2', isMatch);
+            shape.classList.toggle('ring-[#0c0a09]', isMatch);
+            shape.classList.toggle('ring-offset-2', isMatch);
+          }
+        });
+      }
+
+      function toggleAspectRatioDropdown(e) {
+        if (e) e.stopPropagation();
+        const menu = document.getElementById('aspect-ratio-dropdown-menu');
+        if (menu) menu.classList.toggle('hidden');
+      }
+
+      function closeAspectRatioDropdown() {
+        const menu = document.getElementById('aspect-ratio-dropdown-menu');
+        if (menu) menu.classList.add('hidden');
+      }
+
+      function toggleModalRatioDropdown(e) {
+        if (e) e.stopPropagation();
+        const menu = document.getElementById('modal-ratio-dropdown-menu');
+        if (menu) menu.classList.toggle('hidden');
+      }
+
+      function closeModalRatioDropdown() {
+        const menu = document.getElementById('modal-ratio-dropdown-menu');
+        if (menu) menu.classList.add('hidden');
+      }
+
+      document.addEventListener('click', (e) => {
+        const wrap1 = document.getElementById('aspect-ratio-dropdown-wrap');
+        if (wrap1 && !wrap1.contains(e.target)) closeAspectRatioDropdown();
+        const btnModal = document.getElementById('btn-modal-ratio-dropdown');
+        const menuModal = document.getElementById('modal-ratio-dropdown-menu');
+        if (menuModal && !menuModal.contains(e.target) && (!btnModal || !btnModal.contains(e.target))) {
+          closeModalRatioDropdown();
+        }
+      });
+
+      function selectClipAspectRatio(ratio) {
+        applyAspectRatioUI(ratio);
+        syncFromDesktopForm();
+      }
+
+      function highlightKeyword(text, keyword) {
+        if (!text || !keyword) return text || '';
+        const escaped = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        return text.replace(new RegExp(`(${escaped})`, 'gi'), '<span class="highlight-yellow">$1</span>');
+      }
+
+      function formatGrammarHtml(text, keyword) {
+        if (!text) return '';
+        let formatted = highlightKeyword(text, keyword);
+        // Convert plain -> to → first
+        formatted = formatted.replace(/-&gt;|->/g, '→');
+        // Distinct colors: Blue (#2563eb) for grammar terms, Amber (#d97706) for + / → connectors
+        formatted = formatted.replace(/(\bVerb to be\b|\bIdiom\b|\bPhrasal Verb\b|\bSlang\b|\bNoun\b|\bVerb\b|\bAdjective\b|\bAdverb\b|\bSubject\b|\bObject\b|\bV\.ing\b|\bV\.1\b|\bV\.2\b|\bV\.3\b|\[[^\]]+\])/gi, '<strong class="text-[#2563eb] font-bold">$1</strong>');
+        formatted = formatted.replace(/(\+|→)/g, '<strong class="text-[#d97706] font-bold mx-0.5">$1</strong>');
+        return formatted;
+      }
+
+      // Render data onto the Phone Preview
+      function applyDataToPreview(data) {
+        const d = data || {};
+        const word = d.word || '';
+        const wordKeyword = word ? word.replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, '').trim() : '';
+
+        if (d.clipAspectRatio) {
+          applyAspectRatioUI(d.clipAspectRatio);
+        } else {
+          applyAspectRatioUI(currentClipAspectRatio || '9:16');
+        }
+
+        document.getElementById('preview-word').textContent = word;
+        document.getElementById('preview-phonetic').textContent = d.phonetic || '';
+        document.getElementById('preview-thai-read').textContent = d.thaiRead || '';
+        document.getElementById('preview-meaning').textContent = (d.meaning || '').replace(/["']/g, '');
+        document.getElementById('preview-grammar').innerHTML = formatGrammarHtml(d.grammar || '', wordKeyword);
+
+        const ex1El = document.getElementById('preview-ex1');
+        const ex2El = document.getElementById('preview-ex2');
+        const ex3El = document.getElementById('preview-ex3');
+
+        const cleanTh = (str) => (str || '').replace(/^\s*\((.*)\)\s*$/, '$1').trim();
+
+        ex1El.innerHTML = (d.ex1En || d.ex1Th)
+          ? `<span class="font-bold text-[#0f766e]">1.</span> <span class="font-bold text-[#0c0a09]">${highlightKeyword(d.ex1En || '', wordKeyword)}</span> ${d.ex1Th ? `<span class="text-[#d97706] font-bold mx-0.5">→</span> <span class="text-[#57534e] noto-serif-thai">${cleanTh(d.ex1Th)}</span>` : ''}`
+          : '';
+        ex2El.innerHTML = (d.ex2En || d.ex2Th)
+          ? `<span class="font-bold text-[#0f766e]">2.</span> <span class="font-bold text-[#0c0a09]">${highlightKeyword(d.ex2En || '', wordKeyword)}</span> ${d.ex2Th ? `<span class="text-[#d97706] font-bold mx-0.5">→</span> <span class="text-[#57534e] noto-serif-thai">${cleanTh(d.ex2Th)}</span>` : ''}`
+          : '';
+        ex3El.innerHTML = (d.ex3En || d.ex3Th)
+          ? `<span class="font-bold text-[#0f766e]">3.</span> <span class="font-bold text-[#0c0a09]">${highlightKeyword(d.ex3En || '', wordKeyword)}</span> ${d.ex3Th ? `<span class="text-[#d97706] font-bold mx-0.5">→</span> <span class="text-[#57534e] noto-serif-thai">${cleanTh(d.ex3Th)}</span>` : ''}`
+          : '';
+
+        document.getElementById('preview-top-channel').textContent = d.channel || '';
+
+        // Profile Avatar rendering
+        const avatarSrc = d.avatar || '';
+        const topAvatar = document.getElementById('preview-top-avatar');
+        const topIcon = document.getElementById('preview-top-avatar-icon');
+        const editorAvatar = document.getElementById('editor-avatar-preview');
+        const editorIcon = document.getElementById('editor-avatar-icon');
+
+        if (avatarSrc) {
+          topAvatar.src = avatarSrc;
+          topAvatar.classList.remove('hidden');
+          topIcon.classList.add('hidden');
+          if (editorAvatar) {
+            editorAvatar.src = avatarSrc;
+            editorAvatar.classList.remove('hidden');
+            editorIcon.classList.add('hidden');
+          }
+        } else {
+          topAvatar.src = '';
+          topAvatar.classList.add('hidden');
+          topIcon.classList.remove('hidden');
+          if (editorAvatar) {
+            editorAvatar.src = '';
+            editorAvatar.classList.add('hidden');
+            editorIcon.classList.remove('hidden');
+          }
+        }
+
+        // Movie clip rendering
+        const movieImg = document.getElementById('preview-movie-img');
+        const movieEmpty = document.getElementById('preview-movie-empty');
+        const movieTitle = document.getElementById('preview-movie-title');
+
+        if (d.selectedClipsSequence && Array.isArray(d.selectedClipsSequence) && d.selectedClipsSequence.length > 0) {
+          activeClipSequence = d.selectedClipsSequence;
+          const first = activeClipSequence[0];
+          movieTitle.textContent = first.title || '';
+          const thumbSrc = normalizeThumbUrl(first.thumb, first.slug);
+          if (thumbSrc) {
+            delete movieImg.dataset.proxied;
+            movieImg.src = thumbSrc;
+            movieImg.classList.remove('hidden');
+            movieEmpty.classList.add('hidden');
+          }
+        } else if (d.movieImg) {
+          delete movieImg.dataset.proxied;
+          movieImg.src = normalizeThumbUrl(d.movieImg);
+          movieImg.classList.remove('hidden');
+          movieEmpty.classList.add('hidden');
+          movieTitle.textContent = d.movieTitle || '';
+        } else {
+          movieImg.src = '';
+          movieImg.classList.add('hidden');
+          movieEmpty.classList.remove('hidden');
+          movieTitle.textContent = '';
+        }
+      }
+
+      // Populate Desktop Editor Form from saved data
+      function populateDesktopForm(d) {
+        if (!d) return;
+        const setVal = (id, val) => {
+          const el = document.getElementById(id);
+          if (el) el.value = val || '';
+        };
+        setVal('target-word', d.word);
+        setVal('clip-query', d.word);
+        setVal('res-phonetic', d.phonetic);
+        setVal('res-thai-read', d.thaiRead);
+        setVal('res-meaning', d.meaning);
+        setVal('res-grammar', d.grammar);
+        setVal('res-ex1-en', d.ex1En);
+        setVal('res-ex1-th', d.ex1Th);
+        setVal('res-ex2-en', d.ex2En);
+        setVal('res-ex2-th', d.ex2Th);
+        setVal('res-ex3-en', d.ex3En);
+        setVal('res-ex3-th', d.ex3Th);
+        setVal('social-handle', d.channel);
+        setVal('social-description', d.caption);
+        if (d.clipAspectRatio) {
+          applyAspectRatioUI(d.clipAspectRatio);
+        }
+        if (d.aiVendor) setVal('ai-vendor', d.aiVendor);
+        setVal('api-key', d.apiKey);
+        if (d.avatar) {
+          currentAvatarData = d.avatar;
+          if (!d.avatar.startsWith('data:')) {
+            setVal('social-avatar-url', d.avatar);
+          }
+        }
+        if (d.apiKey) {
+          detectProviderAndFetchModels(d.apiKey, d.aiModel);
+        }
+        if (d.selectedClipsSequence && Array.isArray(d.selectedClipsSequence)) {
+          activeClipSequence = d.selectedClipsSequence;
+          renderSequenceList();
+          updateScrapedMovieContextUI();
+          prepareClipsWithPython(activeClipSequence);
+        }
+      }
+
+      // Sync changes from Desktop Form to Preview & localStorage immediately
+      function syncFromDesktopForm() {
+        const primaryClip = activeClipSequence[0] || {};
+        const payload = {
+          word: document.getElementById('target-word')?.value.trim() || '',
+          phonetic: document.getElementById('res-phonetic')?.value.trim() || '',
+          thaiRead: document.getElementById('res-thai-read')?.value.trim() || '',
+          meaning: document.getElementById('res-meaning')?.value.trim() || '',
+          grammar: document.getElementById('res-grammar')?.value.trim() || '',
+          ex1En: document.getElementById('res-ex1-en')?.value.trim() || '',
+          ex1Th: document.getElementById('res-ex1-th')?.value.trim() || '',
+          ex2En: document.getElementById('res-ex2-en')?.value.trim() || '',
+          ex2Th: document.getElementById('res-ex2-th')?.value.trim() || '',
+          ex3En: document.getElementById('res-ex3-en')?.value.trim() || '',
+          ex3Th: document.getElementById('res-ex3-th')?.value.trim() || '',
+          movieTitle: primaryClip.title || '',
+          movieImg: primaryClip.thumb || '',
+          movieVideo: primaryClip.localVideoUrl || primaryClip.videoUrl || '',
+          channel: document.getElementById('social-handle')?.value.trim() || '',
+          avatar: currentAvatarData || '',
+          caption: document.getElementById('social-description')?.value.trim() || '',
+          selectedClipsSequence: activeClipSequence,
+          clipAspectRatio: currentClipAspectRatio || '9:16',
+          aiVendor: document.getElementById('ai-vendor')?.value || 'gemini',
+          aiModel: document.getElementById('ai-provider')?.value || '',
+          apiKey: document.getElementById('api-key')?.value || ''
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+        applyDataToPreview(payload);
+      }
+
+      // Profile Picture Upload & URL handlers
+      function handleAvatarUpload(event) {
+        const file = event.target.files?.[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          currentAvatarData = e.target.result;
+          const urlInput = document.getElementById('social-avatar-url');
+          if (urlInput) urlInput.value = '';
+          syncFromDesktopForm();
+          showToast('อัปเดตรูปโปรไฟล์เรียบร้อย!');
+        };
+        reader.readAsDataURL(file);
+      }
+
+      function handleAvatarUrlInput(url) {
+        currentAvatarData = url.trim();
+        syncFromDesktopForm();
+      }
+
+      function clearAvatar() {
+        currentAvatarData = '';
+        const urlInput = document.getElementById('social-avatar-url');
+        if (urlInput) urlInput.value = '';
+        syncFromDesktopForm();
+      }
+
+      const VENDOR_LABELS = {
+        gemini: 'Google Gemini',
+        openai: 'OpenAI',
+        deepseek: 'DeepSeek AI',
+        groq: 'Groq Cloud',
+        anthropic: 'Anthropic Claude',
+        xai: 'xAI (Grok)',
+        mistral: 'Mistral AI'
+      };
+
+      function handleVendorChange() {
+        const key = document.getElementById('api-key')?.value.trim();
+        const wrapper = document.getElementById('model-selector-wrapper');
+        if (wrapper) wrapper.classList.add('hidden');
+        syncFromDesktopForm();
+        if (key) {
+          detectProviderAndFetchModels(key);
+        }
+      }
+
+      function handleApiKeyInput(val) {
+        syncFromDesktopForm();
+        if (apiKeyDetectTimer) clearTimeout(apiKeyDetectTimer);
+        apiKeyDetectTimer = setTimeout(() => {
+          detectProviderAndFetchModels(val);
+        }, 450);
+      }
+
+      function populateModelSelect(models, preferredModel = '') {
+        const wrapper = document.getElementById('model-selector-wrapper');
+        const selectEl = document.getElementById('ai-provider');
+        const countBadge = document.getElementById('model-count-badge');
+        if (!selectEl || !wrapper) return;
+
+        selectEl.innerHTML = '';
+        models.forEach(m => {
+          const opt = document.createElement('option');
+          opt.value = m.id;
+          opt.textContent = m.label || m.id;
+          selectEl.appendChild(opt);
+        });
+
+        if (models.length > 0) {
+          wrapper.classList.remove('hidden');
+          if (preferredModel && models.some(m => m.id === preferredModel)) {
+            selectEl.value = preferredModel;
+          } else {
+            selectEl.value = models[0].id;
+          }
+          if (countBadge) countBadge.textContent = `พบ ${models.length} โมเดล`;
+          syncFromDesktopForm();
+        } else {
+          wrapper.classList.add('hidden');
+          if (countBadge) countBadge.textContent = '';
+        }
+      }
+
+      async function detectProviderAndFetchModels(rawKey, preferredModel = '') {
+        const key = (rawKey || '').trim();
+        const vendorSelect = document.getElementById('ai-vendor');
+        const badge = document.getElementById('detected-provider-badge');
+        const statusEl = document.getElementById('openrouter-status');
+        const wrapper = document.getElementById('model-selector-wrapper');
+        const labelEl = document.getElementById('model-selector-label');
+
+        if (!key) {
+          detectedProviderType = '';
+          if (wrapper) wrapper.classList.add('hidden');
+          if (badge) {
+            badge.textContent = 'Ready';
+            badge.className = 'text-[10px] px-2 py-0.5 rounded-full bg-[#f0efed] text-[#777169] font-semibold uppercase tracking-wider';
+          }
+          if (statusEl) statusEl.textContent = '';
+          return;
+        }
+
+        // Auto-switch dropdown if key has a distinct vendor prefix
+        if (vendorSelect) {
+          if (key.startsWith('AIza') || key.startsWith('AQ.')) vendorSelect.value = 'gemini';
+          else if (key.startsWith('gsk_')) vendorSelect.value = 'groq';
+          else if (key.startsWith('sk-ant-')) vendorSelect.value = 'anthropic';
+          else if (key.startsWith('xai-')) vendorSelect.value = 'xai';
+        }
+
+        const vendor = vendorSelect ? vendorSelect.value : 'gemini';
+        const vendorName = VENDOR_LABELS[vendor] || vendor.toUpperCase();
+
+        if (badge) {
+          badge.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin mr-1"></i>กำลังตรวจคีย์ ${vendorName}...`;
+          badge.className = 'text-[10px] px-2.5 py-0.5 rounded-full bg-[#f0efed] text-[#0c0a09] font-semibold uppercase tracking-wider';
+        }
+        if (statusEl) {
+          statusEl.textContent = `กำลังตรวจสอบ API Key และดึงโมเดลจาก ${vendorName}...`;
+        }
+
+        try {
+          let models = [];
+
+          if (vendor === 'gemini') {
+            const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(key)}`);
+            if (!resp.ok) {
+              const err = await resp.json().catch(() => ({}));
+              throw new Error(err.error?.message || `HTTP ${resp.status}`);
+            }
+            const json = await resp.json();
+            const priorityIds = [
+              'gemini-3.6-flash',
+              'gemini-3.5-flash',
+              'gemini-3-flash-preview',
+              'gemini-3.8-flash',
+              'gemini-3.7-flash',
+              'gemini-3.5-flash-lite',
+              'gemini-flash-lite-latest',
+              'gemma-4-31b-it',
+              'gemini-flash-latest',
+              'gemini-2.5-flash',
+              'gemini-2.5-pro'
+            ];
+            models = (json.models || [])
+              .filter(m => {
+                const methods = m.supportedGenerationMethods || [];
+                const id = (m.name || '').replace(/^models\//, '');
+                if (!methods.includes('generateContent')) return false;
+                if (id.includes('tts') || id.includes('image') || id.includes('banana') || id.includes('lyria') || id.includes('transcribe') || id.includes('robotics') || id.includes('computer-use')) return false;
+                return true;
+              })
+              .map(m => {
+                const cleanId = m.name.replace(/^models\//, '');
+                return { id: cleanId, label: `${cleanId} — ${m.displayName || cleanId}` };
+              })
+              .sort((a, b) => {
+                const idxA = priorityIds.indexOf(a.id);
+                const idxB = priorityIds.indexOf(b.id);
+                if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+                if (idxA !== -1) return -1;
+                if (idxB !== -1) return 1;
+                return a.id.localeCompare(b.id);
+              });
+          } else if (vendor === 'openai') {
+            const resp = await fetch('https://api.openai.com/v1/models', {
+              headers: { 'Authorization': `Bearer ${key}` }
+            });
+            if (!resp.ok) {
+              const err = await resp.json().catch(() => ({}));
+              throw new Error(err.error?.message || `HTTP ${resp.status}`);
+            }
+            const json = await resp.json();
+            const all = json.data || [];
+            const filtered = all.filter(m => m.id.startsWith('gpt-') || m.id.startsWith('o1') || m.id.startsWith('o3') || m.id.startsWith('o4') || m.id.startsWith('chatgpt-'));
+            models = (filtered.length > 0 ? filtered : all)
+              .sort((a, b) => (b.created || 0) - (a.created || 0))
+              .map(m => ({ id: m.id, label: m.id }));
+          } else if (vendor === 'deepseek') {
+            const resp = await fetch('https://api.deepseek.com/models', {
+              headers: { 'Authorization': `Bearer ${key}` }
+            });
+            if (!resp.ok) {
+              const err = await resp.json().catch(() => ({}));
+              throw new Error(err.error?.message || `HTTP ${resp.status}`);
+            }
+            const json = await resp.json();
+            models = (json.data || []).map(m => ({ id: m.id, label: m.id }));
+          } else if (vendor === 'groq') {
+            const resp = await fetch('https://api.groq.com/openai/v1/models', {
+              headers: { 'Authorization': `Bearer ${key}` }
+            });
+            if (!resp.ok) {
+              const err = await resp.json().catch(() => ({}));
+              throw new Error(err.error?.message || `HTTP ${resp.status}`);
+            }
+            const json = await resp.json();
+            models = (json.data || []).map(m => ({ id: m.id, label: m.id }));
+          } else if (vendor === 'anthropic') {
+            const resp = await fetch('https://api.anthropic.com/v1/models', {
+              headers: {
+                'x-api-key': key,
+                'anthropic-version': '2023-06-01',
+                'anthropic-dangerous-direct-browser-access': 'true'
+              }
+            });
+            if (!resp.ok) {
+              const err = await resp.json().catch(() => ({}));
+              throw new Error(err.error?.message || `HTTP ${resp.status}`);
+            }
+            const json = await resp.json();
+            models = (json.data || []).map(m => ({ id: m.id, label: `${m.id} — ${m.display_name || m.id}` }));
+          } else if (vendor === 'xai') {
+            const resp = await fetch('https://api.x.ai/v1/models', {
+              headers: { 'Authorization': `Bearer ${key}` }
+            });
+            if (!resp.ok) {
+              const err = await resp.json().catch(() => ({}));
+              throw new Error(err.error?.message || `HTTP ${resp.status}`);
+            }
+            const json = await resp.json();
+            models = (json.data || []).map(m => ({ id: m.id, label: m.id }));
+          } else if (vendor === 'mistral') {
+            const resp = await fetch('https://api.mistral.ai/v1/models', {
+              headers: { 'Authorization': `Bearer ${key}` }
+            });
+            if (!resp.ok) {
+              const err = await resp.json().catch(() => ({}));
+              throw new Error(err.error?.message || `HTTP ${resp.status}`);
+            }
+            const json = await resp.json();
+            models = (json.data || []).map(m => ({ id: m.id, label: m.id }));
+          }
+
+          if (models.length === 0) {
+            throw new Error('ไม่พบโมเดลที่รองรับจาก API Key นี้');
+          }
+
+          detectedProviderType = vendor;
+          if (badge) {
+            badge.textContent = `✓ ${vendorName}`;
+            badge.className = 'text-[10px] px-2.5 py-0.5 rounded-full bg-[#0c0a09] text-white font-semibold uppercase tracking-wider';
+          }
+          if (labelEl) labelEl.textContent = `3. เลือกโมเดลจาก ${vendorName}`;
+          populateModelSelect(models, preferredModel);
+          if (statusEl) statusEl.textContent = `✓ ตรวจสอบ API Key ของ ${vendorName} สำเร็จ! ดึงโมเดลพร้อมใช้งาน ${models.length} รุ่น`;
+        } catch (e) {
+          detectedProviderType = '';
+          if (wrapper) wrapper.classList.add('hidden');
+          if (badge) {
+            badge.textContent = 'คีย์ไม่ถูกต้อง / ไม่ตรงค่าย';
+            badge.className = 'text-[10px] px-2.5 py-0.5 rounded-full bg-[#f0efed] text-[#777169] font-semibold uppercase tracking-wider';
+          }
+          if (statusEl) {
+            statusEl.textContent = `✗ ตรวจสอบคีย์กับ ${vendorName} ไม่สำเร็จ (${e.message || 'Invalid API Key'}) กรุณาเช็คค่ายที่เลือกและ API Key`;
+          }
+        }
+      }
+
+      // Helper to call Selected AI Provider with automatic Gemini fallback
+      async function invokeSelectedAiModel(prompt, loadingTextEl) {
+        const apiKey = document.getElementById('api-key')?.value.trim();
+        if (!detectedProviderType) {
+          await detectProviderAndFetchModels(apiKey);
+        }
+        const vendor = document.getElementById('ai-vendor')?.value || detectedProviderType || 'gemini';
+        let model = document.getElementById('ai-provider')?.value;
+        if (!model) {
+          throw new Error('กรุณาตรวจสอบ API Key และเลือกโมเดลก่อน');
+        }
+
+        let rawContent = '';
+        if (vendor === 'gemini') {
+          const callGemini = async (targetModel) => {
+            return fetch(`https://generativelanguage.googleapis.com/v1beta/models/${targetModel}:generateContent?key=${encodeURIComponent(apiKey)}`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                contents: [{ parts: [{ text: prompt }] }],
+                generationConfig: { responseMimeType: "application/json" }
+              })
+            });
+          };
+          let resp = await callGemini(model);
+          if (!resp.ok && [404, 429, 500, 503].includes(resp.status)) {
+            const fallbackChain = [
+              'gemini-3.6-flash',
+              'gemini-3.5-flash',
+              'gemini-3-flash-preview',
+              'gemini-3.8-flash',
+              'gemini-3.7-flash',
+              'gemini-3.5-flash-lite',
+              'gemini-flash-lite-latest',
+              'gemma-4-31b-it'
+            ].filter(m => m !== model);
+
+            for (const fbModel of fallbackChain) {
+              if (loadingTextEl) loadingTextEl.textContent = `โมเดลเดิมคิวเต็ม กำลังสลับไปใช้ ${fbModel} อัตโนมัติ...`;
+              resp = await callGemini(fbModel);
+              if (resp.ok) {
+                model = fbModel;
+                const selectEl = document.getElementById('ai-provider');
+                if (selectEl && Array.from(selectEl.options).some(o => o.value === model)) {
+                  selectEl.value = model;
+                  syncFromDesktopForm();
+                }
+                break;
+              }
+            }
+          }
+          if (!resp.ok) {
+            const errData = await resp.json().catch(() => ({}));
+            throw new Error(errData.error?.message || `HTTP ${resp.status}`);
+          }
+          const resJson = await resp.json();
+          rawContent = resJson.candidates?.[0]?.content?.parts?.[0]?.text || '';
+        } else if (vendor === 'anthropic') {
+          const resp = await fetch('https://api.anthropic.com/v1/messages', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'x-api-key': apiKey,
+              'anthropic-version': '2023-06-01',
+              'anthropic-dangerous-direct-browser-access': 'true'
+            },
+            body: JSON.stringify({
+              model: model,
+              max_tokens: 1024,
+              messages: [{ role: 'user', content: prompt }]
+            })
+          });
+          if (!resp.ok) {
+            const errData = await resp.json().catch(() => ({}));
+            throw new Error(errData.error?.message || `HTTP ${resp.status}`);
+          }
+          const resJson = await resp.json();
+          rawContent = resJson.content?.[0]?.text || '';
+        } else {
+          let endpoint = 'https://api.openai.com/v1/chat/completions';
+          if (vendor === 'deepseek') endpoint = 'https://api.deepseek.com/chat/completions';
+          else if (vendor === 'groq') endpoint = 'https://api.groq.com/openai/v1/chat/completions';
+          else if (vendor === 'xai') endpoint = 'https://api.x.ai/v1/chat/completions';
+          else if (vendor === 'mistral') endpoint = 'https://api.mistral.ai/v1/chat/completions';
+
+          const resp = await fetch(endpoint, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${apiKey}`
+            },
+            body: JSON.stringify({
+              model: model,
+              messages: [{ role: 'user', content: prompt }]
+            })
+          });
+          if (!resp.ok) {
+            const errData = await resp.json().catch(() => ({}));
+            throw new Error(errData.error?.message || `HTTP ${resp.status}`);
+          }
+          const resJson = await resp.json();
+          rawContent = resJson.choices?.[0]?.message?.content || '';
+        }
+
+        rawContent = rawContent.replace(/```json\s*/gi, '').replace(/```\s*/g, '').trim();
+        const firstBrace = rawContent.indexOf('{');
+        const lastBrace = rawContent.lastIndexOf('}');
+        if (firstBrace !== -1 && lastBrace !== -1) {
+          rawContent = rawContent.substring(firstBrace, lastBrace + 1);
+        }
+        return JSON.parse(rawContent);
+      }
+
+      // Build Movie-Contextualized Prompt using Scraped English Movie Summary & Transcript (SHORT, PUNCHY, MEMORABLE, NO EMOJI)
+      function buildMovieContextualPrompt(word, primaryClip, otherClips = []) {
+        const hasClip = primaryClip && primaryClip.title;
+        const clipSection = hasClip
+          ? `
+REAL SCRAPED ENGLISH MOVIE CLIP FROM CLIP.CAFE:
+- Movie Title: ${primaryClip.title}
+- Genres: ${primaryClip.genres || 'English Feature Film'}
+- Spoken Dialogue in Clip (Transcript): ${primaryClip.quote || primaryClip.fullTranscript || word}
+- Movie Summary / Plot Description: ${primaryClip.movieSummary || 'An English movie scene where the character uses this expression.'}
+
+CRITICAL INSTRUCTION FOR SHORT, PUNCHY, MEMORABLE EXAMPLES (NO EMOJIS):
+1. DO NOT write long sentences! Every English example ("ex1En", "ex2En", "ex3En") MUST be VERY SHORT (4 to 8 words maximum), natural, punchy, and super easy to memorize!
+2. Connect the examples subtly to the mood/theme of "${primaryClip.movieTitle || primaryClip.title}" (${primaryClip.quote || ''}) so they match the clip, but keep each sentence short and snappy (4-8 words).
+3. Thai translations ("ex1Th", "ex2Th", "ex3Th") MUST be short, direct, and natural (no parentheses needed).
+4. "grammar": Write a very concise 1-line grammar formula using non-emoji symbols like [Subject] + Verb to be + ${word} → แปลว่า... (No emojis!).`
+          : `
+CRITICAL INSTRUCTION FOR SHORT, PUNCHY, MEMORABLE EXAMPLES (NO EMOJIS):
+1. Every English example ("ex1En", "ex2En", "ex3En") MUST be VERY SHORT (4 to 8 words maximum), punchy, and super easy to memorize!
+2. "grammar": Write a very concise 1-line grammar formula using non-emoji symbols like [Subject] + ... → ... (No emojis!).`;
+
+        return `You are an expert English language tutor creating viral educational flashcards for Thai students.
+Analyze this English word/phrase: "${word}".
+${clipSection}
+
+Respond with ONLY valid JSON with no markdown formatting and NO emojis in grammar or examples:
+{
+  "phonetic": "/.../ (IPA phonetic format)",
+  "thaiRead": "(คำอ่านออกเสียงภาษาไทย)",
+  "meaning": "คำแปลความหมายภาษาไทยสั้นๆ กระชับ จำง่าย",
+  "grammar": "[โครงสร้างสั้นๆ เช่น Subject + Verb to be + ${word}] → คำอธิบายสั้นกระชับใน 1 บรรทัด",
+  "ex1En": "Short sentence 1 (4-8 words, using ${word})",
+  "ex1Th": "คำแปลไทยสั้นๆ กระชับ",
+  "ex2En": "Short sentence 2 (4-8 words, using ${word})",
+  "ex2Th": "คำแปลไทยสั้นๆ กระชับ",
+  "ex3En": "Short sentence 3 (4-8 words, using ${word})",
+  "ex3Th": "คำแปลไทยสั้นๆ กระชับ",
+  "socialCaption": "แคปชั่นสำหรับโพสต์โซเชียลภาษาไทยที่สอนคำศัพท์/สำนวน ${word} ล้วนๆ (ห้ามเขียนถึงหนัง ห้ามใส่ชื่อหนัง หรือตัวละครเด็ดขาด) อธิบายความหมายสั้นๆ + วิธีใช้จริง พร้อมแฮชแท็กเรียนภาษาอังกฤษ"
+}`;
+      }
+
+      // Call the Selected AI Provider & Selected Model (Scrape English Movie First -> Craft Cohesive Sentences)
+      async function runAiAgentGeneration() {
+        const word = document.getElementById('target-word')?.value.trim();
+        if (!word) {
+          showToast('กรุณาพิมพ์คำศัพท์ภาษาอังกฤษก่อน');
+          return;
+        }
+
+        const apiKey = document.getElementById('api-key')?.value.trim();
+        if (!apiKey) {
+          showToast('กรุณาใส่ API Key ก่อนเรียกใช้งาน AI');
+          document.getElementById('api-key')?.focus();
+          return;
+        }
+
+        const loadingBox = document.getElementById('ai-loading');
+        const loadingText = document.getElementById('ai-loading-text');
+        if (loadingBox) loadingBox.classList.remove('hidden');
+
+        try {
+          // Step 1: Scrape English Movie clips & Movie Summary from clip.cafe FIRST only if no clips are selected/loaded for this word
+          const currentClipQuery = document.getElementById('clip-query')?.value.trim() || '';
+          if (document.getElementById('clip-query')) {
+            document.getElementById('clip-query').value = word;
+          }
+          if (cafeClipPool.length === 0 && activeClipSequence.length === 0) {
+            if (loadingText) loadingText.textContent = `กำลังดึงคลิปหนังภาษาอังกฤษ & คำอธิบายเนื้อเรื่องจาก clip.cafe สำหรับ "${word}"...`;
+            await searchCafeClips(true);
+          } else if (currentClipQuery && currentClipQuery.toLowerCase() !== word.toLowerCase() && activeClipSequence.length === 0) {
+            if (loadingText) loadingText.textContent = `กำลังดึงคลิปหนังภาษาอังกฤษ & คำอธิบายเนื้อเรื่องจาก clip.cafe สำหรับ "${word}"...`;
+            await searchCafeClips(true);
+          }
+
+          const primaryClip = activeClipSequence[0] || cafeClipPool[0] || null;
+          const otherClips = cafeClipPool.slice(1, 3);
+          const vendor = document.getElementById('ai-vendor')?.value || detectedProviderType || 'gemini';
+          const model = document.getElementById('ai-provider')?.value || '';
+
+          if (loadingText) {
+            loadingText.textContent = primaryClip
+              ? `กำลังแต่งประโยคจากเนื้อเรื่องหนัง "${primaryClip.movieTitle || primaryClip.title}" ด้วย ${VENDOR_LABELS[vendor] || vendor} (${model})...`
+              : `กำลังสร้างเนื้อหาด้วย ${VENDOR_LABELS[vendor] || vendor} (${model})...`;
+          }
+
+          const prompt = buildMovieContextualPrompt(word, primaryClip, otherClips);
+          const aiResult = await invokeSelectedAiModel(prompt, loadingText);
+
+          document.getElementById('res-phonetic').value = aiResult.phonetic || '';
+          document.getElementById('res-thai-read').value = aiResult.thaiRead || '';
+          document.getElementById('res-meaning').value = aiResult.meaning || '';
+          document.getElementById('res-grammar').value = aiResult.grammar || '';
+          if (document.getElementById('res-movie-context')) {
+            document.getElementById('res-movie-context').value = aiResult.movieContextTh || '';
+          }
+          document.getElementById('res-ex1-en').value = aiResult.ex1En || '';
+          document.getElementById('res-ex1-th').value = aiResult.ex1Th || '';
+          document.getElementById('res-ex2-en').value = aiResult.ex2En || '';
+          document.getElementById('res-ex2-th').value = aiResult.ex2Th || '';
+          document.getElementById('res-ex3-en').value = aiResult.ex3En || '';
+          document.getElementById('res-ex3-th').value = aiResult.ex3Th || '';
+          if (aiResult.socialCaption) {
+            document.getElementById('social-description').value = aiResult.socialCaption;
+          }
+
+          updateScrapedMovieContextUI();
+          syncFromDesktopForm();
+          showToast(primaryClip
+            ? `AI แต่งประโยคสอดคล้องกับหนัง "${primaryClip.movieTitle}" สำเร็จ!`
+            : 'AI สร้างเนื้อหาสำเร็จ!');
+        } catch (err) {
+          console.error('AI API error:', err);
+          showToast(`เรียก AI ไม่สำเร็จ: ${err.message}`);
+        } finally {
+          if (loadingBox) loadingBox.classList.add('hidden');
+        }
+      }
+
+      // Re-craft example sentences specifically for the currently selected movie clip
+      async function craftSentencesFromSelectedClip() {
+        const primaryClip = activeClipSequence[0] || cafeClipPool[0];
+        if (!primaryClip) {
+          showToast('กรุณาค้นหาและเลือกคลิปหนังภาษาอังกฤษก่อน');
+          return;
+        }
+        const word = document.getElementById('target-word')?.value.trim() || document.getElementById('clip-query')?.value.trim();
+        if (!word) {
+          showToast('กรุณาพิมพ์คำศัพท์ภาษาอังกฤษก่อน');
+          return;
+        }
+        if (document.getElementById('target-word') && !document.getElementById('target-word').value.trim()) {
+          document.getElementById('target-word').value = word;
+        }
+        await runAiAgentGeneration();
+      }
+
+      function updateScrapedMovieContextUI() {
+        const box = document.getElementById('scraped-movie-context-box');
+        if (!box) return;
+        const clip = activeClipSequence[0] || cafeClipPool[0];
+        if (!clip) {
+          box.classList.add('hidden');
+          return;
+        }
+        box.classList.remove('hidden');
+        const titleEl = document.getElementById('ctx-movie-title');
+        const genresEl = document.getElementById('ctx-movie-genres');
+        const prodEl = document.getElementById('ctx-movie-prod');
+        const quoteEl = document.getElementById('ctx-movie-quote');
+        const sumEl = document.getElementById('ctx-movie-summary');
+
+        if (titleEl) titleEl.textContent = clip.title || clip.movieTitle || '';
+        if (genresEl) {
+          genresEl.textContent = clip.genres || 'English Film';
+          genresEl.classList.toggle('hidden', !clip.genres);
+        }
+        if (prodEl) {
+          prodEl.textContent = clip.production && clip.production !== 'N/A' ? `ค่ายผู้สร้าง: ${clip.production}` : 'ภาพยนตร์เสียงภาษาอังกฤษ (Audio: EN)';
+        }
+        if (quoteEl) quoteEl.textContent = clip.quote || clip.fullTranscript || '-';
+        if (sumEl) {
+          sumEl.textContent = clip.movieSummary || 'ฉากภาพยนตร์ภาษาอังกฤษจาก clip.cafe ที่มีบทพูดตรงกับคำศัพท์';
+        }
+      }
+
+      function toggleApiKeyVisibility() {
+        const input = document.getElementById('api-key');
+        const icon = document.getElementById('eye-icon');
+        if (!input || !icon) return;
+        if (input.type === 'password') {
+          input.type = 'text';
+          icon.classList.replace('fa-eye', 'fa-eye-slash');
+        } else {
+          input.type = 'password';
+          icon.classList.replace('fa-eye-slash', 'fa-eye');
+        }
+      }
+
+      // Real Clip.Cafe Scraping Logic (Filtered for English Movies + Movie Summary)
+      function parseCafeClipHtml(html) {
+        const clips = [];
+        const blocks = (html || '').split('<div class="searchResultClip">').slice(1);
+        for (const b of blocks) {
+          const slug = (b.match(/data-slug=["']([^"']+)["']/) || [])[1];
+          const link = (b.match(/data-link=["']([^"']+)["']/) || [])[1];
+          if (!slug || !link) continue;
+
+          const isEnglishAudio = /title=["']Audio:\s*English["']/i.test(b) || /<span class=["']pill-code["']>EN<\/span>/i.test(b);
+          if (!isEnglishAudio) continue;
+
+          const isSeries = /Season\s+\d+|Episode\s+\d+|clipEpisodeBadge/i.test(b);
+          const duration = ((b.match(/<span class=["']videoDuration["']>([^<]+)<\/span>/) || [])[1] || '').trim();
+          const movieTitle = ((b.match(/<div class=["']clipMovie["']>\s*<a[^>]*>([^<]+)<\/a>/) || [])[1] || 'Movie Scene').trim();
+          const movieDivMatch = b.match(/<div class=["']clipMovie["']>([\s\S]*?)<\/div>/);
+          const movieMetaText = movieDivMatch ? movieDivMatch[1].replace(/<[^>]+>/g, ' ') : '';
+          const yearMatch = movieMetaText.match(/\b(19\d{2}|20\d{2})\b/);
+          const year = yearMatch ? parseInt(yearMatch[1], 10) : new Date().getFullYear();
+
+          const transMatch = b.match(/<div class=["']clipTrans["']>\s*<p>(?:<b>Transcript:<\/b><br>)?([\s\S]*?)<\/p>/i);
+          const transcript = transMatch ? transMatch[1].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim() : '';
+
+          clips.push({
+            id: `cafe_${slug}`,
+            slug,
+            link,
+            title: `${movieTitle} (${year})`,
+            movieTitle,
+            year,
+            duration,
+            isMovie: !isSeries,
+            audioLang: 'EN',
+            quote: transcript ? `"${transcript}"` : `Scene from ${movieTitle}`,
+            movieSummary: '',
+            thumb: `https://clip.cafe/img800/${slug}.jpg`,
+            videoUrl: `https://clip.cafe/videos/${slug}.mp4`,
+            pageUrl: `https://clip.cafe/${link}`,
+            isRealCafeClip: true
+          });
+        }
+        return clips.sort((a, b) => (a.isMovie === b.isMovie ? 0 : a.isMovie ? -1 : 1));
+      }
+
+      async function scrapeRealCafeClips(query, page = 1) {
+        const cleanQuery = encodeURIComponent(query.trim());
+        const localEndpoints = [
+          `http://127.0.0.1:3001/api/cafe/search?q=${cleanQuery}&page=${page}`,
+          `http://localhost:3001/api/cafe/search?q=${cleanQuery}&page=${page}`
+        ];
+
+        for (const ep of localEndpoints) {
+          try {
+            const localResp = await fetch(ep, {
+              signal: AbortSignal.timeout(15000)
+            });
+            if (localResp.ok) {
+              const data = await localResp.json();
+              if (data.success && data.clips && data.clips.length > 0) return data.clips;
+            }
+          } catch (e) {}
+        }
+
+        const targetUrl = page > 1
+          ? `https://clip.cafe/page/${page}/?s=${cleanQuery}&usersearch=1`
+          : `https://clip.cafe/?s=${cleanQuery}&usersearch=1`;
+
+        const proxies = [
+          `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`,
+          `https://corsproxy.io/?url=${encodeURIComponent(targetUrl)}`
+        ];
+        for (const proxyUrl of proxies) {
+          try {
+            const proxyResp = await fetch(proxyUrl, { signal: AbortSignal.timeout(8000) });
+            if (proxyResp.ok) {
+              const html = await proxyResp.text();
+              const scrapedClips = parseCafeClipHtml(html);
+              if (scrapedClips.length > 0) return scrapedClips;
+            }
+          } catch (err) {}
+        }
+        return [];
+      }
+
+      async function searchCafeClips(reset = false) {
+        if (isScrapingClips) return;
+        const wordVal = document.getElementById('target-word')?.value.trim();
+        const clipQEl = document.getElementById('clip-query');
+        if (clipQEl && wordVal && !clipQEl.value.trim()) {
+          clipQEl.value = wordVal;
+        }
+        const query = clipQEl?.value.trim() || wordVal || '';
+        if (!query) {
+          showToast('กรุณาพิมพ์คำศัพท์ที่ต้องการค้นหาคลิปก่อน');
+          return;
+        }
+
+        if (reset) {
+          currentPage = 1;
+          cafeClipPool = [];
+          const grid = document.getElementById('clip-grid');
+          if (grid) {
+            grid.innerHTML = `<div class="col-span-full py-6 text-center text-[#777169] text-xs"><i class="fa-solid fa-spinner fa-spin mr-1.5"></i>กำลัง Scrape คลิปหนังภาษาอังกฤษ & คำอธิบายเนื้อเรื่องจาก clip.cafe...</div>`;
+          }
+        }
+
+        isScrapingClips = true;
+        try {
+          const scraped = await scrapeRealCafeClips(query, currentPage);
+          const indicator = document.getElementById('clip-source-indicator');
+          if ( scraped.length > 0 || scraped.length >= 0 ) {
+            if (scraped.length > 0) {
+              cafeClipPool = cafeClipPool.concat(scraped);
+              const movieCount = cafeClipPool.filter(c => c.isMovie).length;
+              if (indicator) {
+                indicator.textContent = `${movieCount || cafeClipPool.length} clips`;
+                indicator.classList.remove('hidden');
+              }
+              // Preserve existing selected clips unless activeClipSequence is completely empty
+              if (activeClipSequence.length === 0) {
+                activeClipSequence = [cafeClipPool[0]];
+              }
+              prepareClipsWithPython(activeClipSequence);
+              renderClipGrid();
+              renderSequenceList();
+              updateScrapedMovieContextUI();
+              syncFromDesktopForm();
+            } else if (cafeClipPool.length === 0) {
+              const grid = document.getElementById('clip-grid');
+              if (grid) {
+                grid.innerHTML = `<div class="col-span-full py-6 text-center text-[#777169] text-xs">No clips found</div>`;
+              }
+            }
+          }
+        } finally {
+          isScrapingClips = false;
+        }
+      }
+
+      function loadMoreCafeClips() {
+        currentPage++;
+        searchCafeClips(false);
+      }
+
+      function formatDurationLabel(dur) {
+        if (!dur) return '';
+        const clean = String(dur).trim();
+        if (!clean) return '';
+        if (/^\d+$/.test(clean)) return `${clean}s`;
+        return clean;
+      }
+
+      function renderClipGrid() {
+        const grid = document.getElementById('clip-grid');
+        if (!grid) return;
+        grid.innerHTML = '';
+        cafeClipPool.forEach(clip => {
+          const seqIdx = activeClipSequence.findIndex(s => s.id === clip.id);
+          const isSelected = seqIdx !== -1;
+          const durText = formatDurationLabel(clip.duration);
+          const thumbSrc = normalizeThumbUrl(clip.thumb, clip.slug);
+          const card = document.createElement('div');
+          card.className = `relative aspect-[3/2] rounded-xl overflow-hidden border-2 cursor-pointer transition ${
+            isSelected ? 'border-[#0c0a09] ring-2 ring-[#0c0a09]/20' : 'border-[#e7e5e4] opacity-85 hover:opacity-100'
+          }`;
+          card.onclick = () => toggleSelectClip(clip);
+          card.innerHTML = `
+            <img src="${thumbSrc}" alt="${clip.title}" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent flex flex-col justify-between p-2">
+              <div class="flex justify-between items-start gap-1">
+                <div class="flex items-center gap-1 flex-wrap">
+                  <span class="text-[9px] px-1.5 py-0.5 rounded-full bg-black/60 text-white font-mono">${clip.year}</span>
+                  ${durText ? `<span class="text-[9px] px-1.5 py-0.5 rounded-full bg-[#0c0a09]/85 text-amber-300 font-mono font-semibold flex items-center gap-0.5"><i class="fa-regular fa-clock text-[8px]"></i>${durText}</span>` : ''}
+                </div>
+                <div class="w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 text-[9px] font-bold ${isSelected ? 'bg-[#0c0a09] text-white ring-1 ring-white/50' : 'bg-black/60 text-white'}">
+                  ${isSelected ? `<i class="fa-solid fa-check text-[8px] mr-0.5"></i>${seqIdx + 1}` : '<i class="fa-solid fa-plus text-[9px]"></i>'}
+                </div>
+              </div>
+              <div class="text-left space-y-0.5">
+                <p class="text-[10px] font-semibold text-white truncate">${clip.title}</p>
+                <p class="text-[8.5px] text-amber-200/95 truncate">${clip.quote}</p>
+              </div>
+            </div>
+          `;
+          grid.appendChild(card);
+        });
+      }
+
+      function toggleSelectClip(clip) {
+        const idx = activeClipSequence.findIndex(s => s.id === clip.id);
+        if (idx !== -1) {
+          // If already selected, remove it from queue (unless it's the only clip, or allow toggling off if > 1)
+          if (activeClipSequence.length > 1) {
+            activeClipSequence.splice(idx, 1);
+          } else {
+            showToast('เลือกคลิปนี้อยู่แล้วในคิวลำดับที่ 1');
+          }
+        } else {
+          // Append newly selected clip to queue while keeping previously selected clips!
+          activeClipSequence.push(clip);
+        }
+        renderClipGrid();
+        renderSequenceList();
+        updateScrapedMovieContextUI();
+        prepareClipsWithPython(activeClipSequence);
+        syncFromDesktopForm();
+      }
+
+      function renderSequenceList() {
+        const container = document.getElementById('sequence-list');
+        const badge = document.getElementById('selected-badge');
+        if (!container || !badge) return;
+        badge.textContent = `${activeClipSequence.length} clips`;
+        container.innerHTML = '';
+
+        if (activeClipSequence.length === 0) {
+          container.innerHTML = '<div class="text-center py-2 text-xs text-[#777169]">No clips in queue</div>';
+          return;
+        }
+
+        activeClipSequence.forEach((clip, index) => {
+          const durText = formatDurationLabel(clip.duration);
+          const thumbSrc = normalizeThumbUrl(clip.thumb, clip.slug);
+          const item = document.createElement('div');
+          item.className = 'flex items-center justify-between p-1.5 bg-white border border-[#e7e5e4] rounded-xl space-x-2';
+          item.innerHTML = `
+            <div class="flex items-center space-x-2 min-w-0">
+              <span class="w-5 h-5 rounded-full bg-[#f0efed] text-[#0c0a09] flex items-center justify-center text-[10px] font-mono flex-shrink-0">${index + 1}</span>
+              <img src="${thumbSrc}" class="w-10 h-7 rounded object-cover border border-[#e7e5e4] flex-shrink-0" alt="">
+              <div class="truncate text-left flex items-center gap-1.5 min-w-0">
+                <p class="text-xs font-medium text-[#0c0a09] truncate">${clip.title}</p>
+                ${durText ? `<span class="text-[9px] px-1.5 py-0.5 rounded-full bg-[#f0efed] text-[#0c0a09] font-mono font-semibold flex-shrink-0"><i class="fa-regular fa-clock mr-0.5 text-[8px]"></i>${durText}</span>` : ''}
+              </div>
+            </div>
+            <div class="flex items-center space-x-1 flex-shrink-0">
+              <button type="button" onclick="moveSequence(${index}, -1)" ${index === 0 ? 'disabled class="opacity-20"' : ''} class="w-6 h-6 rounded-full hover:bg-[#f0efed] flex items-center justify-center"><i class="fa-solid fa-arrow-up text-[10px]"></i></button>
+              <button type="button" onclick="moveSequence(${index}, 1)" ${index === activeClipSequence.length - 1 ? 'disabled class="opacity-20"' : ''} class="w-6 h-6 rounded-full hover:bg-[#f0efed] flex items-center justify-center"><i class="fa-solid fa-arrow-down text-[10px]"></i></button>
+              <button type="button" onclick="removeSequence(${index})" class="w-6 h-6 rounded-full hover:bg-rose-50 text-rose-600 flex items-center justify-center"><i class="fa-solid fa-trash-can text-[10px]"></i></button>
+            </div>
+          `;
+          container.appendChild(item);
+        });
+      }
+
+      function moveSequence(index, direction) {
+        const target = index + direction;
+        if (target < 0 || target >= activeClipSequence.length) return;
+        const temp = activeClipSequence[index];
+        activeClipSequence[index] = activeClipSequence[target];
+        activeClipSequence[target] = temp;
+        renderSequenceList();
+        renderClipGrid();
+        syncFromDesktopForm();
+      }
+
+      function removeSequence(index) {
+        activeClipSequence.splice(index, 1);
+        renderSequenceList();
+        renderClipGrid();
+        syncFromDesktopForm();
+      }
+
+      // Python Video Engine Integration: Pre-download & cache selected clips via Python so sequential playback is 100% smooth with audio
+      async function prepareClipsWithPython(clipsList) {
+        if (!Array.isArray(clipsList) || clipsList.length === 0) return;
+        const baseApis = ['http://127.0.0.1:3001', 'http://localhost:3001'];
+        for (const base of baseApis) {
+          try {
+            const resp = await fetch(`${base}/api/cafe/python-sequence`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ clips: clipsList })
+            });
+            if (resp.ok) {
+              const data = await resp.json();
+              if (data.success && Array.isArray(data.clips)) {
+                data.clips.forEach((pyClip, i) => {
+                  if (clipsList[i] && pyClip.publicUrl) {
+                    clipsList[i].localVideoUrl = `${base}${pyClip.publicUrl}`;
+                  }
+                });
+                return;
+              }
+            }
+          } catch (e) {}
+        }
+      }
+
+      async function playAllClipsWithPython() {
+        if (!activeClipSequence.length) {
+          showToast('กรุณาเลือกคลิปหนังก่อน');
+          return;
+        }
+        showToast(`กำลังใช้ Python ดึงคลิป ${activeClipSequence.length} เรื่องมาเล่นต่อกันตามคิว...`);
+        await prepareClipsWithPython(activeClipSequence);
+        isPlayingVideo = false;
+        toggleClipPlayback();
+      }
+
+      // Play video continuously across selected sequence
+      function toggleClipPlayback() {
+        if (!activeClipSequence.length) return;
+        const video = document.getElementById('preview-video');
+        const img = document.getElementById('preview-movie-img');
+        const playIcon = document.getElementById('play-indicator-icon');
+
+        if (isPlayingVideo) {
+          video.pause();
+          video.classList.add('hidden');
+          img.classList.remove('hidden');
+          if (playIcon) playIcon.className = 'fa-solid fa-play text-sm ml-0.5';
+          isPlayingVideo = false;
+          return;
+        }
+
+        isPlayingVideo = true;
+        img.classList.add('hidden');
+        video.classList.remove('hidden');
+        if (playIcon) playIcon.className = 'fa-solid fa-pause text-sm';
+        playClipAtSequenceIndex(0);
+      }
+
+      async function playClipAtSequenceIndex(idx) {
+        if (!activeClipSequence.length) return;
+        if (idx >= activeClipSequence.length) idx = 0;
+        currentSequenceIndex = idx;
+        const currentClip = activeClipSequence[idx];
+        const video = document.getElementById('preview-video');
+        const title = document.getElementById('preview-movie-title');
+
+        title.textContent = currentClip.title || '';
+
+        // Ensure Python local cached stream is used for instant audio+video playback
+        if (!currentClip.localVideoUrl && currentClip.slug) {
+          try {
+            const resp = await fetch(`http://127.0.0.1:3001/api/cafe/python-video?slug=${encodeURIComponent(currentClip.slug)}`);
+            if (resp.ok) {
+              const pyData = await resp.json();
+              if (pyData.success && pyData.publicUrl) {
+                currentClip.localVideoUrl = `http://127.0.0.1:3001${pyData.publicUrl}`;
+              }
+            }
+          } catch (e) {}
+        }
+
+        video.src = currentClip.localVideoUrl || currentClip.videoUrl || '';
+        video.muted = false;
+        video.play().catch(() => {
+          video.muted = true;
+          video.play().catch(err => console.warn(err));
+        });
+        video.onended = () => {
+          if (isPlayingVideo) playClipAtSequenceIndex(currentSequenceIndex + 1);
+        };
+      }
+
+      // Export & Download Utilities (Captures the ENTIRE Preview Canvas including Vocab, Grammar, Examples & 16:9 Movie Clip)
+      let isExportingNow = false;
+
+      function getBackendOrigin() {
+        if (window.location.protocol.startsWith('http') && window.location.port === '3001') {
+          return window.location.origin;
+        }
+        return 'http://127.0.0.1:3001';
+      }
+
+      function openExportModal() {
+        document.getElementById('export-modal').classList.remove('hidden');
+      }
+
+      function closeExportModal() {
+        document.getElementById('export-modal').classList.add('hidden');
+        document.getElementById('export-status').classList.add('hidden');
+      }
+
+      async function captureFullPreviewSlideAndRect(forVideoExport = false) {
+        const phone = document.getElementById('phone-container');
+        const clipBox = document.getElementById('movie-clip-box');
+        const video = document.getElementById('preview-video');
+        const img = document.getElementById('preview-movie-img');
+
+        // Ensure fonts are ready before capturing
+        if (document.fonts && document.fonts.ready) {
+          await document.fonts.ready.catch(() => {});
+        }
+
+        const phoneRect = phone.getBoundingClientRect();
+        const clipRect = clipBox.getBoundingClientRect();
+
+        const relRect = {
+          xRatio: Math.max(0, (clipRect.left - phoneRect.left) / Math.max(1, phoneRect.width)),
+          yRatio: Math.max(0, (clipRect.top - phoneRect.top) / Math.max(1, phoneRect.height)),
+          wRatio: Math.min(1, clipRect.width / Math.max(1, phoneRect.width)),
+          hRatio: Math.min(1, clipRect.height / Math.max(1, phoneRect.height))
+        };
+
+        const wasVideoPlaying = !video.paused && !video.classList.contains('hidden');
+        if (wasVideoPlaying) {
+          video.pause();
+        }
+
+        // Wait one animation frame so layout is 100% settled
+        await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+
+        const canvas = await html2canvas(phone, {
+          scale: forVideoExport ? 2 : 2.5,
+          useCORS: true,
+          allowTaint: false,
+          logging: false,
+          backgroundColor: '#fafafa',
+          onclone: (clonedDoc) => {
+            const clonedPhone = clonedDoc.getElementById('phone-container');
+            if (!clonedPhone) return;
+            clonedPhone.style.transition = 'none';
+            const clonedVideo = clonedDoc.getElementById('preview-video');
+            const clonedImg = clonedDoc.getElementById('preview-movie-img');
+            if (clonedVideo) clonedVideo.classList.add('hidden');
+            if (clonedImg && clonedImg.getAttribute('src')) {
+              clonedImg.classList.remove('hidden');
+            }
+            clonedPhone.querySelectorAll('[data-export-ignore="true"]').forEach(el => {
+              el.style.opacity = '0';
+            });
+          }
+        });
+
+        return {
+          canvas,
+          dataUrl: canvas.toDataURL('image/png'),
+          clipRect: relRect
+        };
+      }
+
+      function triggerBlobDownload(blob, filename) {
+        const blobUrl = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.style.display = 'none';
+        link.href = blobUrl;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+        setTimeout(() => {
+          link.remove();
+          URL.revokeObjectURL(blobUrl);
+        }, 4000);
+      }
+
+      async function exportPhoneAsImage() {
+        if (isExportingNow) return;
+        isExportingNow = true;
+        const status = document.getElementById('export-status');
+        const ratio = currentClipAspectRatio || '9:16';
+        status.classList.remove('hidden');
+        status.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin mr-1"></i>กำลังเรนเดอร์ภาพทั้งหน้าพรีวิว (${ratio}) ความละเอียดสูง...`;
+
+        try {
+          const captured = await captureFullPreviewSlideAndRect(false);
+          const word = (document.getElementById('preview-word').textContent.trim() || 'vocab').replace(/[^a-zA-Z0-9]/g, '_');
+          const filename = `move0nyoung_${word}_slide_${ratio.replace(':', 'x')}.png`;
+
+          await new Promise((resolve, reject) => {
+            captured.canvas.toBlob((blob) => {
+              if (!blob) return reject(new Error('Canvas toBlob failed'));
+              triggerBlobDownload(blob, filename);
+              resolve();
+            }, 'image/png');
+          });
+
+          status.innerHTML = `<i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i>บันทึกภาพสไลด์พรีวิว (${ratio}) เรียบร้อยแล้ว!`;
+          showToast(`บันทึกภาพ PNG (${ratio}) สำเร็จ!`);
+        } catch (e) {
+          console.error('Image export error:', e);
+          status.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-rose-600 mr-1"></i>เกิดข้อผิดพลาดในการเรนเดอร์ภาพ: ${e.message || ''}`;
+        } finally {
+          isExportingNow = false;
+        }
+      }
+
+      async function exportClipVideo(fitMode = 'pad') {
+        if (isExportingNow) return;
+        let clipsToExport = activeClipSequence && activeClipSequence.length > 0
+          ? activeClipSequence
+          : (cafeClipPool.length > 0 ? [cafeClipPool[0]] : []);
+
+        if (clipsToExport.length === 0) {
+          showToast('ยังไม่มีคลิปวิดีโอที่เลือกในคิว กรุณาค้นหาและเลือกคลิปก่อน');
+          return;
+        }
+
+        isExportingNow = true;
+        const status = document.getElementById('export-status');
+        status.classList.remove('hidden');
+        const ratio = currentClipAspectRatio || '9:16';
+        const word = (document.getElementById('preview-word').textContent.trim() || 'vocab').replace(/[^a-zA-Z0-9]/g, '_');
+
+        status.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin mr-1.5"></i>กำลังจับภาพพื้นหลังพรีวิว (${ratio}) และรวมคลิป 16:9 ทั้ง ${clipsToExport.length} เรื่องด้วย Python...`;
+
+        try {
+          const captured = await captureFullPreviewSlideAndRect(true);
+          const baseOrigin = getBackendOrigin();
+
+          const resp = await fetch(`${baseOrigin}/api/cafe/python-export`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              clips: clipsToExport,
+              ratio: ratio,
+              word: word,
+              fitMode: fitMode,
+              slideImage: captured.dataUrl,
+              clipRect: captured.clipRect
+            })
+          });
+          const data = await resp.json();
+          if (!resp.ok || !data.success) {
+            throw new Error(data.error || 'Python video export failed');
+          }
+
+          const downloadUrl = `${baseOrigin}${data.publicUrl}?download=1`;
+          const outFilename = data.filename || `move0nyoung_${word}_${ratio.replace(':', 'x')}.mp4`;
+
+          status.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin mr-1.5"></i>เรนเดอร์สำเร็จ! กำลังบันทึกลงเครื่อง (${outFilename})...`;
+
+          // Fetch as Blob for reliable cross-origin / same-origin download + direct link fallback
+          try {
+            const fileResp = await fetch(downloadUrl);
+            if (!fileResp.ok) throw new Error(`HTTP ${fileResp.status}`);
+            const videoBlob = await fileResp.blob();
+            triggerBlobDownload(videoBlob, outFilename);
+          } catch (dlErr) {
+            const link = document.createElement('a');
+            link.href = downloadUrl;
+            link.download = outFilename;
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+          }
+
+          status.innerHTML = `
+            <div class="flex flex-col items-center gap-1.5">
+              <div><i class="fa-solid fa-circle-check text-emerald-600 mr-1.5"></i>บันทึกวิดีโอขนาด ${ratio} (รวม ${data.clipCount} คลิป) สำเร็จ!</div>
+              <a href="${downloadUrl}" download="${outFilename}" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#0c0a09] text-white text-[10px] font-semibold hover:bg-[#292524] transition">
+                <i class="fa-solid fa-download text-[9px]"></i> ดาวน์โหลดซ้ำ (${outFilename})
+              </a>
+            </div>
+          `;
+          showToast(`Export วิดีโอ MP4 (${ratio}) สำเร็จ!`);
+        } catch (err) {
+          console.error('Python export error:', err);
+          status.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-rose-600 mr-1.5"></i>เกิดข้อผิดพลาดในการบันทึกวิดีโอ: ${err.message}`;
+        } finally {
+          isExportingNow = false;
+        }
+      }
+
+      function copyTikTokCaption() {
+        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+        const textToCopy = saved.caption || document.getElementById('social-description')?.value || '';
+        if (!textToCopy) {
+          showToast('ยังไม่มีแคปชั่นสำหรับคัดลอก');
+          return;
+        }
+        navigator.clipboard.writeText(textToCopy).then(() => {
+          const status = document.getElementById('export-status');
+          status.classList.remove('hidden');
+          status.innerHTML = '<i class="fa-solid fa-circle-check text-emerald-600 mr-1"></i>คัดลอกแคปชั่นลงคลิปบอร์ดแล้ว!';
+        });
+      }
+
+      let customDialogResolver = null;
+
+      function showCustomDialog({ title = 'ยืนยันการดำเนินการ', message = '', showCancel = true, icon = 'fa-triangle-exclamation' } = {}) {
+        return new Promise((resolve) => {
+          customDialogResolver = resolve;
+          const modal = document.getElementById('custom-browser-dialog');
+          const titleEl = document.getElementById('custom-dialog-title');
+          const msgEl = document.getElementById('custom-dialog-message');
+          const cancelBtn = document.getElementById('custom-dialog-cancel');
+          const iconEl = document.getElementById('custom-dialog-icon');
+
+          if (titleEl) titleEl.textContent = title;
+          if (msgEl) msgEl.textContent = message;
+          if (iconEl) iconEl.className = `fa-solid ${icon} text-sm`;
+          if (cancelBtn) cancelBtn.classList.toggle('hidden', !showCancel);
+          if (modal) modal.classList.remove('hidden');
+        });
+      }
+
+      function closeCustomDialog(confirmed) {
+        const modal = document.getElementById('custom-browser-dialog');
+        if (modal) modal.classList.add('hidden');
+        if (customDialogResolver) {
+          const r = customDialogResolver;
+          customDialogResolver = null;
+          r(Boolean(confirmed));
+        }
+      }
+
+      async function resetToInitialState() {
+        const confirmed = await showCustomDialog({
+          title: 'ล้างข้อมูลทั้งหมด',
+          message: 'ต้องการล้างข้อมูลคำศัพท์ คลิปหนัง และการตั้งค่าทั้งหมดใช่หรือไม่?',
+          showCancel: true,
+          icon: 'fa-trash-can'
+        });
+        if (confirmed) {
+          localStorage.removeItem(STORAGE_KEY);
+          location.reload();
+        }
+      }
+
+      function showToast(msg) {
+        const toast = document.getElementById('toast');
+        document.getElementById('toast-msg').textContent = msg;
+        toast.classList.remove('opacity-0', 'pointer-events-none');
+        toast.classList.add('opacity-100');
+        setTimeout(() => {
+          toast.classList.remove('opacity-100');
+          toast.classList.add('opacity-0', 'pointer-events-none');
+        }, 2200);
+      }
+
+      // Initialize on load
+      window.addEventListener('DOMContentLoaded', () => {
+        initScrollRevealAnimations();
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+          try {
+            const data = JSON.parse(saved);
+            populateDesktopForm(data);
+            applyDataToPreview(data);
+          } catch (e) {
+            console.error('Error loading saved data:', e);
+          }
+        } else {
+          applyDataToPreview({});
+        }
+      });
+    </script>
+  </body>
+</html>
