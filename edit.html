@@ -1,23 +1,39 @@
 <!doctype html>
-<html lang="th">
+<html lang="th" class="light">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Move0nyoung — AI Studio & Clip Editor</title>
+    <title>moovying(En) — AI Studio & Clip Editor</title>
     <link rel="icon" type="image/png" href="icon.png">
     <link rel="apple-touch-icon" href="icon.png">
-    <!-- Tailwind CSS -->
+    <!-- Tailwind CSS with Dark Mode -->
+    <script>
+      tailwind = {
+        darkMode: 'class'
+      };
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Google Fonts: EB Garamond (Waldenburg substitute), Inter (ElevenLabs), Prompt, Itim, Fredoka, and Noto Serif Thai -->
+    <!-- Google Fonts: EB Garamond, Inter, Itim, Noto Serif Thai, Prompt, Fredoka -->
     <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@300;400;500&family=Fredoka:wght@500;600&family=Inter:wght@300;400;500;600;700&family=Itim&family=Noto+Serif+Thai:wght@400;500;600;700&family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+      :root {
+        --t-ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+        --t-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+        --t-duration-fast: 180ms;
+        --t-duration-normal: 280ms;
+      }
       body {
         font-family: 'Inter', 'Prompt', -apple-system, BlinkMacSystemFont, sans-serif;
         letter-spacing: 0.16px;
         background-color: #f5f5f5;
         color: #0c0a09;
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+      html.dark body {
+        background-color: #0c0a09;
+        color: #f5f5f4;
       }
       .editorial-display {
         font-family: 'EB Garamond', 'Times New Roman', serif;
@@ -27,14 +43,9 @@
       .vocab-font {
         font-family: 'Fredoka', 'Itim', cursive, sans-serif;
       }
-      .thai-vocab-font {
+      .thai-vocab-font,
+      .preview-thai-font {
         font-family: 'Itim', cursive, sans-serif;
-      }
-      .grammar-card-thai-font {
-        font-family: 'Fredoka', 'Noto Serif Thai', serif;
-      }
-      .noto-serif-thai {
-        font-family: 'Noto Serif Thai', serif;
       }
       .highlight-yellow {
         background-color: #fde047;
@@ -45,6 +56,25 @@
         box-decoration-break: clone;
         -webkit-box-decoration-break: clone;
       }
+      html.dark .highlight-yellow {
+        background-color: #eab308;
+        color: #000;
+      }
+      .t-btn-press {
+        transition: transform var(--t-duration-fast) var(--t-ease-out), box-shadow var(--t-duration-fast) var(--t-ease-out);
+      }
+      .t-btn-press:active {
+        transform: scale(0.94);
+      }
+      .t-card-hover {
+        transition: transform var(--t-duration-normal) var(--t-ease-spring), box-shadow var(--t-duration-normal) var(--t-ease-spring);
+      }
+      .t-card-hover:hover {
+        transform: translateY(-2px);
+      }
+      .spin-active {
+        animation: fa-spin 0.8s linear infinite !important;
+      }
       /* Smooth scrolling & Scroll-Reveal / Collapsible Card Animations */
       html {
         scroll-behavior: smooth;
@@ -52,8 +82,14 @@
       .tool-section-card {
         transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
                     opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1),
-                    box-shadow 0.25s ease;
+                    box-shadow 0.25s ease,
+                    background-color 0.25s ease,
+                    border-color 0.25s ease;
         will-change: transform, opacity;
+      }
+      html.dark .tool-section-card {
+        background-color: #1c1917 !important;
+        border-color: #292524 !important;
       }
       .tool-section-card:hover {
         box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
@@ -112,57 +148,63 @@
       }
     </style>
   </head>
-  <body class="bg-[#f5f5f5] text-[#292524] min-h-screen flex flex-col items-center pb-24 sm:pb-16 pt-0 sm:pt-4 px-3 sm:px-6 relative overflow-x-hidden">
+  <body class="bg-[#f5f5f5] dark:bg-[#0c0a09] text-[#292524] dark:text-[#f5f5f4] min-h-screen flex flex-col items-center pb-24 sm:pb-16 pt-0 sm:pt-4 px-3 sm:px-6 relative overflow-x-hidden">
 
     <!-- ElevenLabs Atmospheric Pastel Gradient Orbs (Mint, Peach, Lavender) -->
-    <div class="pointer-events-none fixed -top-28 -left-28 w-96 h-96 rounded-full opacity-40 blur-3xl z-0" style="background: radial-gradient(circle, #a7e5d3 0%, transparent 70%);"></div>
-    <div class="pointer-events-none fixed top-1/3 -right-28 w-96 h-96 rounded-full opacity-40 blur-3xl z-0" style="background: radial-gradient(circle, #f4c5a8 0%, transparent 70%);"></div>
-    <div class="pointer-events-none fixed -bottom-28 left-1/4 w-96 h-96 rounded-full opacity-35 blur-3xl z-0" style="background: radial-gradient(circle, #c8b8e0 0%, transparent 70%);"></div>
+    <div class="pointer-events-none fixed -top-28 -left-28 w-96 h-96 rounded-full opacity-40 dark:opacity-20 blur-3xl z-0" style="background: radial-gradient(circle, #a7e5d3 0%, transparent 70%);"></div>
+    <div class="pointer-events-none fixed top-1/3 -right-28 w-96 h-96 rounded-full opacity-40 dark:opacity-20 blur-3xl z-0" style="background: radial-gradient(circle, #f4c5a8 0%, transparent 70%);"></div>
+    <div class="pointer-events-none fixed -bottom-28 left-1/4 w-96 h-96 rounded-full opacity-35 dark:opacity-15 blur-3xl z-0" style="background: radial-gradient(circle, #c8b8e0 0%, transparent 70%);"></div>
 
-    <!-- Top Sticky Header (Follows Scroll on Mobile + Quick Tool Search & Preview Button) -->
-    <header class="w-full max-w-2xl sticky top-0 z-40 bg-white/95 backdrop-blur-md border border-[#e7e5e4] rounded-b-2xl sm:rounded-2xl p-3 mb-4 shadow-[0_6px_20px_rgba(0,0,0,0.06)] space-y-2.5">
+    <!-- Top Sticky Header (Follows Scroll on Mobile + Quick Tool Search, Dark Mode & Language Toggle) -->
+    <header class="w-full max-w-2xl sticky top-0 z-40 bg-white/95 dark:bg-[#1c1917]/95 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] rounded-b-2xl sm:rounded-2xl p-3 mb-4 shadow-[0_6px_20px_rgba(0,0,0,0.06)] space-y-2.5">
       <div class="flex items-center justify-between gap-2">
-        <div class="flex items-center space-x-2">
-          <a href="index.html" onclick="autoSaveDraft()" class="w-9 h-9 rounded-full bg-white border border-[#d6d3d1] hover:border-[#0c0a09] flex items-center justify-center text-[#292524] hover:text-[#0c0a09] shadow-2xs transition flex-shrink-0" title="Back to Preview" aria-label="กลับหน้า Preview">
+        <div class="flex items-center space-x-2.5">
+          <a href="index.html" onclick="autoSaveDraft()" class="w-9 h-9 rounded-full bg-white dark:bg-[#292524] border border-[#d6d3d1] dark:border-[#44403c] hover:border-[#0c0a09] dark:hover:border-white flex items-center justify-center text-[#292524] dark:text-white shadow-2xs transition flex-shrink-0 t-btn-press" title="Back to Preview" aria-label="กลับหน้า Preview">
             <i class="fa-solid fa-arrow-left text-xs"></i>
           </a>
-          <img src="icon.png" alt="Logo" class="w-8 h-8 rounded-lg object-contain border border-[#e7e5e4] bg-white p-0.5 flex-shrink-0">
+          <!-- Frameless enlarged logo -->
+          <img src="icon.png" alt="movyEng Logo" class="w-10 h-10 object-contain flex-shrink-0">
           <div>
-            <h1 class="editorial-display text-xl sm:text-2xl text-[#0c0a09] leading-none">
-              Clip Studio
+            <h1 class="editorial-display text-xl sm:text-2xl text-[#0c0a09] dark:text-white leading-none">
+              movyEng
             </h1>
-            <p class="text-[10px] text-[#777169] mt-0.5">AI Vocab & Movie Clip Editor</p>
+            <p class="text-[10px] text-[#777169] dark:text-[#a8a29e] mt-0.5">moovying(En) Studio</p>
           </div>
         </div>
-        <div class="flex items-center gap-1">
+        <div class="flex items-center gap-1.5">
+          <!-- Language Toggle (TH / EN) -->
+          <button type="button" onclick="toggleLanguage()" id="btn-lang-toggle" class="h-8 px-2.5 rounded-full bg-[#f0efed] dark:bg-[#292524] hover:bg-[#e7e5e4] dark:hover:bg-[#3b3633] text-[#0c0a09] dark:text-white text-xs font-semibold flex items-center gap-1 transition t-btn-press shadow-2xs" title="Switch Language (TH / EN)">
+            <i class="fa-solid fa-globe text-[11px] text-[#777169] dark:text-[#a8a29e]"></i>
+            <span id="lang-badge-text">TH</span>
+          </button>
+          <!-- Theme Toggle (Dark / Light) -->
+          <button type="button" onclick="toggleTheme()" id="btn-theme-toggle" class="w-8 h-8 rounded-full bg-[#f0efed] dark:bg-[#292524] hover:bg-[#e7e5e4] dark:hover:bg-[#3b3633] text-[#0c0a09] dark:text-white flex items-center justify-center transition t-btn-press shadow-2xs" title="Dark / Light Theme">
+            <i id="theme-toggle-icon" class="fa-solid fa-moon text-xs text-[#777169] dark:text-amber-400"></i>
+          </button>
           <!-- Quick Jump Tool Icons -->
-          <button type="button" onclick="jumpToToolSection('tool-sec-ai')" class="w-7 h-7 rounded-full bg-[#f0efed] hover:bg-[#0c0a09] hover:text-white text-[#292524] transition flex items-center justify-center" title="1. AI Model">
+          <button type="button" onclick="jumpToToolSection('tool-sec-ai')" class="w-7 h-7 rounded-full bg-[#f0efed] dark:bg-[#292524] hover:bg-[#0c0a09] hover:text-white text-[#292524] dark:text-[#a8a29e] transition flex items-center justify-center t-btn-press" title="1. AI Model">
             <i class="fa-solid fa-microchip text-[10px]"></i>
           </button>
-          <button type="button" onclick="jumpToToolSection('tool-sec-vocab')" class="w-7 h-7 rounded-full bg-[#f0efed] hover:bg-[#0c0a09] hover:text-white text-[#292524] transition flex items-center justify-center" title="2. Vocabulary & Clips">
+          <button type="button" onclick="jumpToToolSection('tool-sec-vocab')" class="w-7 h-7 rounded-full bg-[#f0efed] dark:bg-[#292524] hover:bg-[#0c0a09] hover:text-white text-[#292524] dark:text-[#a8a29e] transition flex items-center justify-center t-btn-press" title="2. Vocabulary & Clips">
             <i class="fa-solid fa-wand-magic-sparkles text-[10px]"></i>
           </button>
-          <button type="button" onclick="jumpToToolSection('tool-sec-ratio')" class="w-7 h-7 rounded-full bg-[#f0efed] hover:bg-[#0c0a09] hover:text-white text-[#292524] transition flex items-center justify-center" title="3. Aspect Ratio & Queue">
+          <button type="button" onclick="jumpToToolSection('tool-sec-ratio')" class="w-7 h-7 rounded-full bg-[#f0efed] dark:bg-[#292524] hover:bg-[#0c0a09] hover:text-white text-[#292524] dark:text-[#a8a29e] transition flex items-center justify-center t-btn-press" title="3. Aspect Ratio & Background">
             <i class="fa-solid fa-crop-simple text-[10px]"></i>
           </button>
-          <button type="button" onclick="jumpToToolSection('tool-sec-social')" class="w-7 h-7 rounded-full bg-[#f0efed] hover:bg-[#0c0a09] hover:text-white text-[#292524] transition flex items-center justify-center" title="4. Profile & Caption">
+          <button type="button" onclick="jumpToToolSection('tool-sec-social')" class="w-7 h-7 rounded-full bg-[#f0efed] dark:bg-[#292524] hover:bg-[#0c0a09] hover:text-white text-[#292524] dark:text-[#a8a29e] transition flex items-center justify-center t-btn-press" title="4. Profile & Caption">
             <i class="fa-solid fa-user text-[10px]"></i>
           </button>
-          <button type="button" onclick="toggleAllToolSections()" class="w-7 h-7 rounded-full bg-[#f0efed] hover:bg-[#0c0a09] hover:text-white text-[#292524] transition flex items-center justify-center" title="Expand / Collapse All Cards">
+          <button type="button" onclick="toggleAllToolSections()" class="w-7 h-7 rounded-full bg-[#f0efed] dark:bg-[#292524] hover:bg-[#0c0a09] hover:text-white text-[#292524] dark:text-[#a8a29e] transition flex items-center justify-center t-btn-press" title="Expand / Collapse All Cards">
             <i id="toggle-all-cards-icon" class="fa-solid fa-compress text-[10px]"></i>
           </button>
-          <!-- Sticky Preview Button (Follows while scrolling) -->
-          <a href="index.html" onclick="autoSaveDraft()" class="w-9 h-9 bg-[#0c0a09] hover:bg-[#292524] text-white rounded-full shadow-xs transition flex items-center justify-center flex-shrink-0" title="ดู Preview" aria-label="ดู Preview">
-            <i class="fa-solid fa-eye text-xs"></i>
-          </a>
         </div>
       </div>
 
       <!-- Mobile Tool Search Bar -->
       <div class="relative w-full">
-        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-[#777169] text-xs"></i>
-        <input type="text" id="mobile-tool-search" oninput="filterStudioTools(this.value)" placeholder="Search tools (AI, Vocab, Ratio, Queue, Profile)..." class="w-full bg-[#fafafa] border border-[#d6d3d1] rounded-full pl-8 pr-8 py-1.5 text-xs text-[#0c0a09] focus:bg-white focus:border-[#0c0a09] focus:outline-none transition">
-        <button type="button" onclick="document.getElementById('mobile-tool-search').value=''; filterStudioTools('');" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#a8a29e] hover:text-[#0c0a09] text-xs" title="Clear Search">
+        <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-[#777169] dark:text-[#a8a29e] text-xs"></i>
+        <input type="text" id="mobile-tool-search" oninput="filterStudioTools(this.value)" placeholder="Search tools (AI, Vocab, Ratio, Queue, Profile)..." class="w-full bg-[#fafafa] dark:bg-[#292524] border border-[#d6d3d1] dark:border-[#44403c] rounded-full pl-8 pr-8 py-1.5 text-xs text-[#0c0a09] dark:text-white focus:bg-white dark:focus:bg-[#1c1917] focus:border-[#0c0a09] dark:focus:border-white focus:outline-none transition">
+        <button type="button" onclick="document.getElementById('mobile-tool-search').value=''; filterStudioTools('');" class="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#a8a29e] hover:text-[#0c0a09] dark:hover:text-white text-xs" title="Clear Search">
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
@@ -251,19 +293,23 @@
           <div class="tool-card-inner space-y-3">
             <div class="flex items-center gap-2">
               <div class="relative flex-1">
-                <input type="text" id="target-word" value="" placeholder="English word or idiom..." class="w-full bg-[#fafafa] border border-[#e7e5e4] rounded-xl px-3.5 py-2 text-sm sm:text-base font-serif text-[#0c0a09] focus:bg-white focus:border-[#0c0a09] focus:outline-none transition" oninput="document.getElementById('clip-query').value = this.value; updateLiveCardPreview()">
+                <input type="text" id="target-word" value="" placeholder="English word or idiom..." class="w-full bg-[#fafafa] dark:bg-[#292524] border border-[#e7e5e4] dark:border-[#44403c] rounded-xl px-3.5 py-2 text-sm sm:text-base font-serif text-[#0c0a09] dark:text-white focus:bg-white dark:focus:bg-[#1c1917] focus:border-[#0c0a09] dark:focus:border-white focus:outline-none transition" oninput="document.getElementById('clip-query').value = this.value; updateLiveCardPreview()">
                 <input type="hidden" id="clip-query" value="">
               </div>
-              <button type="button" id="btn-ai-generate" onclick="runAiAgentGeneration()" class="w-10 h-10 bg-[#0c0a09] hover:bg-[#292524] active:scale-[0.98] text-white rounded-full shadow-xs transition flex items-center justify-center flex-shrink-0" title="AI Translate & Find Movie Clips" aria-label="AI Generate">
+              <!-- AI Random Word Generator Button -->
+              <button type="button" id="btn-random-word" onclick="randomWordWithAi()" class="w-10 h-10 bg-[#f0efed] dark:bg-[#292524] hover:bg-[#e7e5e4] dark:hover:bg-[#3b3633] text-[#0c0a09] dark:text-white rounded-full border border-[#d6d3d1] dark:border-[#44403c] transition flex items-center justify-center flex-shrink-0 t-btn-press" title="AI Random Word Generator" aria-label="สุ่มคำศัพท์ด้วย AI">
+                <i class="fa-solid fa-dice text-sm text-[#0c0a09] dark:text-white"></i>
+              </button>
+              <button type="button" id="btn-ai-generate" onclick="runAiAgentGeneration()" class="w-10 h-10 bg-[#0c0a09] hover:bg-[#292524] active:scale-[0.98] text-white rounded-full shadow-xs transition flex items-center justify-center flex-shrink-0 t-btn-press" title="AI Translate & Find Movie Clips" aria-label="AI Generate">
                 <i class="fa-solid fa-wand-magic-sparkles text-xs"></i>
               </button>
-              <button type="button" onclick="searchCafeClips(true)" class="w-10 h-10 bg-white hover:bg-[#f0efed] text-[#0c0a09] border border-[#d6d3d1] rounded-full transition flex items-center justify-center flex-shrink-0" title="Search Clips Only" aria-label="Search Clips Only">
+              <button type="button" onclick="searchCafeClips(true)" class="w-10 h-10 bg-white dark:bg-[#292524] hover:bg-[#f0efed] text-[#0c0a09] dark:text-white border border-[#d6d3d1] dark:border-[#44403c] rounded-full transition flex items-center justify-center flex-shrink-0 t-btn-press" title="Search Clips Only" aria-label="Search Clips Only">
                 <i class="fa-solid fa-film text-xs"></i>
               </button>
             </div>
 
-            <div id="ai-loading" class="hidden p-2.5 bg-[#fafafa] border border-[#e7e5e4] rounded-xl text-center">
-              <div class="flex items-center justify-center space-x-2 text-[#292524] text-xs font-medium">
+            <div id="ai-loading" class="hidden p-2.5 bg-[#fafafa] dark:bg-[#292524] border border-[#e7e5e4] dark:border-[#44403c] rounded-xl text-center">
+              <div class="flex items-center justify-center space-x-2 text-[#292524] dark:text-zinc-200 text-xs font-medium">
                 <i class="fa-solid fa-circle-notch fa-spin"></i>
                 <span id="ai-loading-text">Searching clips & translating...</span>
               </div>
@@ -272,79 +318,69 @@
             <!-- Clip Grid Container -->
             <div class="space-y-1.5">
               <div class="flex items-center justify-between">
-                <span class="text-[11px] text-[#777169] font-medium">Movie Clips (clip.cafe)</span>
-                <button type="button" id="btn-load-more" onclick="loadMoreCafeClips()" class="w-7 h-7 bg-white hover:bg-[#fafafa] text-[#292524] rounded-full border border-[#e7e5e4] shadow-xs transition flex items-center justify-center flex-shrink-0" title="Load More Clips" aria-label="Load More Clips">
-                  <i class="fa-solid fa-arrows-rotate text-[11px] text-[#777169]"></i>
+                <span class="text-[11px] text-[#777169] dark:text-[#a8a29e] font-medium">Movie Clips (clip.cafe)</span>
+                <button type="button" id="btn-load-more" onclick="loadMoreCafeClips()" class="w-7 h-7 bg-white dark:bg-[#292524] hover:bg-[#fafafa] dark:hover:bg-[#3b3633] text-[#292524] dark:text-white rounded-full border border-[#e7e5e4] dark:border-[#44403c] shadow-xs transition flex items-center justify-center flex-shrink-0 t-btn-press" title="Load More Clips" aria-label="Load More Clips">
+                  <i id="load-more-spinner" class="fa-solid fa-arrows-rotate text-[11px] text-[#777169] dark:text-[#a8a29e]"></i>
                 </button>
               </div>
-              <div id="clip-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-[260px] overflow-y-auto p-2 bg-[#fafafa] rounded-xl border border-[#e7e5e4]">
-                <div class="col-span-full py-6 text-center text-[#777169] text-xs">
-                  Enter a word and tap <i class="fa-solid fa-wand-magic-sparkles mx-0.5 text-[#0c0a09]"></i> to fetch clips
+              <div id="clip-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-2 max-h-[260px] overflow-y-auto p-2 bg-[#fafafa] dark:bg-[#292524] rounded-xl border border-[#e7e5e4] dark:border-[#44403c]">
+                <div class="col-span-full py-6 text-center text-[#777169] dark:text-[#a8a29e] text-xs">
+                  Enter a word and tap <i class="fa-solid fa-wand-magic-sparkles mx-0.5 text-[#0c0a09] dark:text-white"></i> to fetch clips
                 </div>
               </div>
             </div>
 
             <!-- Generated Vocab Result Form -->
-            <div class="pt-2 border-t border-[#f0efed] space-y-2.5">
+            <div class="pt-2 border-t border-[#f0efed] dark:border-[#292524] space-y-2.5">
               <div class="grid grid-cols-2 gap-2">
                 <div>
-                  <label class="block text-[11px] font-medium text-[#777169] mb-1">IPA Phonetic</label>
-                  <input type="text" id="res-phonetic" value="" placeholder="/.../" class="w-full bg-[#fafafa] border border-[#e7e5e4] rounded-lg px-2.5 py-1.5 text-xs text-[#0c0a09] focus:bg-white focus:border-[#0c0a09] focus:outline-none">
+                  <label class="block text-[11px] font-medium text-[#777169] dark:text-[#a8a29e] mb-1">IPA Phonetic</label>
+                  <input type="text" id="res-phonetic" value="" placeholder="/.../" class="w-full bg-[#fafafa] dark:bg-[#292524] border border-[#e7e5e4] dark:border-[#44403c] rounded-lg px-2.5 py-1.5 text-xs text-[#0c0a09] dark:text-white focus:bg-white dark:focus:bg-[#1c1917] focus:border-[#0c0a09] dark:focus:border-white focus:outline-none">
                 </div>
                 <div>
-                  <label class="block text-[11px] font-medium text-[#777169] mb-1">Thai Reading</label>
-                  <input type="text" id="res-thai-read" value="" placeholder="(คำอ่านไทย)" class="w-full bg-[#fafafa] border border-[#e7e5e4] rounded-lg px-2.5 py-1.5 text-xs text-[#0c0a09] font-medium focus:bg-white focus:border-[#0c0a09] focus:outline-none">
+                  <label class="block text-[11px] font-medium text-[#777169] dark:text-[#a8a29e] mb-1">Thai Reading</label>
+                  <input type="text" id="res-thai-read" value="" placeholder="(คำอ่านไทย)" class="w-full bg-[#fafafa] dark:bg-[#292524] border border-[#e7e5e4] dark:border-[#44403c] rounded-lg px-2.5 py-1.5 text-xs text-[#0c0a09] dark:text-white font-medium focus:bg-white dark:focus:bg-[#1c1917] focus:border-[#0c0a09] dark:focus:border-white focus:outline-none">
                 </div>
               </div>
 
               <div>
-                <label class="block text-[11px] font-medium text-[#777169] mb-1">Meaning (TH)</label>
-                <input type="text" id="res-meaning" value="" placeholder="Thai meaning..." class="w-full bg-[#fafafa] border border-[#e7e5e4] rounded-lg px-2.5 py-1.5 text-xs text-[#0c0a09] focus:bg-white focus:border-[#0c0a09] focus:outline-none">
+                <label class="block text-[11px] font-medium text-[#777169] dark:text-[#a8a29e] mb-1">Meaning (TH)</label>
+                <input type="text" id="res-meaning" value="" placeholder="Thai meaning..." class="w-full bg-[#fafafa] dark:bg-[#292524] border border-[#e7e5e4] dark:border-[#44403c] rounded-lg px-2.5 py-1.5 text-xs text-[#0c0a09] dark:text-white focus:bg-white dark:focus:bg-[#1c1917] focus:border-[#0c0a09] dark:focus:border-white focus:outline-none">
               </div>
 
               <div>
-                <label class="block text-[11px] font-medium text-[#777169] mb-1">Grammar Formula</label>
-                <input type="text" id="res-grammar" value="" placeholder="[Subject] + Verb..." class="w-full bg-[#fafafa] border border-[#e7e5e4] rounded-lg px-2.5 py-1.5 text-xs text-[#0c0a09] focus:bg-white focus:border-[#0c0a09] focus:outline-none" oninput="updateLiveCardPreview()">
+                <label class="block text-[11px] font-medium text-[#777169] dark:text-[#a8a29e] mb-1">Grammar Formula (s + ...)</label>
+                <input type="text" id="res-grammar" value="" placeholder="s + Verb to be + ..." class="w-full bg-[#fafafa] dark:bg-[#292524] border border-[#e7e5e4] dark:border-[#44403c] rounded-lg px-2.5 py-1.5 text-xs text-[#0c0a09] dark:text-white focus:bg-white dark:focus:bg-[#1c1917] focus:border-[#0c0a09] dark:focus:border-white focus:outline-none" oninput="updateLiveCardPreview()">
               </div>
 
               <div>
                 <div class="flex items-center justify-between mb-1">
-                  <label class="block text-[11px] font-medium text-[#777169]">Examples (1–3)</label>
-                  <button type="button" onclick="craftSentencesFromSelectedClip()" class="w-7 h-7 rounded-full bg-[#f0efed] hover:bg-[#e7e5e4] text-[#0c0a09] flex items-center justify-center transition flex-shrink-0" title="Regenerate Examples" aria-label="Regenerate Examples">
+                  <label class="block text-[11px] font-medium text-[#777169] dark:text-[#a8a29e]">Examples (2 Sentences)</label>
+                  <button type="button" onclick="craftSentencesFromSelectedClip()" class="w-7 h-7 rounded-full bg-[#f0efed] dark:bg-[#292524] hover:bg-[#e7e5e4] dark:hover:bg-[#3b3633] text-[#0c0a09] dark:text-white flex items-center justify-center transition flex-shrink-0 t-btn-press" title="Regenerate Examples" aria-label="Regenerate Examples">
                     <i class="fa-solid fa-wand-magic-sparkles text-[10px]"></i>
                   </button>
                 </div>
                 <div class="space-y-1.5">
                   <div class="grid grid-cols-2 gap-1.5">
-                    <input type="text" id="res-ex1-en" value="" placeholder="1. EN sentence" class="bg-[#fafafa] border border-[#e7e5e4] rounded-lg px-2.5 py-1.5 text-xs text-[#0c0a09] focus:bg-white focus:border-[#0c0a09] focus:outline-none" oninput="updateLiveCardPreview()">
-                    <input type="text" id="res-ex1-th" value="" placeholder="1. TH translation" class="bg-[#fafafa] border border-[#e7e5e4] rounded-lg px-2.5 py-1.5 text-xs text-[#777169] focus:bg-white focus:border-[#0c0a09] focus:outline-none" oninput="updateLiveCardPreview()">
+                    <input type="text" id="res-ex1-en" value="" placeholder="Sentence 1 (EN)" class="bg-[#fafafa] dark:bg-[#292524] border border-[#e7e5e4] dark:border-[#44403c] rounded-lg px-2.5 py-1.5 text-xs text-[#0c0a09] dark:text-white focus:bg-white dark:focus:bg-[#1c1917] focus:border-[#0c0a09] dark:focus:border-white focus:outline-none" oninput="updateLiveCardPreview()">
+                    <input type="text" id="res-ex1-th" value="" placeholder="คำแปล 1 (TH)" class="bg-[#fafafa] dark:bg-[#292524] border border-[#e7e5e4] dark:border-[#44403c] rounded-lg px-2.5 py-1.5 text-xs text-[#777169] dark:text-[#a8a29e] focus:bg-white dark:focus:bg-[#1c1917] focus:border-[#0c0a09] dark:focus:border-white focus:outline-none" oninput="updateLiveCardPreview()">
                   </div>
                   <div class="grid grid-cols-2 gap-1.5">
-                    <input type="text" id="res-ex2-en" value="" placeholder="2. EN sentence" class="bg-[#fafafa] border border-[#e7e5e4] rounded-lg px-2.5 py-1.5 text-xs text-[#0c0a09] focus:bg-white focus:border-[#0c0a09] focus:outline-none" oninput="updateLiveCardPreview()">
-                    <input type="text" id="res-ex2-th" value="" placeholder="2. TH translation" class="bg-[#fafafa] border border-[#e7e5e4] rounded-lg px-2.5 py-1.5 text-xs text-[#777169] focus:bg-white focus:border-[#0c0a09] focus:outline-none" oninput="updateLiveCardPreview()">
-                  </div>
-                  <div class="grid grid-cols-2 gap-1.5">
-                    <input type="text" id="res-ex3-en" value="" placeholder="3. EN sentence" class="bg-[#fafafa] border border-[#e7e5e4] rounded-lg px-2.5 py-1.5 text-xs text-[#0c0a09] focus:bg-white focus:border-[#0c0a09] focus:outline-none" oninput="updateLiveCardPreview()">
-                    <input type="text" id="res-ex3-th" value="" placeholder="3. TH translation" class="bg-[#fafafa] border border-[#e7e5e4] rounded-lg px-2.5 py-1.5 text-xs text-[#777169] focus:bg-white focus:border-[#0c0a09] focus:outline-none" oninput="updateLiveCardPreview()">
+                    <input type="text" id="res-ex2-en" value="" placeholder="Sentence 2 (EN)" class="bg-[#fafafa] dark:bg-[#292524] border border-[#e7e5e4] dark:border-[#44403c] rounded-lg px-2.5 py-1.5 text-xs text-[#0c0a09] dark:text-white focus:bg-white dark:focus:bg-[#1c1917] focus:border-[#0c0a09] dark:focus:border-white focus:outline-none" oninput="updateLiveCardPreview()">
+                    <input type="text" id="res-ex2-th" value="" placeholder="คำแปล 2 (TH)" class="bg-[#fafafa] dark:bg-[#292524] border border-[#e7e5e4] dark:border-[#44403c] rounded-lg px-2.5 py-1.5 text-xs text-[#777169] dark:text-[#a8a29e] focus:bg-white dark:focus:bg-[#1c1917] focus:border-[#0c0a09] dark:focus:border-white focus:outline-none" oninput="updateLiveCardPreview()">
                   </div>
                 </div>
               </div>
 
-              <!-- Live Card Preview -->
-              <div class="pt-2 border-t border-[#f0efed]">
-                <span class="block text-[11px] font-medium text-[#777169] mb-1.5">Card Preview</span>
-                <div class="p-2.5 bg-[#fafafa] rounded-xl border border-[#e7e5e4] flex justify-center">
-                  <div class="text-left w-full max-w-[340px] bg-white p-3 rounded-2xl border border-[#e7e5e4] shadow-xs space-y-1.5 grammar-card-thai-font text-[12px] text-[#292524]">
-                    <div class="leading-snug">
-                      <span class="font-bold text-[#dc2626] noto-serif-thai">▸ โครงสร้าง:</span> <span id="card-preview-grammar" class="text-[#0c0a09]"></span>
-                    </div>
-                    <div class="border-t border-[#f0efed] pt-1.5">
-                      <span class="font-bold text-[#0f766e] noto-serif-thai">▸ ตัวอย่าง:</span>
-                      <ul class="space-y-1 text-[#0c0a09] mt-1 pl-0.5 leading-snug">
-                        <li id="card-preview-ex1"></li>
-                        <li id="card-preview-ex2"></li>
-                        <li id="card-preview-ex3"></li>
-                      </ul>
+              <!-- Live Card Preview (Frameless, Unified Font, Thai Translation on New Line) -->
+              <div class="pt-2 border-t border-[#f0efed] dark:border-[#292524]">
+                <span class="block text-[11px] font-medium text-[#777169] dark:text-[#a8a29e] mb-1.5">Card Preview</span>
+                <div class="p-3 bg-[#fafafa] dark:bg-[#292524] rounded-xl border border-[#e7e5e4] dark:border-[#44403c] flex justify-center">
+                  <div class="text-left w-full max-w-[340px] p-2 space-y-2 preview-thai-font text-[12px] text-[#292524] dark:text-zinc-200">
+                    <div id="card-preview-grammar" class="text-xs font-semibold text-[#0c0a09] dark:text-white leading-snug"></div>
+                    <div class="border-t border-black/10 dark:border-white/10 pt-1.5 space-y-1.5">
+                      <div id="card-preview-ex1" class="leading-snug"></div>
+                      <div id="card-preview-ex2" class="leading-snug"></div>
                     </div>
                   </div>
                 </div>
@@ -406,7 +442,34 @@
               </div>
             </div>
 
-            <div class="pt-2 border-t border-[#f0efed]">
+            <!-- Color & Gradient Customizer (Spectrum Hex Picker & Presets) -->
+            <div class="pt-2 border-t border-[#f0efed] dark:border-[#292524] space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="text-[11px] font-semibold text-[#0c0a09] dark:text-white" id="bg-color-heading">Background Color / Gradient</span>
+                <button type="button" onclick="resetBgGradient()" class="text-[10px] text-[#777169] hover:text-[#0c0a09] dark:text-[#a8a29e] dark:hover:text-white transition">Reset</button>
+              </div>
+              <div class="grid grid-cols-2 gap-2">
+                <div class="flex items-center gap-1.5 p-1.5 bg-[#fafafa] dark:bg-[#292524] rounded-lg border border-[#e7e5e4] dark:border-[#44403c]">
+                  <input type="color" id="bg-color-1" value="#fafafa" oninput="applyCustomBgGradient()" class="w-6 h-6 rounded cursor-pointer border-0 bg-transparent p-0">
+                  <span class="text-[10px] font-mono text-[#777169] dark:text-[#a8a29e]" id="bg-color-1-hex">#fafafa</span>
+                </div>
+                <div class="flex items-center gap-1.5 p-1.5 bg-[#fafafa] dark:bg-[#292524] rounded-lg border border-[#e7e5e4] dark:border-[#44403c]">
+                  <input type="color" id="bg-color-2" value="#fafafa" oninput="applyCustomBgGradient()" class="w-6 h-6 rounded cursor-pointer border-0 bg-transparent p-0">
+                  <span class="text-[10px] font-mono text-[#777169] dark:text-[#a8a29e]" id="bg-color-2-hex">#fafafa</span>
+                </div>
+              </div>
+              <!-- Quick Gradient Presets -->
+              <div class="flex items-center gap-1.5 pt-0.5 overflow-x-auto pb-0.5">
+                <button type="button" onclick="setGradientPreset('#fafafa', '#fafafa')" class="w-6 h-6 rounded-full border border-[#d6d3d1] bg-[#fafafa] flex-shrink-0 t-btn-press" title="Default Light"></button>
+                <button type="button" onclick="setGradientPreset('#18181b', '#09090b')" class="w-6 h-6 rounded-full border border-black/40 bg-gradient-to-br from-zinc-900 to-black flex-shrink-0 t-btn-press" title="Dark Slate"></button>
+                <button type="button" onclick="setGradientPreset('#fef3c7', '#fed7aa')" class="w-6 h-6 rounded-full border border-amber-200 bg-gradient-to-br from-amber-100 to-orange-200 flex-shrink-0 t-btn-press" title="Warm Sunset"></button>
+                <button type="button" onclick="setGradientPreset('#e0e7ff', '#fae8ff')" class="w-6 h-6 rounded-full border border-indigo-200 bg-gradient-to-br from-indigo-100 to-fuchsia-100 flex-shrink-0 t-btn-press" title="Soft Pastel"></button>
+                <button type="button" onclick="setGradientPreset('#dcfce7', '#e0f2fe')" class="w-6 h-6 rounded-full border border-emerald-200 bg-gradient-to-br from-emerald-100 to-sky-100 flex-shrink-0 t-btn-press" title="Mint Sky"></button>
+                <button type="button" onclick="setGradientPreset('#312e81', '#4c1d95')" class="w-6 h-6 rounded-full border border-indigo-900 bg-gradient-to-br from-indigo-950 to-purple-900 flex-shrink-0 t-btn-press" title="Deep Indigo"></button>
+              </div>
+            </div>
+
+            <div class="pt-2 border-t border-[#f0efed] dark:border-[#292524]">
               <span class="block text-[11px] font-medium text-[#777169] mb-1.5">Play Queue</span>
               <div id="sequence-list" class="space-y-1.5">
                 <div class="text-center py-2 text-xs text-[#777169]">No clips in queue</div>
@@ -520,6 +583,165 @@
       let currentClipAspectRatio = '9:16';
       let detectedProviderType = '';
       let apiKeyDetectTimer = null;
+
+      // Theme (Dark / Light Mode)
+      function toggleTheme() {
+        const isDark = document.documentElement.classList.toggle('dark');
+        localStorage.setItem('movy_theme', isDark ? 'dark' : 'light');
+        updateThemeIcon(isDark);
+      }
+
+      function updateThemeIcon(isDark) {
+        const icon = document.getElementById('theme-toggle-icon');
+        if (icon) {
+          icon.className = isDark ? 'fa-solid fa-sun text-xs text-amber-400' : 'fa-solid fa-moon text-xs text-[#777169]';
+        }
+      }
+
+      function initTheme() {
+        const savedTheme = localStorage.getItem('movy_theme');
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const isDark = savedTheme === 'dark' || (!savedTheme && prefersDark);
+        if (isDark) {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+        updateThemeIcon(isDark);
+      }
+
+      // Bilingual (TH / EN) Interface Toggle
+      let currentLang = 'th';
+      const I18N = {
+        th: {
+          langBtn: 'TH',
+          searchToolsPlaceholder: 'ค้นหาเครื่องมือสตูดิโอ (AI, Vocab, Ratio)...',
+          step1Title: '1. AI Model',
+          step2Title: '2. Vocabulary & Clips',
+          step3Title: '3. Aspect Ratio & Background',
+          step4Title: '4. Profile & Caption',
+          wordPlaceholder: 'เช่น break a leg, serendipity, bite the bullet',
+          bgColorHeading: 'Background Color / Gradient'
+        },
+        en: {
+          langBtn: 'EN',
+          searchToolsPlaceholder: 'Search studio tools (AI, Vocab, Ratio)...',
+          step1Title: '1. AI Model',
+          step2Title: '2. Vocabulary & Clips',
+          step3Title: '3. Aspect Ratio & Background',
+          step4Title: '4. Profile & Caption',
+          wordPlaceholder: 'e.g. break a leg, serendipity, bite the bullet',
+          bgColorHeading: 'Background Color / Gradient'
+        }
+      };
+
+      function toggleLanguage() {
+        currentLang = currentLang === 'th' ? 'en' : 'th';
+        localStorage.setItem('movy_lang', currentLang);
+        applyLanguage(currentLang);
+        showToast(currentLang === 'th' ? 'เปลี่ยนเป็นภาษาไทยแล้ว' : 'Switched to English');
+      }
+
+      function applyLanguage(lang) {
+        const dict = I18N[lang] || I18N.th;
+        const langBadge = document.getElementById('lang-badge-text');
+        if (langBadge) langBadge.textContent = dict.langBtn;
+
+        const setTxt = (id, txt) => {
+          const el = document.getElementById(id);
+          if (el) el.textContent = txt;
+        };
+        const setPlh = (id, plh) => {
+          const el = document.getElementById(id);
+          if (el) el.placeholder = plh;
+        };
+
+        setPlh('mobile-tool-search', dict.searchToolsPlaceholder);
+        setPlh('target-word', dict.wordPlaceholder);
+        setTxt('bg-color-heading', dict.bgColorHeading);
+      }
+
+      function initLanguage() {
+        const savedLang = localStorage.getItem('movy_lang');
+        currentLang = savedLang === 'en' ? 'en' : 'th';
+        applyLanguage(currentLang);
+      }
+
+      // AI Random Word Generator
+      const CURATED_RANDOM_WORDS = [
+        'break a leg', 'bite the bullet', 'hit the sack', 'call it a day',
+        'piece of cake', 'spill the tea', 'under the weather', 'once in a blue moon',
+        'burn the midnight oil', 'on the fence', 'see eye to eye', 'costs an arm and a leg',
+        'back to the drawing board', 'blessing in disguise', 'cut corners', 'out of the blue',
+        'take it with a grain of salt', 'beat around the bush', 'pull yourself together',
+        'speak of the devil', 'through thick and thin', 'actions speak louder than words'
+      ];
+
+      async function randomWordWithAi() {
+        const diceBtn = document.getElementById('btn-random-word');
+        const diceIcon = diceBtn ? diceBtn.querySelector('i') : null;
+        if (diceIcon) diceIcon.classList.add('spin-active');
+
+        const apiKey = document.getElementById('api-key')?.value.trim();
+        let pickedWord = '';
+
+        if (apiKey) {
+          try {
+            showToast('AI กำลังสุ่มคำศัพท์/สำนวนภาษาอังกฤษ...');
+            const prompt = `Give me exactly ONE popular, practical, or viral English idiom, phrasal verb, or slang that Thai learners love to learn. Reply with ONLY the English phrase itself, no punctuation, no quotes, no extra words. Example: bite the bullet`;
+            const statusEl = document.getElementById('openrouter-status');
+
+            const aiRaw = await invokeSelectedAiModel(prompt, statusEl).catch(() => null);
+            if (aiRaw && typeof aiRaw === 'string') {
+              pickedWord = aiRaw.replace(/["']/g, '').trim();
+            } else if (aiRaw && aiRaw.word) {
+              pickedWord = aiRaw.word;
+            }
+          } catch (e) {
+            console.warn('AI random word error, falling back to curated list:', e);
+          }
+        }
+
+        if (!pickedWord) {
+          pickedWord = CURATED_RANDOM_WORDS[Math.floor(Math.random() * CURATED_RANDOM_WORDS.length)];
+        }
+
+        const wordInput = document.getElementById('target-word');
+        const clipInput = document.getElementById('clip-query');
+        if (wordInput) wordInput.value = pickedWord;
+        if (clipInput) clipInput.value = pickedWord;
+
+        showToast(`สุ่มได้คำว่า "${pickedWord}" กำลังสร้างสไลด์ + ดึงคลิปหนัง...`);
+        if (diceIcon) diceIcon.classList.remove('spin-active');
+
+        runAiAgentGeneration();
+      }
+
+      // Spectrum Hex & Gradient Background Picker
+      let currentBgGradient = { color1: '#fafafa', color2: '#fafafa' };
+
+      function applyCustomBgGradient() {
+        const c1 = document.getElementById('bg-color-1')?.value || '#fafafa';
+        const c2 = document.getElementById('bg-color-2')?.value || '#fafafa';
+        const c1Hex = document.getElementById('bg-color-1-hex');
+        const c2Hex = document.getElementById('bg-color-2-hex');
+        if (c1Hex) c1Hex.textContent = c1;
+        if (c2Hex) c2Hex.textContent = c2;
+        currentBgGradient = { color1: c1, color2: c2 };
+        autoSaveDraft();
+      }
+
+      function setGradientPreset(c1, c2) {
+        const el1 = document.getElementById('bg-color-1');
+        const el2 = document.getElementById('bg-color-2');
+        if (el1) el1.value = c1;
+        if (el2) el2.value = c2;
+        applyCustomBgGradient();
+      }
+
+      function resetBgGradient() {
+        setGradientPreset('#fafafa', '#fafafa');
+      }
 
       const ASPECT_RATIO_LABELS = {
         '9:16': '9:16 • Reels / TikTok',
@@ -660,6 +882,8 @@
           caption: document.getElementById('social-description')?.value.trim() || '',
           selectedClipsSequence: selectedClips,
           clipAspectRatio: currentClipAspectRatio || '9:16',
+          bgColor1: currentBgGradient.color1,
+          bgColor2: currentBgGradient.color2,
           aiVendor: document.getElementById('ai-vendor')?.value || 'gemini',
           aiModel: document.getElementById('ai-provider')?.value || '',
           apiKey: document.getElementById('api-key')?.value || ''
@@ -725,9 +949,11 @@
 
       function formatGrammarHtml(text, keyword) {
         if (!text) return '';
-        let formatted = highlightKeyword(text, keyword);
+        let formatted = text.replace(/\[Subject\]|\bSubject\b/gi, 's');
+        formatted = formatted.replace(/^(โครงสร้าง|structure|formula)\s*[:：\-]\s*/i, '');
+        formatted = highlightKeyword(formatted, keyword);
         formatted = formatted.replace(/-&gt;|->/g, '→');
-        formatted = formatted.replace(/(\bVerb to be\b|\bIdiom\b|\bPhrasal Verb\b|\bSlang\b|\bNoun\b|\bVerb\b|\bAdjective\b|\bAdverb\b|\bSubject\b|\bObject\b|\bV\.ing\b|\bV\.1\b|\bV\.2\b|\bV\.3\b|\[[^\]]+\])/gi, '<strong class="text-[#2563eb] font-bold">$1</strong>');
+        formatted = formatted.replace(/(\bVerb to be\b|\bIdiom\b|\bPhrasal Verb\b|\bSlang\b|\bNoun\b|\bVerb\b|\bAdjective\b|\bAdverb\b|\bObject\b|\bV\.ing\b|\bV\.1\b|\bV\.2\b|\bV\.3\b|\bs\b|\[[^\]]+\])/gi, '<strong class="text-[#2563eb] font-bold">$1</strong>');
         formatted = formatted.replace(/(\+|→)/g, '<strong class="text-[#d97706] font-bold mx-0.5">$1</strong>');
         return formatted;
       }
@@ -738,21 +964,25 @@
         const ex1Th = document.getElementById('res-ex1-th')?.value || '';
         const ex2En = document.getElementById('res-ex2-en')?.value || '';
         const ex2Th = document.getElementById('res-ex2-th')?.value || '';
-        const ex3En = document.getElementById('res-ex3-en')?.value || '';
-        const ex3Th = document.getElementById('res-ex3-th')?.value || '';
         const targetWord = document.getElementById('target-word')?.value?.replace(/[.,/#!$%^&*;:{}=\-_`~()]/g, '').trim() || '';
 
         const previewGrammar = document.getElementById('card-preview-grammar');
         const previewEx1 = document.getElementById('card-preview-ex1');
         const previewEx2 = document.getElementById('card-preview-ex2');
-        const previewEx3 = document.getElementById('card-preview-ex3');
 
         const cleanTh = (str) => (str || '').replace(/^\s*\((.*)\)\s*$/, '$1').trim();
 
         if (previewGrammar) previewGrammar.innerHTML = formatGrammarHtml(grammarVal, targetWord);
-        if (previewEx1) previewEx1.innerHTML = (ex1En || ex1Th) ? `<span class="font-bold text-[#0f766e]">1.</span> <span class="font-bold text-[#0c0a09]">${highlightKeyword(ex1En, targetWord)}</span> ${ex1Th ? `<span class="text-[#d97706] font-bold mx-0.5">→</span> <span class="text-[#57534e] noto-serif-thai">${cleanTh(ex1Th)}</span>` : ''}` : '';
-        if (previewEx2) previewEx2.innerHTML = (ex2En || ex2Th) ? `<span class="font-bold text-[#0f766e]">2.</span> <span class="font-bold text-[#0c0a09]">${highlightKeyword(ex2En, targetWord)}</span> ${ex2Th ? `<span class="text-[#d97706] font-bold mx-0.5">→</span> <span class="text-[#57534e] noto-serif-thai">${cleanTh(ex2Th)}</span>` : ''}` : '';
-        if (previewEx3) previewEx3.innerHTML = (ex3En || ex3Th) ? `<span class="font-bold text-[#0f766e]">3.</span> <span class="font-bold text-[#0c0a09]">${highlightKeyword(ex3En, targetWord)}</span> ${ex3Th ? `<span class="text-[#d97706] font-bold mx-0.5">→</span> <span class="text-[#57534e] noto-serif-thai">${cleanTh(ex3Th)}</span>` : ''}` : '';
+        if (previewEx1) {
+          previewEx1.innerHTML = (ex1En || ex1Th)
+            ? `<div class="font-bold text-[#0c0a09] dark:text-zinc-100 text-[12px] leading-snug">${highlightKeyword(ex1En, targetWord)}</div>${ex1Th ? `<div class="text-[#57534e] dark:text-zinc-400 text-[11px] preview-thai-font pt-0.5">→ ${cleanTh(ex1Th)}</div>` : ''}`
+            : '';
+        }
+        if (previewEx2) {
+          previewEx2.innerHTML = (ex2En || ex2Th)
+            ? `<div class="font-bold text-[#0c0a09] dark:text-zinc-100 text-[12px] leading-snug">${highlightKeyword(ex2En, targetWord)}</div>${ex2Th ? `<div class="text-[#57534e] dark:text-zinc-400 text-[11px] preview-thai-font pt-0.5">→ ${cleanTh(ex2Th)}</div>` : ''}`
+            : '';
+        }
       }
 
       function updateAvatarPreviewUI() {
@@ -1023,6 +1253,8 @@
       }
 
       window.addEventListener('DOMContentLoaded', () => {
+        initTheme();
+        initLanguage();
         loadSavedConfig();
         updateLiveCardPreview();
         initScrollRevealAnimations();
@@ -1151,6 +1383,7 @@
         return JSON.parse(rawContent);
       }
 
+      // Build Movie-Contextualized Prompt using Scraped English Movie Summary & Transcript (SHORT, PUNCHY, MEMORABLE 2 SENTENCES ONLY, NO EMOJI)
       function buildMovieContextualPrompt(word, primaryClip, otherClips = []) {
         const hasClip = primaryClip && primaryClip.title;
         const clipSection = hasClip
@@ -1161,17 +1394,21 @@ REAL SCRAPED ENGLISH MOVIE CLIP FROM CLIP.CAFE:
 - Spoken Dialogue in Clip (Transcript): ${primaryClip.quote || primaryClip.fullTranscript || word}
 - Movie Summary / Plot Description: ${primaryClip.movieSummary || 'An English movie scene where the character uses this expression.'}
 
-CRITICAL INSTRUCTION FOR SHORT, PUNCHY, MEMORABLE EXAMPLES (NO EMOJIS):
-1. DO NOT write long sentences! Every English example ("ex1En", "ex2En", "ex3En") MUST be VERY SHORT (4 to 8 words maximum), natural, punchy, and super easy to memorize!
-2. Connect the examples subtly to the mood/theme of "${primaryClip.movieTitle || primaryClip.title}" (${primaryClip.quote || ''}) so they match the clip, but keep each sentence short and snappy (4-8 words).
-3. Thai translations ("ex1Th", "ex2Th", "ex3Th") MUST be short, direct, and natural (no parentheses needed).
-4. "grammar": Write a very concise 1-line grammar formula using non-emoji symbols like [Subject] + Verb to be + ${word} → แปลว่า... (No emojis!).`
+CRITICAL RULES:
+1. Provide EXACTLY 2 example sentences ("ex1En" and "ex2En"). DO NOT provide a 3rd sentence!
+2. Each English example sentence MUST be VERY SHORT (4 to 7 words maximum), super punchy, simple, and unforgettable (ขอประโยคที่ง่ายและสั้น 2 ประโยค เน้นจำฝังหัว)!
+3. Grammar formula ("grammar"): Write a concise 1-line formula using "s" for Subject (e.g. s + Verb to be + ${word} → แปลว่า...). NEVER use the words "Subject", "[Subject]", "โครงสร้าง", or "ตัวอย่าง". No emojis!
+4. Thai translations ("ex1Th", "ex2Th") MUST be short, direct, and natural (no parentheses needed).
+5. "socialCaption": Short Thai caption teaching ${word} with relevant English learning hashtags (no movie spoilers).`
           : `
-CRITICAL INSTRUCTION FOR SHORT, PUNCHY, MEMORABLE EXAMPLES (NO EMOJIS):
-1. Every English example ("ex1En", "ex2En", "ex3En") MUST be VERY SHORT (4 to 8 words maximum), punchy, and super easy to memorize!
-2. "grammar": Write a very concise 1-line grammar formula using non-emoji symbols like [Subject] + ... → ... (No emojis!).`;
+CRITICAL RULES:
+1. Provide EXACTLY 2 example sentences ("ex1En" and "ex2En"). DO NOT provide a 3rd sentence!
+2. Each English example sentence MUST be VERY SHORT (4 to 7 words maximum), super punchy, simple, and unforgettable (ขอประโยคที่ง่ายและสั้น 2 ประโยค เน้นจำฝังหัว)!
+3. Grammar formula ("grammar"): Write a concise 1-line formula using "s" for Subject (e.g. s + ... → ...). NEVER use the words "Subject", "[Subject]", "โครงสร้าง", or "ตัวอย่าง". No emojis!
+4. Thai translations ("ex1Th", "ex2Th") MUST be short, direct, and natural.
+5. "socialCaption": Short Thai caption teaching ${word} with relevant hashtags.`;
 
-        return `You are an expert English language tutor creating viral educational flashcards for Thai students.
+        return `You are an elite English tutor creating viral educational flashcards for Thai students.
 Analyze this English word/phrase: "${word}".
 ${clipSection}
 
@@ -1180,14 +1417,12 @@ Respond with ONLY valid JSON with no markdown formatting and NO emojis in gramma
   "phonetic": "/.../ (IPA phonetic format)",
   "thaiRead": "(คำอ่านออกเสียงภาษาไทย)",
   "meaning": "คำแปลความหมายภาษาไทยสั้นๆ กระชับ จำง่าย",
-  "grammar": "[โครงสร้างสั้นๆ เช่น Subject + Verb to be + ${word}] → คำอธิบายสั้นกระชับใน 1 บรรทัด",
-  "ex1En": "Short sentence 1 (4-8 words, using ${word})",
-  "ex1Th": "คำแปลไทยสั้นๆ กระชับ",
-  "ex2En": "Short sentence 2 (4-8 words, using ${word})",
-  "ex2Th": "คำแปลไทยสั้นๆ กระชับ",
-  "ex3En": "Short sentence 3 (4-8 words, using ${word})",
-  "ex3Th": "คำแปลไทยสั้นๆ กระชับ",
-  "socialCaption": "แคปชั่นสำหรับโพสต์โซเชียลภาษาไทยที่สอนคำศัพท์/สำนวน ${word} ล้วนๆ (ห้ามเขียนถึงหนัง ห้ามใส่ชื่อหนัง หรือตัวละครเด็ดขาด) อธิบายความหมายสั้นๆ + วิธีใช้จริง พร้อมแฮชแท็กเรียนภาษาอังกฤษ"
+  "grammar": "s + [verb/phrase] → คำอธิบายสั้นๆ 1 บรรทัด",
+  "ex1En": "Very short memorable sentence 1 (4-7 words)",
+  "ex1Th": "คำแปลไทยสั้นกระชับ",
+  "ex2En": "Very short memorable sentence 2 (4-7 words)",
+  "ex2Th": "คำแปลไทยสั้นกระชับ",
+  "socialCaption": "แคปชั่นสอนคำศัพท์ ${word} สั้นกระชับ พร้อมแฮชแท็ก"
 }`;
       }
 
@@ -1458,9 +1693,17 @@ Respond with ONLY valid JSON with no markdown formatting and NO emojis in gramma
         }
       }
 
-      function loadMoreCafeClips() {
+      async function loadMoreCafeClips() {
+        const spinner = document.getElementById('load-more-spinner');
+        if (spinner) spinner.classList.add('spin-active');
         currentPage++;
-        searchCafeClips(false);
+        try {
+          await searchCafeClips(false);
+        } finally {
+          setTimeout(() => {
+            if (spinner) spinner.classList.remove('spin-active');
+          }, 450);
+        }
       }
 
       function formatDurationLabel(dur) {
@@ -1633,6 +1876,17 @@ Respond with ONLY valid JSON with no markdown formatting and NO emojis in gramma
           }
           if (d.clipAspectRatio) {
             selectClipAspectRatio(d.clipAspectRatio);
+          }
+          if (d.bgColor1 && d.bgColor2) {
+            currentBgGradient = { color1: d.bgColor1, color2: d.bgColor2 };
+            const el1 = document.getElementById('bg-color-1');
+            const el2 = document.getElementById('bg-color-2');
+            if (el1) el1.value = d.bgColor1;
+            if (el2) el2.value = d.bgColor2;
+            const hex1 = document.getElementById('bg-color-1-hex');
+            const hex2 = document.getElementById('bg-color-2-hex');
+            if (hex1) hex1.textContent = d.bgColor1;
+            if (hex2) hex2.textContent = d.bgColor2;
           }
           if (d.phonetic) document.getElementById('res-phonetic').value = d.phonetic;
           if (d.thaiRead) document.getElementById('res-thai-read').value = d.thaiRead;
