@@ -13,7 +13,6 @@ export default function StudioHeader() {
     setToolSearch,
     jumpToToolSection,
     toggleAllToolSections,
-    resetToInitialState,
     setIsExportModalOpen,
     t
   } = useVocab();
@@ -115,17 +114,6 @@ export default function StudioHeader() {
             className="w-full bg-[#fafafa] dark:bg-[#292524] border border-[#d6d3d1] dark:border-[#44403c] rounded-full pl-8 pr-4 py-1.5 text-xs text-[#0c0a09] dark:text-white focus:outline-none transition"
           />
         </div>
-
-        {/* Reset All Button */}
-        <button
-          type="button"
-          onClick={resetToInitialState}
-          className="w-9 h-9 bg-transparent hover:bg-[#f0efed] dark:hover:bg-[#292524] text-[#0c0a09] dark:text-white rounded-full border border-[#d6d3d1] dark:border-[#44403c] transition flex items-center justify-center flex-shrink-0 t-btn-press"
-          title="Reset All"
-          aria-label="Reset"
-        >
-          <i className="fa-solid fa-trash-can text-xs" />
-        </button>
 
         {/* Export Button */}
         <button

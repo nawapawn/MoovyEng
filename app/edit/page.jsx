@@ -140,7 +140,7 @@ export default function MobileEditorPage() {
             id="mobile-tool-search"
             value={toolSearch}
             onChange={(e) => setToolSearch(e.target.value)}
-            placeholder={t.searchToolsPlaceholder}
+            placeholder="Search tools (AI, Vocab, Ratio, Queue, Profile)..."
             className="w-full bg-[#fafafa] dark:bg-[#292524] border border-[#d6d3d1] dark:border-[#44403c] rounded-full pl-8 pr-8 py-1.5 text-xs text-[#0c0a09] dark:text-white focus:bg-white dark:focus:bg-[#1c1917] focus:border-[#0c0a09] dark:focus:border-white focus:outline-none transition"
           />
           {toolSearch && (

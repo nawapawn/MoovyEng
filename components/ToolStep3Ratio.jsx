@@ -63,7 +63,7 @@ export default function ToolStep3Ratio() {
             id="selected-badge"
             className="text-[10px] px-2 py-0.5 rounded-full bg-[#f0efed] dark:bg-[#292524] text-[#0c0a09] dark:text-white font-medium"
           >
-            {activeClipSequence.length} {lang === 'th' ? 'คลิปในคิว' : 'clips'}
+            {activeClipSequence.length} {lang === 'th' ? 'clips' : 'clips'}
           </span>
           <button
             type="button"
@@ -296,50 +296,56 @@ export default function ToolStep3Ratio() {
                   return (
                     <div
                       key={`${clip.id}-${index}`}
-                      className="flex items-center justify-between p-1.5 bg-[#fafafa] dark:bg-[#201d1a] border border-[#e7e5e4] dark:border-[#292524] rounded-lg text-xs"
+                      className="flex items-center justify-between p-1.5 bg-white dark:bg-[#201d1a] border border-[#e7e5e4] dark:border-[#292524] rounded-xl space-x-2"
                     >
-                      <div className="flex items-center gap-2 min-w-0">
-                        <span className="w-4 h-4 rounded-full bg-[#0c0a09] dark:bg-white text-white dark:text-[#0c0a09] flex items-center justify-center text-[9px] font-mono flex-shrink-0">
+                      <div className="flex items-center space-x-2 min-w-0">
+                        <span className="w-5 h-5 rounded-full bg-[#f0efed] dark:bg-[#292524] text-[#0c0a09] dark:text-white flex items-center justify-center text-[10px] font-mono flex-shrink-0">
                           {index + 1}
                         </span>
                         {thumb && (
                           <img
                             src={thumb}
                             alt=""
-                            className="w-8 h-5 object-cover rounded flex-shrink-0 border border-black/10"
+                            className="w-10 h-7 rounded object-cover border border-[#e7e5e4] dark:border-[#44403c] flex-shrink-0"
                           />
                         )}
-                        <span className="truncate text-[#0c0a09] dark:text-zinc-200 font-medium text-[11px]">
-                          {clip.title}
-                        </span>
+                        <div className="truncate text-left flex items-center gap-1.5 min-w-0">
+                          <p className="text-xs font-medium text-[#0c0a09] dark:text-white truncate">{clip.title}</p>
+                          {clip.duration && (
+                            <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-[#f0efed] dark:bg-[#292524] text-[#0c0a09] dark:text-white font-mono font-semibold flex-shrink-0 flex items-center gap-0.5">
+                              <i className="fa-regular fa-clock text-[8px]" />
+                              {clip.duration}
+                            </span>
+                          )}
+                        </div>
                       </div>
 
-                      <div className="flex items-center gap-1 flex-shrink-0">
+                      <div className="flex items-center space-x-1 flex-shrink-0">
                         <button
                           type="button"
                           onClick={() => reorderClip(index, -1)}
                           disabled={index === 0}
-                          className="w-5 h-5 rounded hover:bg-zinc-200 dark:hover:bg-zinc-700 flex items-center justify-center text-zinc-600 dark:text-zinc-300 disabled:opacity-30"
+                          className="w-6 h-6 rounded-full hover:bg-[#f0efed] dark:hover:bg-zinc-700 flex items-center justify-center text-[#777169] dark:text-zinc-300 disabled:opacity-20"
                           title="Move Up"
                         >
-                          <i className="fa-solid fa-arrow-up text-[9px]" />
+                          <i className="fa-solid fa-arrow-up text-[10px]" />
                         </button>
                         <button
                           type="button"
                           onClick={() => reorderClip(index, 1)}
                           disabled={index === activeClipSequence.length - 1}
-                          className="w-5 h-5 rounded hover:bg-zinc-200 dark:hover:bg-zinc-700 flex items-center justify-center text-zinc-600 dark:text-zinc-300 disabled:opacity-30"
+                          className="w-6 h-6 rounded-full hover:bg-[#f0efed] dark:hover:bg-zinc-700 flex items-center justify-center text-[#777169] dark:text-zinc-300 disabled:opacity-20"
                           title="Move Down"
                         >
-                          <i className="fa-solid fa-arrow-down text-[9px]" />
+                          <i className="fa-solid fa-arrow-down text-[10px]" />
                         </button>
                         <button
                           type="button"
                           onClick={() => removeClip(index)}
-                          className="w-5 h-5 rounded hover:bg-red-100 dark:hover:bg-red-950/40 text-red-500 flex items-center justify-center"
+                          className="w-6 h-6 rounded-full hover:bg-rose-50 text-rose-600 flex items-center justify-center"
                           title="Remove"
                         >
-                          <i className="fa-solid fa-xmark text-[10px]" />
+                          <i className="fa-solid fa-trash-can text-[10px]" />
                         </button>
                       </div>
                     </div>

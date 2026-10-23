@@ -49,6 +49,8 @@ export default function ToolStep2Vocab() {
     }
   };
 
+  const clipCount = cafeClipPool.length;
+
   return (
     <section
       id="tool-sec-vocab"
@@ -68,12 +70,14 @@ export default function ToolStep2Vocab() {
           <span>Vocabulary & Clips</span>
         </div>
         <div className="flex items-center gap-2">
-          <span
-            id="clip-source-indicator"
-            className="text-[10px] px-2 py-0.5 rounded-full bg-[#f0efed] dark:bg-[#292524] text-[#0c0a09] dark:text-white font-semibold uppercase tracking-wider"
-          >
-            {cafeClipPool.length} {lang === 'th' ? 'คลิป' : 'clips'}
-          </span>
+          {clipCount > 0 && (
+            <span
+              id="clip-source-indicator"
+              className="text-[10px] px-2 py-0.5 rounded-full bg-[#f0efed] dark:bg-[#292524] text-[#0c0a09] dark:text-white font-semibold uppercase tracking-wider"
+            >
+              {clipCount} CLIPS
+            </span>
+          )}
           <button
             type="button"
             className="w-6 h-6 rounded-full hover:bg-[#f0efed] dark:hover:bg-[#292524] text-[#777169] hover:text-[#0c0a09] dark:hover:text-white flex items-center justify-center transition"
@@ -176,43 +180,49 @@ export default function ToolStep2Vocab() {
                 </div>
               ) : (
                 cafeClipPool.map((clip) => {
-                  const isSelected = activeClipSequence.some((c) => c.id === clip.id);
+                  const seqIdx = activeClipSequence.findIndex((s) => s.id === clip.id);
+                  const isSelected = seqIdx !== -1;
                   const thumbSrc = normalizeThumbUrl(clip.thumb, clip.slug);
 
                   return (
                     <div
                       key={clip.id}
                       onClick={() => toggleSelectClip(clip)}
-                      className={`relative aspect-[16/9] rounded-lg overflow-hidden border cursor-pointer group transition-all transform hover:scale-[1.02] ${
+                      className={`relative aspect-[3/2] rounded-xl overflow-hidden border-2 cursor-pointer transition ${
                         isSelected
-                          ? 'border-[#0c0a09] dark:border-white ring-2 ring-[#0c0a09] dark:ring-white shadow-md'
-                          : 'border-zinc-300 dark:border-zinc-700 opacity-80 hover:opacity-100'
+                          ? 'border-[#0c0a09] dark:border-white ring-2 ring-[#0c0a09]/20'
+                          : 'border-[#e7e5e4] dark:border-[#44403c] opacity-85 hover:opacity-100'
                       }`}
                     >
-                      {thumbSrc ? (
-                        <img
-                          crossOrigin="anonymous"
-                          src={thumbSrc}
-                          alt={clip.title}
-                          className="w-full h-full object-cover"
-                        />
-                      ) : (
-                        <div className="w-full h-full bg-zinc-800 flex items-center justify-center">
-                          <i className="fa-solid fa-film text-zinc-500" />
+                      <img src={thumbSrc} alt={clip.title} className="w-full h-full object-cover" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent flex flex-col justify-between p-2 pointer-events-none">
+                        <div className="flex justify-between items-start gap-1">
+                          <div className="flex items-center gap-1 flex-wrap">
+                            <span className="text-[9px] px-1.5 py-0.5 rounded bg-amber-400 text-black font-bold uppercase tracking-wider">
+                              Movie
+                            </span>
+                            {clip.duration && (
+                              <span className="text-[9px] px-1.5 py-0.5 rounded bg-black/60 text-white font-mono font-medium">
+                                {clip.duration}
+                              </span>
+                            )}
+                          </div>
+                          <div
+                            className={`w-5 h-5 rounded-full flex items-center justify-center flex-shrink-0 text-[9px] font-bold ${
+                              isSelected
+                                ? 'bg-[#0c0a09] dark:bg-white text-white dark:text-[#0c0a09] ring-1 ring-white/50'
+                                : 'bg-black/60 text-white'
+                            }`}
+                          >
+                            {isSelected ? seqIdx + 1 : <i className="fa-solid fa-plus text-[9px]" />}
+                          </div>
                         </div>
-                      )}
-
-                      {/* Selected Badge */}
-                      {isSelected && (
-                        <div className="absolute top-1 right-1 bg-[#0c0a09] dark:bg-white text-white dark:text-[#0c0a09] rounded-full w-4 h-4 flex items-center justify-center text-[8px] shadow-sm">
-                          <i className="fa-solid fa-check" />
+                        <div className="text-left space-y-0.5">
+                          <p className="text-[10px] font-semibold text-white truncate drop-shadow-sm">{clip.title}</p>
+                          {clip.quote && (
+                            <p className="text-[8.5px] text-amber-200/95 truncate italic">"{clip.quote}"</p>
+                          )}
                         </div>
-                      )}
-
-                      {/* Clip Title & Duration */}
-                      <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent p-1 pointer-events-none">
-                        <p className="text-[9px] font-semibold text-white truncate drop-shadow-sm">{clip.title}</p>
-                        {clip.duration && <p className="text-[8px] text-zinc-300">{clip.duration}</p>}
                       </div>
                     </div>
                   );
@@ -267,7 +277,7 @@ export default function ToolStep2Vocab() {
                 id="res-grammar"
                 value={grammar}
                 onChange={(e) => setGrammar(e.target.value)}
-                placeholder="s + wish + [Someone] + to + ... → คำแปล"
+                placeholder="[Subject] + ..."
                 className="w-full bg-white dark:bg-[#292524] border border-[#d6d3d1] dark:border-[#44403c] rounded-lg px-3 py-1.5 text-xs text-[#0c0a09] dark:text-white focus:border-[#0c0a09] dark:focus:border-white focus:outline-none"
               />
             </div>
