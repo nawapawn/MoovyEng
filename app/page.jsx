@@ -40,15 +40,15 @@ export default function HomePage() {
           <StudioHeader />
 
           {/* Responsive 2-Column Tool Grid on Desktop for Easy All-in-One Access */}
-          <div className="grid grid-cols-1 xl:grid-cols-12 gap-4 items-start">
+          <div className="grid grid-cols-1 xl:grid-cols-12 gap-4 items-start w-full min-w-0">
             {/* LEFT TOOL SUB-COLUMN (7 cols on xl): Step 1 (AI Model) + Step 2 (Vocab & Clips) */}
-            <div className="xl:col-span-7 space-y-4">
+            <div className="xl:col-span-7 space-y-4 w-full min-w-0">
               <ToolStep1AI />
               <ToolStep2Vocab />
             </div>
 
             {/* RIGHT TOOL SUB-COLUMN (5 cols on xl): Step 3 (Aspect Ratio & Queue) + Step 4 (Profile & Caption) */}
-            <div className="xl:col-span-5 space-y-4">
+            <div className="xl:col-span-5 space-y-4 w-full min-w-0">
               <ToolStep3Ratio />
               <ToolStep4Social />
             </div>

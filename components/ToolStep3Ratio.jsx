@@ -44,7 +44,7 @@ export default function ToolStep3Ratio() {
     <section
       id="tool-sec-ratio"
       data-tool-keywords="3 aspect ratio queue size tiktok reels shorts youtube สัดส่วน ขนาด คิวคลิป"
-      className={`tool-section-card bg-white dark:bg-[#1c1917] border border-[#e7e5e4] dark:border-[#292524] rounded-2xl p-4 shadow-[0_4px_16px_rgba(0,0,0,0.04)] ${
+      className={`tool-section-card w-full max-w-full min-w-0 overflow-hidden bg-white dark:bg-[#1c1917] border border-[#e7e5e4] dark:border-[#292524] rounded-2xl p-4 shadow-[0_4px_16px_rgba(0,0,0,0.04)] ${
         isCollapsed ? 'is-collapsed' : ''
       }`}
     >
@@ -76,10 +76,10 @@ export default function ToolStep3Ratio() {
       </div>
 
       <div className="tool-card-body">
-        <div className="tool-card-inner space-y-3">
+        <div className="tool-card-inner space-y-3 w-full max-w-full min-w-0">
           {/* Brown Rectangle Aspect Ratio Dropdown Selector */}
-          <div>
-            <div className="relative" id="aspect-ratio-dropdown-wrap">
+          <div className="w-full min-w-0">
+            <div className="relative w-full min-w-0" id="aspect-ratio-dropdown-wrap">
               <button
                 type="button"
                 onClick={(e) => {
@@ -87,16 +87,16 @@ export default function ToolStep3Ratio() {
                   setIsDropdownOpen(!isDropdownOpen);
                 }}
                 id="btn-ratio-dropdown"
-                className="w-full px-3 py-2 rounded-xl border border-[#d6d3d1] dark:border-[#44403c] hover:border-[#0c0a09] dark:hover:border-white bg-[#fafafa] dark:bg-[#292524] hover:bg-white dark:hover:bg-[#1c1917] transition flex items-center justify-between gap-2 shadow-2xs"
+                className="w-full max-w-full min-w-0 px-3 py-2 rounded-xl border border-[#d6d3d1] dark:border-[#44403c] hover:border-[#0c0a09] dark:hover:border-white bg-[#fafafa] dark:bg-[#292524] hover:bg-white dark:hover:bg-[#1c1917] transition flex items-center justify-between gap-2 shadow-2xs"
               >
-                <div className="flex items-center gap-2.5">
+                <div className="flex items-center gap-2.5 min-w-0 flex-1">
                   <div
                     id="current-ratio-brown-box"
                     className={`${meta.boxClass} rounded-[5px] bg-[#78716c] text-white flex items-center justify-center text-[10px] font-bold tracking-tight shadow-2xs transition-all flex-shrink-0`}
                   >
                     {clipAspectRatio}
                   </div>
-                  <span id="current-ratio-label-text" className="text-xs font-semibold text-[#0c0a09] dark:text-white">
+                  <span id="current-ratio-label-text" className="text-xs font-semibold text-[#0c0a09] dark:text-white truncate">
                     {meta.text}
                   </span>
                 </div>
@@ -205,28 +205,28 @@ export default function ToolStep3Ratio() {
                 Reset
               </button>
             </div>
-            <div className="grid grid-cols-2 gap-2">
-              <div className="flex items-center gap-1.5 p-1.5 bg-[#fafafa] dark:bg-[#292524] rounded-lg border border-[#e7e5e4] dark:border-[#44403c]">
+            <div className="grid grid-cols-2 gap-2 w-full min-w-0">
+              <div className="flex items-center gap-1.5 p-1.5 bg-[#fafafa] dark:bg-[#292524] rounded-lg border border-[#e7e5e4] dark:border-[#44403c] min-w-0">
                 <input
                   type="color"
                   id="bg-color-1"
                   value={bgColor1}
                   onChange={(e) => setBgColor1(e.target.value)}
-                  className="w-6 h-6 rounded cursor-pointer border-0 bg-transparent p-0"
+                  className="w-6 h-6 rounded cursor-pointer border-0 bg-transparent p-0 flex-shrink-0"
                 />
-                <span className="text-[10px] font-mono text-[#777169] dark:text-[#a8a29e]" id="bg-color-1-hex">
+                <span className="text-[10px] font-mono text-[#777169] dark:text-[#a8a29e] truncate" id="bg-color-1-hex">
                   {bgColor1}
                 </span>
               </div>
-              <div className="flex items-center gap-1.5 p-1.5 bg-[#fafafa] dark:bg-[#292524] rounded-lg border border-[#e7e5e4] dark:border-[#44403c]">
+              <div className="flex items-center gap-1.5 p-1.5 bg-[#fafafa] dark:bg-[#292524] rounded-lg border border-[#e7e5e4] dark:border-[#44403c] min-w-0">
                 <input
                   type="color"
                   id="bg-color-2"
                   value={bgColor2}
                   onChange={(e) => setBgColor2(e.target.value)}
-                  className="w-6 h-6 rounded cursor-pointer border-0 bg-transparent p-0"
+                  className="w-6 h-6 rounded cursor-pointer border-0 bg-transparent p-0 flex-shrink-0"
                 />
-                <span className="text-[10px] font-mono text-[#777169] dark:text-[#a8a29e]" id="bg-color-2-hex">
+                <span className="text-[10px] font-mono text-[#777169] dark:text-[#a8a29e] truncate" id="bg-color-2-hex">
                   {bgColor2}
                 </span>
               </div>
@@ -287,7 +287,7 @@ export default function ToolStep3Ratio() {
                 <i className="fa-solid fa-play text-[9px] ml-0.5" />
               </button>
             </div>
-            <div id="sequence-list" className="space-y-1.5">
+            <div id="sequence-list" className="space-y-1.5 w-full min-w-0">
               {activeClipSequence.length === 0 ? (
                 <div className="text-center py-2 text-xs text-[#777169] dark:text-[#a8a29e]">No clips in queue</div>
               ) : (
@@ -296,9 +296,9 @@ export default function ToolStep3Ratio() {
                   return (
                     <div
                       key={`${clip.id}-${index}`}
-                      className="flex items-center justify-between p-1.5 bg-white dark:bg-[#201d1a] border border-[#e7e5e4] dark:border-[#292524] rounded-xl space-x-2"
+                      className="w-full min-w-0 flex items-center justify-between p-1.5 bg-white dark:bg-[#201d1a] border border-[#e7e5e4] dark:border-[#292524] rounded-xl gap-2"
                     >
-                      <div className="flex items-center space-x-2 min-w-0">
+                      <div className="flex items-center gap-2 min-w-0 flex-1">
                         <span className="w-5 h-5 rounded-full bg-[#f0efed] dark:bg-[#292524] text-[#0c0a09] dark:text-white flex items-center justify-center text-[10px] font-mono flex-shrink-0">
                           {index + 1}
                         </span>
@@ -309,8 +309,10 @@ export default function ToolStep3Ratio() {
                             className="w-10 h-7 rounded object-cover border border-[#e7e5e4] dark:border-[#44403c] flex-shrink-0"
                           />
                         )}
-                        <div className="truncate text-left flex items-center gap-1.5 min-w-0">
-                          <p className="text-xs font-medium text-[#0c0a09] dark:text-white truncate">{clip.title}</p>
+                        <div className="flex items-center gap-1.5 min-w-0 flex-1">
+                          <p className="text-xs font-medium text-[#0c0a09] dark:text-white truncate flex-1 min-w-0" title={clip.title}>
+                            {clip.title}
+                          </p>
                           {clip.duration && (
                             <span className="text-[9px] px-1.5 py-0.5 rounded-full bg-[#f0efed] dark:bg-[#292524] text-[#0c0a09] dark:text-white font-mono font-semibold flex-shrink-0 flex items-center gap-0.5">
                               <i className="fa-regular fa-clock text-[8px]" />
@@ -325,7 +327,7 @@ export default function ToolStep3Ratio() {
                           type="button"
                           onClick={() => reorderClip(index, -1)}
                           disabled={index === 0}
-                          className="w-6 h-6 rounded-full hover:bg-[#f0efed] dark:hover:bg-zinc-700 flex items-center justify-center text-[#777169] dark:text-zinc-300 disabled:opacity-20"
+                          className="w-6 h-6 rounded-full hover:bg-[#f0efed] dark:hover:bg-zinc-700 flex items-center justify-center text-[#777169] dark:text-zinc-300 disabled:opacity-20 flex-shrink-0"
                           title="Move Up"
                         >
                           <i className="fa-solid fa-arrow-up text-[10px]" />
@@ -334,7 +336,7 @@ export default function ToolStep3Ratio() {
                           type="button"
                           onClick={() => reorderClip(index, 1)}
                           disabled={index === activeClipSequence.length - 1}
-                          className="w-6 h-6 rounded-full hover:bg-[#f0efed] dark:hover:bg-zinc-700 flex items-center justify-center text-[#777169] dark:text-zinc-300 disabled:opacity-20"
+                          className="w-6 h-6 rounded-full hover:bg-[#f0efed] dark:hover:bg-zinc-700 flex items-center justify-center text-[#777169] dark:text-zinc-300 disabled:opacity-20 flex-shrink-0"
                           title="Move Down"
                         >
                           <i className="fa-solid fa-arrow-down text-[10px]" />
@@ -342,7 +344,7 @@ export default function ToolStep3Ratio() {
                         <button
                           type="button"
                           onClick={() => removeClip(index)}
-                          className="w-6 h-6 rounded-full hover:bg-rose-50 text-rose-600 flex items-center justify-center"
+                          className="w-6 h-6 rounded-full hover:bg-rose-50 text-rose-600 flex items-center justify-center flex-shrink-0"
                           title="Remove"
                         >
                           <i className="fa-solid fa-trash-can text-[10px]" />
