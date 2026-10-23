@@ -28,3 +28,9 @@ yarn-error.log*
 # OS Files
 .DS_Store
 Thumbs.db
+
+# Test & IDE Scratch
+*.png
+.codex/
+.cursor/
+.gemini/

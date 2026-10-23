@@ -146,6 +146,12 @@ def download_single_clip(slug_or_url: str) -> dict:
         pub_url = f"/clips_cache/{slug}_raw.mp4"
     else:
         pub_url = f"/clips_cache/{slug}_crop16x9.mp4"
+        # Prune raw intermediate file to preserve storage
+        if raw_path.exists() and raw_path != target_path:
+            try:
+                raw_path.unlink()
+            except Exception:
+                pass
 
     return {
         "success": True,

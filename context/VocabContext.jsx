@@ -38,6 +38,19 @@ export function VocabProvider({ children }) {
   const [clipAspectRatio, setClipAspectRatio] = useState('9:16');
   const [bgColor1, setBgColor1] = useState('#fafafa');
   const [bgColor2, setBgColor2] = useState('#fafafa');
+  const [showHighlight, setShowHighlight] = useState(true);
+  const [useMovieBackdrop, setUseMovieBackdrop] = useState(false);
+  const [bgBlur, setBgBlur] = useState(16);
+  const [bgOverlayOpacity, setBgOverlayOpacity] = useState(45);
+  const [textFormat, setTextFormat] = useState({
+    fontFamily: 'Inter',
+    textColor: '',
+    fontSize: 'normal',
+    bold: true,
+    italic: false,
+    underline: false,
+    textAlign: 'left'
+  });
 
   // Social Profile
   const [channel, setChannel] = useState('@MoovyEng');
@@ -60,7 +73,40 @@ export function VocabProvider({ children }) {
   const [isToastVisible, setIsToastVisible] = useState(false);
   const [isExportModalOpen, setIsExportModalOpen] = useState(false);
   const [toolSearch, setToolSearch] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
   const [collapsedSections, setCollapsedSections] = useState({});
+
+  // Debounced search filtering across studio tool cards
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      const q = (toolSearch || '').trim().toLowerCase();
+      setDebouncedSearch(q);
+
+      if (typeof document !== 'undefined') {
+        const cards = document.querySelectorAll('.tool-section-card');
+        cards.forEach((card) => {
+          if (!q) {
+            card.classList.remove('search-dimmed', 'search-matched');
+            return;
+          }
+          const kw = (card.getAttribute('data-tool-keywords') || '') + ' ' + (card.textContent || '');
+          if (kw.toLowerCase().includes(q)) {
+            card.classList.remove('search-dimmed');
+            card.classList.add('search-matched');
+            const id = card.id;
+            if (id) {
+              setCollapsedSections((prev) => ({ ...prev, [id]: false }));
+            }
+          } else {
+            card.classList.add('search-dimmed');
+            card.classList.remove('search-matched');
+          }
+        });
+      }
+    }, 180);
+
+    return () => clearTimeout(handler);
+  }, [toolSearch]);
 
   // Custom Dialog
   const [dialogState, setDialogState] = useState({
@@ -131,6 +177,13 @@ export function VocabProvider({ children }) {
         if (d.clipAspectRatio) setClipAspectRatio(d.clipAspectRatio);
         if (d.bgColor1) setBgColor1(d.bgColor1);
         if (d.bgColor2) setBgColor2(d.bgColor2);
+        if (typeof d.showHighlight === 'boolean') setShowHighlight(d.showHighlight);
+        if (typeof d.useMovieBackdrop === 'boolean') setUseMovieBackdrop(d.useMovieBackdrop);
+        if (typeof d.bgBlur === 'number') setBgBlur(d.bgBlur);
+        if (typeof d.bgOverlayOpacity === 'number') setBgOverlayOpacity(d.bgOverlayOpacity);
+        if (d.textFormat && typeof d.textFormat === 'object') {
+          setTextFormat((prev) => ({ ...prev, ...d.textFormat }));
+        }
         if (d.channel) setChannel(d.channel);
         if (d.avatar) setAvatar(d.avatar);
         if (d.caption) setCaption(d.caption);
@@ -174,6 +227,11 @@ export function VocabProvider({ children }) {
         clipAspectRatio,
         bgColor1,
         bgColor2,
+        showHighlight,
+        useMovieBackdrop,
+        bgBlur,
+        bgOverlayOpacity,
+        textFormat,
         channel,
         avatar,
         caption,
@@ -190,6 +248,7 @@ export function VocabProvider({ children }) {
   }, [
     word, phonetic, thaiRead, meaning, grammar, movieContextTh,
     ex1En, ex1Th, ex2En, ex2Th, clipAspectRatio, bgColor1, bgColor2,
+    showHighlight, useMovieBackdrop, bgBlur, bgOverlayOpacity, textFormat,
     channel, avatar, caption, aiVendor, aiModel, apiKey,
     activeClipSequence, cafeClipPool
   ]);
@@ -253,6 +312,19 @@ export function VocabProvider({ children }) {
         setEx2Th('ขอให้ทำข้อสอบได้คะแนนดีๆ โชคดีนะ');
         setBgColor1('#fafafa');
         setBgColor2('#fafafa');
+        setShowHighlight(true);
+        setUseMovieBackdrop(false);
+        setBgBlur(16);
+        setBgOverlayOpacity(45);
+        setTextFormat({
+          fontFamily: 'Inter',
+          textColor: '',
+          fontSize: 'normal',
+          bold: true,
+          italic: false,
+          underline: false,
+          textAlign: 'left'
+        });
         setClipAspectRatio('9:16');
         setActiveClipSequence([]);
         setCafeClipPool([]);
@@ -260,6 +332,46 @@ export function VocabProvider({ children }) {
         showToast(lang === 'th' ? 'รีเซ็ตข้อมูลเรียบร้อยแล้ว' : 'All data reset');
       }
     });
+  };
+
+  // Toggle Highlight
+  const toggleHighlight = () => {
+    setShowHighlight((prev) => {
+      const next = !prev;
+      showToast(next ? (lang === 'th' ? 'เปิดไฮไลต์คำสำคัญแล้ว' : 'Highlights enabled') : (lang === 'th' ? 'ปิดไฮไลต์คำสำคัญแล้ว' : 'Highlights disabled'));
+      return next;
+    });
+  };
+
+  // Reset Text Format
+  const resetTextFormat = () => {
+    setTextFormat({
+      fontFamily: 'Inter',
+      textColor: '',
+      fontSize: 'normal',
+      bold: true,
+      italic: false,
+      underline: false,
+      textAlign: 'left'
+    });
+    showToast(lang === 'th' ? 'รีเซ็ตสไตล์ข้อความเรียบร้อย' : 'Text style reset');
+  };
+
+  // Clean Cache
+  const cleanCache = async () => {
+    try {
+      const resp = await fetch('/api/cafe/clean-cache', { method: 'POST' });
+      if (resp.ok) {
+        const data = await resp.json();
+        const freedMb = ((data.bytesFreed || 0) / (1024 * 1024)).toFixed(1);
+        showToast(`${lang === 'th' ? 'ล้างแคชสำเร็จ คืนพื้นที่ได้' : 'Cache cleaned! Freed'} ${freedMb} MB (${data.filesDeleted || 0} files)`);
+      } else {
+        showToast(lang === 'th' ? 'ล้างแคชไม่สำเร็จ' : 'Failed to clean cache');
+      }
+    } catch (err) {
+      console.error('Clean cache error:', err);
+      showToast('Error cleaning cache');
+    }
   };
 
   // Clip Selection & Reordering
@@ -694,6 +806,12 @@ Respond with ONLY valid JSON:
     clipAspectRatio, setClipAspectRatio,
     bgColor1, setBgColor1,
     bgColor2, setBgColor2,
+    showHighlight, setShowHighlight, toggleHighlight,
+    useMovieBackdrop, setUseMovieBackdrop,
+    bgBlur, setBgBlur,
+    bgOverlayOpacity, setBgOverlayOpacity,
+    textFormat, setTextFormat, resetTextFormat,
+    cleanCache,
 
     // Profile
     channel, setChannel,

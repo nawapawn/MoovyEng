@@ -30,6 +30,38 @@ function runPythonClipEngine(args) {
   });
 }
 
+function pruneIntermediateCache(aggressive = false) {
+  const cacheDir = path.join(__dirname, 'clips_cache');
+  if (!fs.existsSync(cacheDir)) return { filesDeleted: 0, bytesFreed: 0 };
+  let filesDeleted = 0;
+  let bytesFreed = 0;
+  try {
+    const files = fs.readdirSync(cacheDir);
+    for (const f of files) {
+      const full = path.join(cacheDir, f);
+      const isIntermediate = f.endsWith('_raw.mp4') ||
+                            f.startsWith('export_payload_') ||
+                            f.startsWith('slide_bg_') ||
+                            f.startsWith('clip_mask_') ||
+                            (aggressive && (f.endsWith('.tmp') || f.startsWith('thumb_raw_')));
+      if (isIntermediate) {
+        try {
+          const sz = fs.statSync(full).size;
+          fs.unlinkSync(full);
+          filesDeleted++;
+          bytesFreed += sz;
+        } catch (e) {}
+      }
+    }
+  } catch (err) {
+    console.warn('Error during cache prune:', err.message);
+  }
+  return { filesDeleted, bytesFreed };
+}
+
+// Prune on startup
+pruneIntermediateCache(false);
+
 function readJsonBody(req) {
   return new Promise((resolve, reject) => {
     let body = '';
@@ -553,6 +585,20 @@ const server = http.createServer(async (req, res) => {
       if (tempPayloadPath && fs.existsSync(tempPayloadPath)) {
         try { fs.unlinkSync(tempPayloadPath); } catch (e) {}
       }
+    }
+    return;
+  }
+
+  // Clean intermediate storage cache endpoint
+  if (parsedUrl.pathname === '/api/cafe/clean-cache' && (req.method === 'POST' || req.method === 'GET')) {
+    try {
+      const all = parsedUrl.searchParams.get('all') === '1';
+      const result = pruneIntermediateCache(all);
+      res.writeHead(200, { 'Content-Type': 'application/json; charset=utf-8' });
+      res.end(JSON.stringify({ success: true, ...result }));
+    } catch (err) {
+      res.writeHead(500, { 'Content-Type': 'application/json; charset=utf-8' });
+      res.end(JSON.stringify({ success: false, error: err.message }));
     }
     return;
   }

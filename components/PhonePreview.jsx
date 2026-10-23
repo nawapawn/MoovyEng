@@ -4,7 +4,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useVocab } from '../context/VocabContext';
 import { ASPECT_RATIO_CONFIG } from '../lib/constants';
-import { isColorDark, highlightKeyword, formatGrammarHtml, normalizeThumbUrl } from '../lib/utils';
+import { isColorDark, highlightKeyword, formatGrammarHtml, normalizeThumbUrl, getFontFamilyCss } from '../lib/utils';
 
 export default function PhonePreview({ isMobile = false }) {
   const {
@@ -26,7 +26,12 @@ export default function PhonePreview({ isMobile = false }) {
     isPlayingVideo,
     setIsPlayingVideo,
     currentSequenceIndex,
-    setCurrentSequenceIndex
+    setCurrentSequenceIndex,
+    showHighlight,
+    useMovieBackdrop,
+    bgBlur,
+    bgOverlayOpacity,
+    textFormat
   } = useVocab();
 
   const videoRef = useRef(null);
@@ -34,6 +39,16 @@ export default function PhonePreview({ isMobile = false }) {
 
   const cfg = ASPECT_RATIO_CONFIG[clipAspectRatio] || ASPECT_RATIO_CONFIG['9:16'];
   const darkContrast = isColorDark(bgColor1) || isColorDark(bgColor2);
+  const isDark = darkContrast || (useMovieBackdrop && (bgOverlayOpacity || 45) > 30);
+
+  const activeTextColor = textFormat?.textColor || (isDark ? '#f8fafc' : '#0c0a09');
+  const secondaryTextColor = textFormat?.textColor ? `${textFormat.textColor}d9` : (isDark ? '#cbd5e1' : '#57534e');
+  const phoneticColor = textFormat?.textColor ? `${textFormat.textColor}b3` : (isDark ? '#e2e8f0' : '#4e4e4e');
+  const fontFamilyCss = getFontFamilyCss(textFormat?.fontFamily);
+  const isBold = textFormat?.bold !== false;
+  const isItalic = Boolean(textFormat?.italic);
+  const isUnderline = Boolean(textFormat?.underline);
+  const textAlign = textFormat?.textAlign || 'left';
 
   const backgroundStyle = {
     background: bgColor1 === bgColor2 ? bgColor1 : `linear-gradient(135deg, ${bgColor1}, ${bgColor2})`
@@ -120,18 +135,42 @@ export default function PhonePreview({ isMobile = false }) {
   return (
     <div
       id="phone-container"
-      className={`${cfg.containerClass} ${darkContrast ? 'phone-dark-contrast' : ''}`}
+      className={`${cfg.containerClass} ${isDark ? 'phone-dark-contrast' : ''}`}
       style={backgroundStyle}
     >
-      {/* Subtle Internal Atmospheric Orbs inside Card */}
-      <div
-        className="pointer-events-none absolute -top-16 -right-16 w-56 h-56 rounded-full opacity-15 blur-2xl"
-        style={{ background: 'radial-gradient(circle, #a8c8e8 0%, transparent 70%)' }}
-      />
-      <div
-        className="pointer-events-none absolute -bottom-16 -left-16 w-56 h-56 rounded-full opacity-15 blur-2xl"
-        style={{ background: 'radial-gradient(circle, #e8b8c4 0%, transparent 70%)' }}
-      />
+      {/* Movie Background Backdrop & Live Blur Control */}
+      {useMovieBackdrop && thumbUrl && !imgError && (
+        <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
+          <img
+            crossOrigin="anonymous"
+            src={thumbUrl}
+            alt="Movie Backdrop"
+            className="w-full h-full object-cover scale-110 transition duration-300"
+            style={{ filter: `blur(${bgBlur || 0}px)` }}
+          />
+          <div
+            className="absolute inset-0 transition duration-200"
+            style={{
+              backgroundColor: isColorDark(bgColor1) ? bgColor1 : '#000000',
+              opacity: (bgOverlayOpacity ?? 45) / 100
+            }}
+          />
+        </div>
+      )}
+
+      {/* Subtle Internal Atmospheric Orbs inside Card (Active when no backdrop) */}
+      {!useMovieBackdrop && (
+        <>
+          <div
+            className="pointer-events-none absolute -top-16 -right-16 w-56 h-56 rounded-full opacity-15 blur-2xl"
+            style={{ background: 'radial-gradient(circle, #a8c8e8 0%, transparent 70%)' }}
+          />
+          <div
+            className="pointer-events-none absolute -bottom-16 -left-16 w-56 h-56 rounded-full opacity-15 blur-2xl"
+            style={{ background: 'radial-gradient(circle, #e8b8c4 0%, transparent 70%)' }}
+          />
+        </>
+      )}
 
       {/* Top iOS Status Bar (ElevenLabs Crisp Minimalist - Ignored on Export/Download) */}
       <div
@@ -139,13 +178,13 @@ export default function PhonePreview({ isMobile = false }) {
         data-export-ignore="true"
         className={
           cfg.showStatusBar
-            ? 'hidden sm:flex absolute top-0 left-0 w-full z-30 justify-between items-center px-7 pt-3.5 text-[#292524] text-xs font-medium'
+            ? `hidden sm:flex absolute top-0 left-0 w-full z-30 justify-between items-center px-7 pt-3.5 text-xs font-medium ${isDark ? 'text-white/80' : 'text-[#292524]'}`
             : 'hidden'
         }
       >
         <span className="tracking-tight">9:41</span>
-        <div className="w-16 h-3 bg-[#0c0a09] rounded-full mx-auto -mt-0.5" />
-        <div className="flex items-center space-x-1.5 text-[11px] text-[#292524]">
+        <div className={`w-16 h-3 rounded-full mx-auto -mt-0.5 ${isDark ? 'bg-white/40' : 'bg-[#0c0a09]'}`} />
+        <div className={`flex items-center space-x-1.5 text-[11px] ${isDark ? 'text-white/80' : 'text-[#292524]'}`}>
           <i className="fa-solid fa-signal" />
           <i className="fa-solid fa-wifi" />
           <i className="fa-solid fa-battery-full text-sm" />
@@ -156,7 +195,7 @@ export default function PhonePreview({ isMobile = false }) {
       <div id="preview-top-header" className={cfg.headerClass}>
         {/* Brand Signature with Custom Profile Picture */}
         <div className="flex items-center space-x-2.5 min-w-0">
-          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#292524] text-white flex items-center justify-center text-[10px] font-bold overflow-hidden border border-[#d6d3d1] dark:border-[#44403c] shadow-xs flex-shrink-0">
+          <div className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#292524] text-white flex items-center justify-center text-[10px] font-bold overflow-hidden border ${isDark ? 'border-white/30' : 'border-[#d6d3d1]'} shadow-xs flex-shrink-0`}>
             {avatar ? (
               <img
                 id="preview-top-avatar"
@@ -169,7 +208,11 @@ export default function PhonePreview({ isMobile = false }) {
               <i id="preview-top-avatar-icon" className="fa-solid fa-user text-xs" />
             )}
           </div>
-          <span id="preview-top-channel" className="text-[#0c0a09] dark:text-white font-semibold text-xs sm:text-[13px] tracking-tight truncate max-w-[170px] select-none">
+          <span
+            id="preview-top-channel"
+            style={{ color: activeTextColor }}
+            className="font-semibold text-xs sm:text-[13px] tracking-tight truncate max-w-[170px] select-none"
+          >
             {channel || '@MoovyEng'}
           </span>
         </div>
@@ -208,14 +251,22 @@ export default function PhonePreview({ isMobile = false }) {
           }
         >
           <div className="flex items-center justify-center">
-            <h1 id="preview-word" className={cfg.wordClass}>
+            <h1
+              id="preview-word"
+              className={cfg.wordClass}
+              style={{ color: activeTextColor, fontFamily: fontFamilyCss }}
+            >
               {word}
             </h1>
           </div>
 
           {/* IPA Phonetic Guide */}
           <div className="flex items-center justify-center pt-0.5">
-            <p id="preview-phonetic" className="text-xs sm:text-sm text-[#4e4e4e] font-mono tracking-wide text-center">
+            <p
+              id="preview-phonetic"
+              style={{ color: phoneticColor, fontFamily: fontFamilyCss }}
+              className="text-xs sm:text-sm font-mono tracking-wide text-center"
+            >
               {phonetic}
             </p>
           </div>
@@ -305,30 +356,43 @@ export default function PhonePreview({ isMobile = false }) {
         >
           {/* Thai Meaning (Big, Bold, Clean) */}
           <div className="text-center w-full px-2">
-            <h2 id="preview-meaning" className={cfg.meaningClass}>
+            <h2
+              id="preview-meaning"
+              className={cfg.meaningClass}
+              style={{ color: activeTextColor, fontFamily: fontFamilyCss }}
+            >
               {(meaning || '').replace(/["']/g, '')}
             </h2>
           </div>
 
-          {/* Frameless Grammar & Examples Container (No Border, No Card Box, Clean Single Font) */}
-          <div id="grammar-detail-card" className={`${cfg.grammarCardClass} preview-thai-font`}>
+          {/* Frameless Grammar & Examples Container (Clean, Proportional, No Heavy Box) */}
+          <div
+            id="grammar-detail-card"
+            className={`${cfg.grammarCardClass} ${isItalic ? 'italic' : ''} ${isUnderline ? 'underline' : ''}`}
+            style={{ fontFamily: fontFamilyCss, textAlign }}
+          >
             {/* Formula (e.g. S + wish + [Someone] + to + break a leg → ...) */}
             <div
               id="preview-grammar"
-              className="text-sm font-semibold text-[#0c0a09] leading-snug"
-              dangerouslySetInnerHTML={{ __html: formatGrammarHtml(grammar, wordKeyword) }}
+              className={`text-[13px] sm:text-[14px] leading-snug ${isBold ? 'font-semibold' : 'font-normal'}`}
+              style={{ color: activeTextColor }}
+              dangerouslySetInnerHTML={{ __html: formatGrammarHtml(grammar, wordKeyword, showHighlight, isDark) }}
             />
             {/* 2 Punchy Example Sentences without numbers */}
-            <div className="space-y-1.5 pt-1 border-t border-black/10">
+            <div className={`space-y-1.5 pt-1.5 border-t ${isDark ? 'border-white/20' : 'border-black/10'}`}>
               <div id="preview-ex1" className="leading-relaxed">
                 {ex1En && (
                   <>
                     <div
-                      className="font-bold text-[#0c0a09] preview-example-en text-[12px] leading-snug"
-                      dangerouslySetInnerHTML={{ __html: highlightKeyword(ex1En, wordKeyword) }}
+                      className={`preview-example-en text-[12.5px] sm:text-[13.5px] leading-snug ${isBold ? 'font-bold' : 'font-normal'}`}
+                      style={{ color: activeTextColor }}
+                      dangerouslySetInnerHTML={{ __html: highlightKeyword(ex1En, wordKeyword, showHighlight) }}
                     />
                     {ex1Th && (
-                      <div className="text-[#57534e] preview-example-th text-[11px] preview-thai-font pt-0.5">
+                      <div
+                        className="preview-example-th text-[11.5px] sm:text-[12px] preview-thai-font pt-0.5"
+                        style={{ color: secondaryTextColor }}
+                      >
                         → {cleanTh(ex1Th)}
                       </div>
                     )}
@@ -339,11 +403,15 @@ export default function PhonePreview({ isMobile = false }) {
                 {ex2En && (
                   <>
                     <div
-                      className="font-bold text-[#0c0a09] preview-example-en text-[12px] leading-snug"
-                      dangerouslySetInnerHTML={{ __html: highlightKeyword(ex2En, wordKeyword) }}
+                      className={`preview-example-en text-[12.5px] sm:text-[13.5px] leading-snug ${isBold ? 'font-bold' : 'font-normal'}`}
+                      style={{ color: activeTextColor }}
+                      dangerouslySetInnerHTML={{ __html: highlightKeyword(ex2En, wordKeyword, showHighlight) }}
                     />
                     {ex2Th && (
-                      <div className="text-[#57534e] preview-example-th text-[11px] preview-thai-font pt-0.5">
+                      <div
+                        className="preview-example-th text-[11.5px] sm:text-[12px] preview-thai-font pt-0.5"
+                        style={{ color: secondaryTextColor }}
+                      >
                         → {cleanTh(ex2Th)}
                       </div>
                     )}

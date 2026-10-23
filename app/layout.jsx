@@ -5,7 +5,7 @@ import ExportModal from '../components/ExportModal';
 import CustomDialog from '../components/CustomDialog';
 
 export const metadata = {
-  title: 'moovying(En) — AI Vocab & Movie Clip Studio',
+  title: 'MoovyEng — AI Vocab & Movie Clip Studio',
   description: 'AI-Powered English Vocabulary & Movie Clip Card Generator for TikTok, Reels, and Shorts',
   icons: {
     icon: '/icon.png',
@@ -24,11 +24,11 @@ export default function RootLayout({ children }) {
           rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
         />
-        {/* Google Fonts: EB Garamond, Inter, Itim, Noto Serif Thai, Prompt, Fredoka */}
+        {/* Google Fonts: EB Garamond, Inter, Itim, Noto Serif Thai, Prompt, Fredoka, Kanit, Sarabun, Mitr, Chonburi */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=EB+Garamond:wght@300;400;500&family=Fredoka:wght@500;600&family=Inter:wght@300;400;500;600&family=Itim&family=Noto+Serif+Thai:wght@400;500;600;700&family=Prompt:wght@400;500;600;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Chonburi&family=EB+Garamond:wght@300;400;500&family=Fredoka:wght@500;600&family=Inter:wght@300;400;500;600;700&family=Itim&family=Kanit:wght@300;400;500;600&family=Mitr:wght@400;500&family=Noto+Serif+Thai:wght@400;500;600;700&family=Prompt:wght@400;500;600;700&family=Sarabun:wght@300;400;500;600&display=swap"
           rel="stylesheet"
         />
       </head>

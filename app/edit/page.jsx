@@ -52,12 +52,12 @@ export default function MobileEditorPage() {
               <i className="fa-solid fa-arrow-left text-xs" />
             </Link>
             {/* Frameless enlarged logo */}
-            <img src="/icon.png" alt="movyEng Logo" className="w-10 h-10 object-contain flex-shrink-0" />
+            <img src="/icon.png" alt="MoovyEng Logo" className="w-10 h-10 object-contain flex-shrink-0" />
             <div>
               <h1 className="editorial-display text-xl sm:text-2xl text-[#0c0a09] dark:text-white leading-none">
-                movyEng
+                MoovyEng
               </h1>
-              <p className="text-[10px] text-[#777169] dark:text-[#a8a29e] mt-0.5">moovying(En) Studio</p>
+              <p className="text-[10px] text-[#777169] dark:text-[#a8a29e] mt-0.5">MoovyEng Studio</p>
             </div>
           </div>
 

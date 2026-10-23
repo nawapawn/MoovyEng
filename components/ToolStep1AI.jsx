@@ -243,9 +243,29 @@ export default function ToolStep1AI() {
       </div>
 
       <div className="tool-card-body">
-        <div className="tool-card-inner space-y-2.5">
-          <div className="grid grid-cols-1 sm:grid-cols-12 gap-2.5">
-            <div className="sm:col-span-4">
+        <div className="tool-card-inner space-y-3">
+          {/* Prominent Model Selector (Front of Step 1 Workflow with High Z-Index) */}
+          <div id="model-selector-wrapper" className="relative z-30 transition-all">
+            <label htmlFor="ai-provider" className="block text-[11px] font-semibold text-[#0c0a09] dark:text-white mb-1.5 flex items-center justify-between">
+              <span id="model-selector-label" className="flex items-center gap-1.5">
+                <i className="fa-solid fa-sparkles text-amber-500 text-[10px]" />
+                <span>AI Model Selection</span>
+              </span>
+              <span id="model-count-badge" className="text-[10px] px-2 py-0.5 rounded-full bg-[#f0efed] dark:bg-[#292524] text-[#777169] dark:text-[#a8a29e] font-mono">
+                {modelsToDisplay.length} models available
+              </span>
+            </label>
+            <ElevenLabsDropdown
+              id="ai-provider"
+              value={aiModel}
+              onChange={setAiModel}
+              options={modelsToDisplay}
+            />
+          </div>
+
+          {/* Provider & API Key Row (Positioned below Model, Z-20) */}
+          <div className="grid grid-cols-1 sm:grid-cols-12 gap-2.5 relative z-20 pt-1 border-t border-[#f0efed] dark:border-[#292524]">
+            <div className="sm:col-span-4 relative z-25">
               <label htmlFor="ai-vendor" className="block text-[11px] font-medium text-[#777169] dark:text-[#a8a29e] mb-1">
                 Provider
               </label>
@@ -292,22 +312,6 @@ export default function ToolStep1AI() {
                 </button>
               </div>
             </div>
-          </div>
-
-          {/* Model Selector - Always Visible with Options */}
-          <div id="model-selector-wrapper" className="pt-0.5 transition-all">
-            <label htmlFor="ai-provider" className="block text-[11px] font-medium text-[#0c0a09] dark:text-white mb-1 flex items-center justify-between">
-              <span id="model-selector-label">Model</span>
-              <span id="model-count-badge" className="text-[10px] text-[#777169] dark:text-[#a8a29e]">
-                {modelsToDisplay.length} models
-              </span>
-            </label>
-            <ElevenLabsDropdown
-              id="ai-provider"
-              value={aiModel}
-              onChange={setAiModel}
-              options={modelsToDisplay}
-            />
           </div>
 
           {statusText && (
