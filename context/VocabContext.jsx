@@ -6,6 +6,7 @@ import {
   CURATED_RANDOM_WORDS,
   ASPECT_RATIO_CONFIG,
   VENDOR_LABELS,
+  DEFAULT_VENDOR_MODELS,
   I18N
 } from '../lib/constants';
 
@@ -44,9 +45,9 @@ export function VocabProvider({ children }) {
 
   // AI Configuration
   const [aiVendor, setAiVendor] = useState('gemini');
-  const [aiModel, setAiModel] = useState('gemini-2.5-flash');
+  const [aiModel, setAiModel] = useState('gemini-2.0-flash');
   const [apiKey, setApiKey] = useState('');
-  const [availableModels, setAvailableModels] = useState([]);
+  const [availableModels, setAvailableModels] = useState(DEFAULT_VENDOR_MODELS['gemini'] || []);
 
   // UI States
   const [theme, setThemeState] = useState('light');
@@ -131,8 +132,12 @@ export function VocabProvider({ children }) {
         if (d.channel) setChannel(d.channel);
         if (d.avatar) setAvatar(d.avatar);
         if (d.caption) setCaption(d.caption);
+        const vendor = d.aiVendor || 'gemini';
         if (d.aiVendor) setAiVendor(d.aiVendor);
+        const vendorDefaults = DEFAULT_VENDOR_MODELS[vendor] || DEFAULT_VENDOR_MODELS['gemini'] || [];
+        setAvailableModels(vendorDefaults);
         if (d.aiModel) setAiModel(d.aiModel);
+        else if (vendorDefaults.length > 0) setAiModel(vendorDefaults[0].id);
         if (d.apiKey) setApiKey(d.apiKey);
 
         if (Array.isArray(d.selectedClipsSequence) && d.selectedClipsSequence.length > 0) {

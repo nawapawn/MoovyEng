@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useVocab } from '../context/VocabContext';
-import { VENDOR_LABELS } from '../lib/constants';
+import { VENDOR_LABELS, DEFAULT_VENDOR_MODELS } from '../lib/constants';
 
 export default function ToolStep1AI() {
   const {
@@ -25,18 +25,32 @@ export default function ToolStep1AI() {
   const [statusText, setStatusText] = useState('');
 
   const isCollapsed = Boolean(collapsedSections['tool-sec-ai']);
+  const modelsToDisplay = availableModels.length > 0 ? availableModels : (DEFAULT_VENDOR_MODELS[aiVendor] || []);
 
   const handleVendorChange = (newVendor) => {
     setAiVendor(newVendor);
+    const defaults = DEFAULT_VENDOR_MODELS[newVendor] || [];
+    setAvailableModels(defaults);
+    if (defaults.length > 0) {
+      setAiModel(defaults[0].id);
+    }
   };
 
   const handleApiKeyInput = (val) => {
     setApiKey(val);
     const key = val.trim();
-    if (key.startsWith('AIza') || key.startsWith('AQ.')) setAiVendor('gemini');
-    else if (key.startsWith('gsk_')) setAiVendor('groq');
-    else if (key.startsWith('sk-ant-')) setAiVendor('anthropic');
-    else if (key.startsWith('xai-')) setAiVendor('xai');
+    let detected = '';
+    if (key.startsWith('AIza') || key.startsWith('AQ.')) detected = 'gemini';
+    else if (key.startsWith('gsk_')) detected = 'groq';
+    else if (key.startsWith('sk-ant-')) detected = 'anthropic';
+    else if (key.startsWith('xai-')) detected = 'xai';
+
+    if (detected && detected !== aiVendor) {
+      setAiVendor(detected);
+      const defaults = DEFAULT_VENDOR_MODELS[detected] || [];
+      setAvailableModels(defaults);
+      if (defaults.length > 0) setAiModel(defaults[0].id);
+    }
   };
 
   const verifyKeyAndFetchModels = async () => {
@@ -51,6 +65,8 @@ export default function ToolStep1AI() {
     setStatusText(lang === 'th' ? `กำลังตรวจสอบคีย์ ${vendorName}...` : `Verifying ${vendorName} key...`);
 
     try {
+      let fetchedModels = [];
+
       if (aiVendor === 'gemini') {
         const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${encodeURIComponent(key)}`);
         if (!resp.ok) {
@@ -58,30 +74,121 @@ export default function ToolStep1AI() {
           throw new Error(err.error?.message || `HTTP ${resp.status}`);
         }
         const json = await resp.json();
-        const models = (json.models || [])
+        const priorityIds = [
+          'gemini-2.0-flash',
+          'gemini-1.5-flash',
+          'gemini-1.5-pro',
+          'gemini-2.5-flash',
+          'gemma-2-9b-it'
+        ];
+        fetchedModels = (json.models || [])
           .filter((m) => {
             const methods = m.supportedGenerationMethods || [];
             const id = (m.name || '').replace(/^models\//, '');
             if (!methods.includes('generateContent')) return false;
-            if (id.includes('tts') || id.includes('image') || id.includes('transcribe')) return false;
+            if (id.includes('tts') || id.includes('image') || id.includes('banana') || id.includes('transcribe')) return false;
             return true;
           })
           .map((m) => {
             const cleanId = m.name.replace(/^models\//, '');
             return { id: cleanId, label: `${cleanId} (${m.displayName || cleanId})` };
+          })
+          .sort((a, b) => {
+            const idxA = priorityIds.indexOf(a.id);
+            const idxB = priorityIds.indexOf(b.id);
+            if (idxA !== -1 && idxB !== -1) return idxA - idxB;
+            if (idxA !== -1) return -1;
+            if (idxB !== -1) return 1;
+            return a.id.localeCompare(b.id);
           });
-
-        setAvailableModels(models);
-        if (models.length > 0 && !models.some((m) => m.id === aiModel)) {
-          setAiModel(models[0].id);
+      } else if (aiVendor === 'groq') {
+        const resp = await fetch('https://api.groq.com/openai/v1/models', {
+          headers: { Authorization: `Bearer ${key}` }
+        });
+        if (!resp.ok) {
+          const err = await resp.json().catch(() => ({}));
+          throw new Error(err.error?.message || `HTTP ${resp.status}`);
         }
-        setStatusText(lang === 'th' ? `ตรวจพบ ${models.length} โมเดล พร้อมใช้งาน!` : `${models.length} models ready!`);
+        const json = await resp.json();
+        fetchedModels = (json.data || []).map((m) => ({ id: m.id, label: m.id }));
+      } else if (aiVendor === 'openai') {
+        const resp = await fetch('https://api.openai.com/v1/models', {
+          headers: { Authorization: `Bearer ${key}` }
+        });
+        if (!resp.ok) {
+          const err = await resp.json().catch(() => ({}));
+          throw new Error(err.error?.message || `HTTP ${resp.status}`);
+        }
+        const json = await resp.json();
+        const all = json.data || [];
+        const filtered = all.filter((m) => m.id.startsWith('gpt-') || m.id.startsWith('o1') || m.id.startsWith('o3') || m.id.startsWith('chatgpt-'));
+        fetchedModels = (filtered.length > 0 ? filtered : all)
+          .sort((a, b) => (b.created || 0) - (a.created || 0))
+          .map((m) => ({ id: m.id, label: m.id }));
+      } else if (aiVendor === 'deepseek') {
+        const resp = await fetch('https://api.deepseek.com/models', {
+          headers: { Authorization: `Bearer ${key}` }
+        });
+        if (!resp.ok) {
+          const err = await resp.json().catch(() => ({}));
+          throw new Error(err.error?.message || `HTTP ${resp.status}`);
+        }
+        const json = await resp.json();
+        fetchedModels = (json.data || []).map((m) => ({ id: m.id, label: m.id }));
+      } else if (aiVendor === 'anthropic') {
+        const resp = await fetch('https://api.anthropic.com/v1/models', {
+          headers: {
+            'x-api-key': key,
+            'anthropic-version': '2023-06-01',
+            'anthropic-dangerous-direct-browser-access': 'true'
+          }
+        });
+        if (!resp.ok) {
+          const err = await resp.json().catch(() => ({}));
+          throw new Error(err.error?.message || `HTTP ${resp.status}`);
+        }
+        const json = await resp.json();
+        fetchedModels = (json.data || []).map((m) => ({ id: m.id, label: `${m.id} — ${m.display_name || m.id}` }));
+      } else if (aiVendor === 'xai') {
+        const resp = await fetch('https://api.x.ai/v1/models', {
+          headers: { Authorization: `Bearer ${key}` }
+        });
+        if (!resp.ok) {
+          const err = await resp.json().catch(() => ({}));
+          throw new Error(err.error?.message || `HTTP ${resp.status}`);
+        }
+        const json = await resp.json();
+        fetchedModels = (json.data || []).map((m) => ({ id: m.id, label: m.id }));
+      } else if (aiVendor === 'mistral') {
+        const resp = await fetch('https://api.mistral.ai/v1/models', {
+          headers: { Authorization: `Bearer ${key}` }
+        });
+        if (!resp.ok) {
+          const err = await resp.json().catch(() => ({}));
+          throw new Error(err.error?.message || `HTTP ${resp.status}`);
+        }
+        const json = await resp.json();
+        fetchedModels = (json.data || []).map((m) => ({ id: m.id, label: m.id }));
+      }
+
+      if (fetchedModels.length > 0) {
+        setAvailableModels(fetchedModels);
+        if (!fetchedModels.some((m) => m.id === aiModel)) {
+          setAiModel(fetchedModels[0].id);
+        }
+        setStatusText(lang === 'th' ? `ตรวจพบ ${fetchedModels.length} โมเดล พร้อมใช้งาน!` : `${fetchedModels.length} models ready!`);
         showToast(lang === 'th' ? `เชื่อมต่อ ${vendorName} สำเร็จ!` : `${vendorName} connected!`);
       } else {
+        const defaults = DEFAULT_VENDOR_MODELS[aiVendor] || [];
+        setAvailableModels(defaults);
         setStatusText(lang === 'th' ? `เชื่อมต่อ ${vendorName} พร้อมใช้งาน` : `${vendorName} ready`);
         showToast(lang === 'th' ? `บันทึกคีย์ ${vendorName} เรียบร้อย` : `Saved ${vendorName} key`);
       }
     } catch (err) {
+      const defaults = DEFAULT_VENDOR_MODELS[aiVendor] || [];
+      if (availableModels.length === 0) {
+        setAvailableModels(defaults);
+      }
       setStatusText(lang === 'th' ? `เกิดข้อผิดพลาด: ${err.message}` : `Error: ${err.message}`);
       showToast(`${lang === 'th' ? 'ตรวจสอบไม่ผ่าน' : 'Verification failed'}: ${err.message}`);
     } finally {
@@ -112,7 +219,7 @@ export default function ToolStep1AI() {
             id="detected-provider-badge"
             className="text-[10px] px-2 py-0.5 rounded-full bg-[#f0efed] dark:bg-[#292524] text-[#777169] dark:text-[#a8a29e] font-semibold uppercase tracking-wider"
           >
-            {apiKey ? VENDOR_LABELS[aiVendor] || 'Ready' : 'Ready'}
+            {(VENDOR_LABELS[aiVendor] || aiVendor).toUpperCase()}
           </span>
           <button
             type="button"
@@ -184,28 +291,27 @@ export default function ToolStep1AI() {
             </div>
           </div>
 
-          {availableModels.length > 0 && (
-            <div id="model-selector-wrapper" className="pt-0.5 transition-all">
-              <label htmlFor="ai-provider" className="block text-[11px] font-medium text-[#0c0a09] dark:text-white mb-1 flex items-center justify-between">
-                <span id="model-selector-label">Model</span>
-                <span id="model-count-badge" className="text-[10px] text-[#777169] dark:text-[#a8a29e]">
-                  {availableModels.length} models
-                </span>
-              </label>
-              <select
-                id="ai-provider"
-                value={aiModel}
-                onChange={(e) => setAiModel(e.target.value)}
-                className="w-full bg-white dark:bg-[#292524] border border-[#0c0a09] dark:border-white rounded-lg px-3 py-1.5 text-xs text-[#0c0a09] dark:text-white focus:outline-none transition"
-              >
-                {availableModels.map((m) => (
-                  <option key={m.id} value={m.id}>
-                    {m.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-          )}
+          {/* Model Selector - Always Visible with Options */}
+          <div id="model-selector-wrapper" className="pt-0.5 transition-all">
+            <label htmlFor="ai-provider" className="block text-[11px] font-medium text-[#0c0a09] dark:text-white mb-1 flex items-center justify-between">
+              <span id="model-selector-label">Model</span>
+              <span id="model-count-badge" className="text-[10px] text-[#777169] dark:text-[#a8a29e]">
+                {modelsToDisplay.length} models
+              </span>
+            </label>
+            <select
+              id="ai-provider"
+              value={aiModel}
+              onChange={(e) => setAiModel(e.target.value)}
+              className="w-full bg-white dark:bg-[#292524] border border-[#0c0a09] dark:border-white rounded-lg px-3 py-1.5 text-xs text-[#0c0a09] dark:text-white focus:outline-none transition"
+            >
+              {modelsToDisplay.map((m) => (
+                <option key={m.id} value={m.id}>
+                  {m.label}
+                </option>
+              ))}
+            </select>
+          </div>
 
           {statusText && (
             <p id="openrouter-status" className="text-[10px] text-[#777169] dark:text-[#a8a29e]">

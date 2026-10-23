@@ -187,6 +187,16 @@ html.dark ::-webkit-scrollbar-track {
   border-radius: 9999px;
 }
 
+/* Ensure Phone Preview container sizing and typography are solid */
+@media (min-width: 640px) {
+  #phone-container {
+    width: 414px !important;
+    height: 736px !important;
+    min-height: 736px !important;
+    max-height: 736px !important;
+  }
+}
+
 html.dark ::-webkit-scrollbar-thumb {
   background: #44403c;
 }
