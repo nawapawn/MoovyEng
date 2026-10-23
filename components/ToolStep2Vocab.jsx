@@ -33,6 +33,7 @@ export default function ToolStep2Vocab() {
     randomWordWithAi,
     generateAiContent,
     craftSentencesFromSelectedClip,
+    isCraftingSentences,
     isLoading,
     loadingText,
     collapsedSections,
@@ -287,12 +288,14 @@ export default function ToolStep2Vocab() {
                 <label className="block text-[11px] font-medium text-[#777169] dark:text-[#a8a29e]">Examples (2 Punchy Sentences)</label>
                 <button
                   type="button"
+                  id="btn-craft-examples"
                   onClick={craftSentencesFromSelectedClip}
-                  className="w-7 h-7 rounded-full bg-[#f0efed] dark:bg-[#292524] hover:bg-[#e7e5e4] text-[#0c0a09] dark:text-white flex items-center justify-center transition"
+                  disabled={isCraftingSentences}
+                  className="w-7 h-7 rounded-full bg-[#f0efed] dark:bg-[#292524] hover:bg-[#e7e5e4] text-[#0c0a09] dark:text-white flex items-center justify-center transition disabled:opacity-50"
                   title="Regenerate Examples"
                   aria-label="Regenerate Examples"
                 >
-                  <i className="fa-solid fa-wand-magic-sparkles text-[10px]" />
+                  <i className={`fa-solid fa-wand-magic-sparkles text-[10px] ${isCraftingSentences ? 'fa-spin text-amber-500' : ''}`} />
                 </button>
               </div>
               <div className="space-y-1.5">

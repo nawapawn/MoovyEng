@@ -7,7 +7,8 @@ import {
   ASPECT_RATIO_CONFIG,
   VENDOR_LABELS,
   DEFAULT_VENDOR_MODELS,
-  I18N
+  I18N,
+  getNextSentenceVariety
 } from '../lib/constants';
 
 const VocabContext = createContext(null);
@@ -53,6 +54,7 @@ export function VocabProvider({ children }) {
   const [theme, setThemeState] = useState('light');
   const [lang, setLangState] = useState('th');
   const [isLoading, setIsLoading] = useState(false);
+  const [isCraftingSentences, setIsCraftingSentences] = useState(false);
   const [loadingText, setLoadingText] = useState('');
   const [toastMessage, setToastMessage] = useState('');
   const [isToastVisible, setIsToastVisible] = useState(false);
@@ -401,16 +403,21 @@ Respond with ONLY valid JSON with no markdown formatting:
 }`;
 
       let rawText = '';
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 8000);
+
       if (aiVendor === 'gemini') {
-        const geminiModel = aiModel || 'gemini-2.5-flash';
+        const geminiModel = (aiModel && !aiModel.includes('2.5')) ? aiModel : 'gemini-2.0-flash';
         const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${geminiModel}:generateContent?key=${encodeURIComponent(apiKey)}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
+          signal: controller.signal,
           body: JSON.stringify({
             contents: [{ parts: [{ text: prompt }] }],
-            generationConfig: { responseMimeType: 'application/json' }
+            generationConfig: { responseMimeType: 'application/json', temperature: 0.85 }
           })
         });
+        clearTimeout(timeoutId);
         if (!res.ok) throw new Error(`Gemini API HTTP ${res.status}`);
         const json = await res.json();
         rawText = json.candidates?.[0]?.content?.parts?.[0]?.text || '';
@@ -420,18 +427,22 @@ Respond with ONLY valid JSON with no markdown formatting:
         else if (aiVendor === 'deepseek') endpoint = 'https://api.deepseek.com/chat/completions';
         else if (aiVendor === 'xai') endpoint = 'https://api.x.ai/v1/chat/completions';
 
+        const effectiveModel = aiModel || (DEFAULT_VENDOR_MODELS[aiVendor]?.[0]?.id || 'llama-3.3-70b-versatile');
         const res = await fetch(endpoint, {
           method: 'POST',
           headers: {
             'Authorization': `Bearer ${apiKey}`,
             'Content-Type': 'application/json'
           },
+          signal: controller.signal,
           body: JSON.stringify({
-            model: aiModel,
+            model: effectiveModel,
             messages: [{ role: 'user', content: prompt }],
+            temperature: 0.85,
             response_format: { type: 'json_object' }
           })
         });
+        clearTimeout(timeoutId);
         if (!res.ok) throw new Error(`${aiVendor} HTTP ${res.status}`);
         const json = await res.json();
         rawText = json.choices?.[0]?.message?.content || '';
@@ -473,11 +484,17 @@ Respond with ONLY valid JSON with no markdown formatting:
         setLoadingText(lang === 'th' ? 'กำลังสุ่มคำศัพท์/สำนวนด้วย AI...' : 'Picking viral English idiom...');
         const prompt = 'Give me exactly ONE popular, practical, or viral English idiom, phrasal verb, or slang that Thai learners love. Reply with ONLY the English phrase itself, no punctuation, no quotes, no extra words. Example: bite the bullet';
 
-        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${encodeURIComponent(apiKey)}`, {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 4000);
+
+        const gemModel = (aiModel && !aiModel.includes('2.5')) ? aiModel : 'gemini-2.0-flash';
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${gemModel}:generateContent?key=${encodeURIComponent(apiKey)}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
+          signal: controller.signal,
           body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
         });
+        clearTimeout(timeoutId);
         if (res.ok) {
           const json = await res.json();
           const raw = json.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
@@ -502,9 +519,115 @@ Respond with ONLY valid JSON with no markdown formatting:
     }
   };
 
+  // Re-craft 2 Punchy Example Sentences Specifically (Fast, Guaranteed to Change)
   const craftSentencesFromSelectedClip = async () => {
-    if (!word) return;
-    await generateAiContent(word);
+    const targetWord = (word || '').trim();
+    if (!targetWord) {
+      showToast(lang === 'th' ? 'กรุณาพิมพ์คำศัพท์ภาษาอังกฤษก่อน' : 'Please enter an English word');
+      return;
+    }
+
+    setIsCraftingSentences(true);
+
+    // If API Key is present, attempt fast targeted AI generation (3.5s timeout)
+    if (apiKey) {
+      try {
+        const primaryClip = activeClipSequence[0] || cafeClipPool[0] || null;
+        const prompt = `You are an elite English tutor for Thai learners.
+Target phrase/word: "${targetWord}"
+${primaryClip ? `Real movie context: "${primaryClip.title}" Quote: "${primaryClip.quote || ''}"` : ''}
+
+TASK: Provide 2 FRESH, PUNCHY, VERY SHORT example sentences (4 to 7 words maximum each) using "${targetWord}".
+CRITICAL: DO NOT repeat these previous sentences:
+1. "${ex1En}"
+2. "${ex2En}"
+Give completely NEW, exciting, and memorable examples!
+
+Respond with ONLY valid JSON:
+{
+  "ex1En": "Sentence 1 (4-7 words)",
+  "ex1Th": "คำแปลไทยสั้นกระชับ",
+  "ex2En": "Sentence 2 (4-7 words)",
+  "ex2Th": "คำแปลไทยสั้นกระชับ"
+}`;
+
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 3500);
+
+        let raw = '';
+        if (aiVendor === 'gemini') {
+          const gemModel = (aiModel && !aiModel.includes('2.5')) ? aiModel : 'gemini-2.0-flash';
+          const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${gemModel}:generateContent?key=${encodeURIComponent(apiKey)}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            signal: controller.signal,
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: prompt }] }],
+              generationConfig: { responseMimeType: 'application/json', temperature: 0.95 }
+            })
+          });
+          clearTimeout(timeoutId);
+          if (res.ok) {
+            const data = await res.json();
+            raw = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
+          }
+        } else {
+          let endpoint = 'https://api.openai.com/v1/chat/completions';
+          if (aiVendor === 'groq') endpoint = 'https://api.groq.com/openai/v1/chat/completions';
+          else if (aiVendor === 'deepseek') endpoint = 'https://api.deepseek.com/chat/completions';
+          else if (aiVendor === 'xai') endpoint = 'https://api.x.ai/v1/chat/completions';
+
+          const effectiveModel = aiModel || (DEFAULT_VENDOR_MODELS[aiVendor]?.[0]?.id || 'llama-3.3-70b-versatile');
+          const res = await fetch(endpoint, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${apiKey}`,
+              'Content-Type': 'application/json'
+            },
+            signal: controller.signal,
+            body: JSON.stringify({
+              model: effectiveModel,
+              messages: [{ role: 'user', content: prompt }],
+              temperature: 0.95,
+              response_format: { type: 'json_object' }
+            })
+          });
+          clearTimeout(timeoutId);
+          if (res.ok) {
+            const data = await res.json();
+            raw = data.choices?.[0]?.message?.content || '';
+          }
+        }
+
+        if (raw) {
+          raw = raw.replace(/```json/gi, '').replace(/```/g, '').trim();
+          const b1 = raw.indexOf('{');
+          const b2 = raw.lastIndexOf('}');
+          if (b1 !== -1 && b2 !== -1) raw = raw.substring(b1, b2 + 1);
+          const parsed = JSON.parse(raw);
+          if (parsed.ex1En && parsed.ex2En && parsed.ex1En !== ex1En) {
+            setEx1En(parsed.ex1En);
+            if (parsed.ex1Th) setEx1Th(parsed.ex1Th);
+            setEx2En(parsed.ex2En);
+            if (parsed.ex2Th) setEx2Th(parsed.ex2Th);
+            showToast(lang === 'th' ? `AI แต่งประโยคใหม่สำหรับ "${targetWord}" สำเร็จ!` : `New examples generated for "${targetWord}"!`);
+            setIsCraftingSentences(false);
+            return;
+          }
+        }
+      } catch (e) {
+        console.warn('AI sentence craft fallback to curated variety:', e.message);
+      }
+    }
+
+    // Instant Curated Variety (Guaranteed to change, instant response < 50ms)
+    const variety = getNextSentenceVariety(targetWord, ex1En, activeClipSequence[0] || cafeClipPool[0]);
+    setEx1En(variety.ex1En);
+    setEx1Th(variety.ex1Th);
+    setEx2En(variety.ex2En);
+    setEx2Th(variety.ex2Th);
+    showToast(lang === 'th' ? `แต่งประโยคตัวอย่างใหม่เรียบร้อย!` : `New punchy examples generated!`);
+    setIsCraftingSentences(false);
   };
 
   const playAllClipsWithPython = async () => {
@@ -557,6 +680,7 @@ Respond with ONLY valid JSON with no markdown formatting:
     generateAiContent,
     randomWordWithAi,
     craftSentencesFromSelectedClip,
+    isCraftingSentences,
 
     // Theme & I18N
     theme, toggleTheme,
