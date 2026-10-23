@@ -118,6 +118,7 @@ export default function StudioHeader() {
         {/* Export Button */}
         <button
           type="button"
+          id="btn-export-studio"
           onClick={() => setIsExportModalOpen(true)}
           className="w-9 h-9 bg-[#292524] dark:bg-[#f5f5f4] hover:bg-[#0c0a09] text-white dark:text-[#0c0a09] rounded-full shadow-xs transition flex items-center justify-center flex-shrink-0 t-btn-press"
           title="Export Video / PNG"

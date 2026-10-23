@@ -273,6 +273,7 @@ export default function ExportModal() {
           {/* Option 1: MP4 Fit */}
           <button
             type="button"
+            id="btn-export-mp4-fit"
             onClick={() => handleExportVideo('pad')}
             disabled={isExporting}
             className="w-full p-3 rounded-xl border border-[#e7e5e4] dark:border-[#292524] hover:border-[#0c0a09] dark:hover:border-white hover:bg-[#fafafa] dark:hover:bg-[#201d1a] transition flex items-center justify-between group text-left disabled:opacity-50"
