@@ -1,0 +1,206 @@
+/* ==========================================================================
+   moovying(En) / movyEng — Unified Stylesheet & Component Design System
+   Inspired by ElevenLabs Editorial Design & transitions.dev Micro-Interactions
+   ========================================================================== */
+
+:root {
+  --t-ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+  --t-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --t-duration-fast: 180ms;
+  --t-duration-normal: 280ms;
+}
+
+body {
+  font-family: 'Inter', 'Prompt', -apple-system, BlinkMacSystemFont, sans-serif;
+  background-color: #f5f5f5;
+  color: #0c0a09;
+  letter-spacing: 0.16px;
+  user-select: none;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+html.dark body {
+  background-color: #0c0a09;
+  color: #f5f5f4;
+}
+
+.editorial-display {
+  font-family: 'EB Garamond', 'Times New Roman', serif;
+  font-weight: 300;
+  letter-spacing: -0.96px;
+}
+
+.vocab-font {
+  font-family: 'Fredoka', 'Itim', cursive, sans-serif;
+}
+
+/* Use Itim font for all Thai vocab, meaning, and preview grammar/example cards */
+.thai-vocab-font,
+.preview-thai-font {
+  font-family: 'Itim', cursive, sans-serif;
+}
+
+.highlight-yellow {
+  background-color: #fde047;
+  color: #0c0a09;
+  padding: 0 3px;
+  border-radius: 0px;
+  font-weight: 700;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+}
+
+html.dark .highlight-yellow {
+  background-color: #eab308;
+  color: #000;
+}
+
+/* transitions.dev micro-interaction classes */
+.t-btn-press {
+  transition: transform var(--t-duration-fast) var(--t-ease-out), box-shadow var(--t-duration-fast) var(--t-ease-out);
+}
+
+.t-btn-press:active {
+  transform: scale(0.94);
+}
+
+.t-card-hover {
+  transition: transform var(--t-duration-normal) var(--t-ease-spring), box-shadow var(--t-duration-normal) var(--t-ease-spring);
+}
+
+.t-card-hover:hover {
+  transform: translateY(-2px);
+}
+
+.spin-active {
+  animation: fa-spin 0.8s linear infinite !important;
+}
+
+/* Dynamic auto-contrast for preview text when user chooses dark gradient background */
+#phone-container.phone-dark-contrast #preview-word,
+#phone-container.phone-dark-contrast #preview-meaning,
+#phone-container.phone-dark-contrast #preview-top-channel {
+  color: #ffffff !important;
+}
+
+#phone-container.phone-dark-contrast #preview-phonetic,
+#phone-container.phone-dark-contrast #preview-ios-statusbar,
+#phone-container.phone-dark-contrast #preview-top-header {
+  color: #e7e5e4 !important;
+}
+
+#phone-container.phone-dark-contrast #preview-grammar {
+  color: #f5f5f4 !important;
+}
+
+#phone-container.phone-dark-contrast .preview-example-en {
+  color: #ffffff !important;
+}
+
+#phone-container.phone-dark-contrast .preview-example-th {
+  color: #cbd5e1 !important;
+}
+
+#phone-container.phone-dark-contrast .border-black\/10 {
+  border-color: rgba(255, 255, 255, 0.22) !important;
+}
+
+/* Smooth scrolling & Scroll-Reveal / Collapsible Card Animations */
+html {
+  scroll-behavior: smooth;
+}
+
+.tool-section-card {
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+              box-shadow 0.25s ease,
+              background-color 0.25s ease,
+              border-color 0.25s ease;
+  will-change: transform, opacity;
+}
+
+.tool-section-card:hover {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+.tool-section-card.scroll-reveal-hidden {
+  opacity: 0;
+  transform: translateY(18px) scale(0.985);
+}
+
+.tool-section-card.scroll-reveal-visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+.tool-card-body {
+  display: grid;
+  grid-template-rows: 1fr;
+  opacity: 1;
+  transition: grid-template-rows 0.32s cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 0.25s ease,
+              padding-top 0.25s ease;
+}
+
+.tool-card-body > .tool-card-inner {
+  overflow: hidden;
+}
+
+.tool-section-card:not(.is-collapsed) > .tool-card-body > .tool-card-inner {
+  overflow: visible;
+}
+
+.tool-section-card.is-collapsed .tool-card-body {
+  grid-template-rows: 0fr;
+  opacity: 0;
+  padding-top: 0 !important;
+}
+
+.tool-section-card.is-collapsed .tool-card-header {
+  margin-bottom: 0 !important;
+  padding-bottom: 0 !important;
+  border-bottom-color: transparent !important;
+}
+
+.tool-collapse-chevron {
+  transition: transform 0.28s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.tool-section-card.is-collapsed .tool-collapse-chevron {
+  transform: rotate(-90deg);
+}
+
+/* Force movie clip video and thumbnail to fill frame uniformly with zero black bars */
+.movie-uniform-fill {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Clean Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f0efed;
+}
+
+html.dark ::-webkit-scrollbar-track {
+  background: #1c1917;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #d6d3d1;
+  border-radius: 9999px;
+}
+
+html.dark ::-webkit-scrollbar-thumb {
+  background: #44403c;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a29e;
+}
