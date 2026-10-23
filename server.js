@@ -478,13 +478,18 @@ const server = http.createServer(async (req, res) => {
         ...(req.headers.range ? { 'Range': req.headers.range } : {})
       }
     }, (proxyRes) => {
-      res.writeHead(proxyRes.statusCode, {
+      const responseHeaders = {
         'Content-Type': proxyRes.headers['content-type'] || 'video/mp4',
-        'Content-Length': proxyRes.headers['content-length'],
         'Accept-Ranges': 'bytes',
-        'Content-Range': proxyRes.headers['content-range'],
         'Access-Control-Allow-Origin': '*'
-      });
+      };
+      if (proxyRes.headers['content-length']) {
+        responseHeaders['Content-Length'] = proxyRes.headers['content-length'];
+      }
+      if (proxyRes.headers['content-range']) {
+        responseHeaders['Content-Range'] = proxyRes.headers['content-range'];
+      }
+      res.writeHead(proxyRes.statusCode, responseHeaders);
       proxyRes.pipe(res);
     });
 
