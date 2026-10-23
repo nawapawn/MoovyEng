@@ -8,7 +8,7 @@ export const metadata = {
   title: 'MoovyEng — AI Vocab & Movie Clip Studio',
   description: 'AI-Powered English Vocabulary & Movie Clip Card Generator for TikTok, Reels, and Shorts',
   icons: {
-    icon: '/icon.png',
+    icon: '/icon.svg',
     apple: '/icon.png'
   }
 };
@@ -17,6 +17,7 @@ export default function RootLayout({ children }) {
   return (
     <html lang="th" className="light overflow-x-hidden" suppressHydrationWarning>
       <head>
+        <link rel="icon" type="image/svg+xml" href="/icon.svg" />
         <link rel="icon" type="image/png" href="/icon.png" />
         <link rel="apple-touch-icon" href="/icon.png" />
         {/* FontAwesome for icons */}

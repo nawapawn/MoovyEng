@@ -22,7 +22,7 @@ export default function StudioHeader() {
     <header className="w-full bg-white/90 dark:bg-[#1c1917]/95 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] rounded-2xl px-4 py-3 shadow-[0_4px_20px_rgba(0,0,0,0.06)] flex flex-wrap items-center justify-between gap-3 sticky top-3 z-40 transition-all">
       <div className="flex items-center gap-3">
         {/* Frameless Enlarged Brand Logo */}
-        <img src="/icon.png" alt="Logo" className="w-11 h-11 object-contain drop-shadow-sm flex-shrink-0" />
+        <img src="/icon.svg" alt="MoovyEng Logo" className="w-11 h-11 object-contain drop-shadow-sm flex-shrink-0" />
         <div>
           <h2 className="editorial-display text-2xl text-[#0c0a09] dark:text-white leading-none">
             MoovyEng
