@@ -24,7 +24,7 @@ export default function MobileEditorPage() {
   } = useVocab();
 
   return (
-    <div className="w-full min-h-screen flex flex-col items-center pb-24 sm:pb-16 pt-0 sm:pt-4 px-3 sm:px-6 relative overflow-x-hidden">
+    <div className="w-full min-h-screen flex flex-col items-center pb-24 sm:pb-16 pt-0 sm:pt-4 px-3 sm:px-6 relative">
       {/* ElevenLabs Atmospheric Pastel Gradient Orbs (Mint, Peach, Lavender) */}
       <div
         className="pointer-events-none fixed -top-28 -left-28 w-96 h-96 rounded-full opacity-40 dark:opacity-20 blur-3xl z-0"
@@ -39,8 +39,8 @@ export default function MobileEditorPage() {
         style={{ background: 'radial-gradient(circle, #c8b8e0 0%, transparent 70%)' }}
       />
 
-      {/* Top Sticky Header (Follows Scroll on Mobile + Quick Tool Search, Dark Mode & Language Toggle) */}
-      <header className="w-full max-w-2xl sticky top-0 z-40 bg-white/95 dark:bg-[#1c1917]/95 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] rounded-b-2xl sm:rounded-2xl p-3 mb-4 shadow-[0_6px_20px_rgba(0,0,0,0.06)] space-y-2.5">
+      {/* Top Sticky Header (Firmly Follows Scroll on Mobile + Quick Tool Search, Dark Mode & Language Toggle) */}
+      <header className="w-full max-w-2xl sticky top-0 z-50 bg-white/95 dark:bg-[#1c1917]/95 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] rounded-b-2xl sm:rounded-2xl p-3 mb-4 shadow-[0_6px_24px_rgba(0,0,0,0.08)] space-y-2.5 transition-all">
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center space-x-2.5">
             <Link
@@ -86,6 +86,18 @@ export default function MobileEditorPage() {
                 id="theme-toggle-icon"
                 className={`fa-solid ${theme === 'dark' ? 'fa-sun text-amber-400' : 'fa-moon text-[#777169]'} text-xs`}
               />
+            </button>
+
+            {/* Trash Can: Reset / Clear All */}
+            <button
+              type="button"
+              onClick={resetToInitialState}
+              id="btn-mobile-trash"
+              className="w-8 h-8 rounded-full bg-[#f0efed] dark:bg-[#292524] hover:bg-rose-50 text-[#777169] hover:text-rose-600 dark:text-[#a8a29e] dark:hover:text-rose-400 flex items-center justify-center transition t-btn-press shadow-2xs"
+              title="ล้างข้อมูลทั้งหมด (Clear / Reset All)"
+              aria-label="Clear All Data"
+            >
+              <i className="fa-solid fa-trash-can text-xs" />
             </button>
 
             {/* Quick Jump Tool Icons */}

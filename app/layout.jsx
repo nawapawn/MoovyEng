@@ -15,7 +15,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="th" className="light" suppressHydrationWarning>
+    <html lang="th" className="light overflow-x-hidden" suppressHydrationWarning>
       <head>
         <link rel="icon" type="image/png" href="/icon.png" />
         <link rel="apple-touch-icon" href="/icon.png" />
@@ -32,7 +32,7 @@ export default function RootLayout({ children }) {
           rel="stylesheet"
         />
       </head>
-      <body className="bg-[#f5f5f5] dark:bg-[#0c0a09] text-[#0c0a09] dark:text-[#f5f5f4] min-h-[100dvh] w-full flex justify-start items-start overflow-x-hidden relative">
+      <body className="bg-[#f5f5f5] dark:bg-[#0c0a09] text-[#0c0a09] dark:text-[#f5f5f4] min-h-[100dvh] w-full relative">
         <VocabProvider>
           {children}
           <ExportModal />

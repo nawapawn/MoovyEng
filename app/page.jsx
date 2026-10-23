@@ -10,7 +10,7 @@ import ToolStep4Social from '../components/ToolStep4Social';
 
 export default function HomePage() {
   return (
-    <div className="w-full min-h-[100dvh] flex justify-start items-start overflow-x-hidden lg:py-5 lg:px-6 relative">
+    <div className="w-full min-h-[100dvh] flex justify-start items-start lg:py-5 lg:px-6 relative">
       {/* ElevenLabs Atmospheric Pastel Gradient Orbs (Mint, Peach, Lavender, Sky) */}
       <div
         className="pointer-events-none fixed -top-24 -left-24 w-96 h-96 rounded-full opacity-45 blur-3xl z-0"

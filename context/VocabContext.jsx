@@ -19,7 +19,7 @@ export function VocabProvider({ children }) {
   const [phonetic, setPhonetic] = useState('/breɪk ə leɡ/');
   const [thaiRead, setThaiRead] = useState('(เบรค อะ เลก)');
   const [meaning, setMeaning] = useState('ขอให้โชคดี (นิยมใช้ก่อนขึ้นเวทีแสดง)');
-  const [grammar, setGrammar] = useState('S + wish + [Someone] + to + break a leg → อวยพรให้โชคดี');
+  const [grammar, setGrammar] = useState('S + wish + [Someone] + to + break a leg (อวยพรให้โชคดี)');
   const [movieContextTh, setMovieContextTh] = useState('');
   const [ex1En, setEx1En] = useState('Go out there and break a leg!');
   const [ex1Th, setEx1Th] = useState('ออกไปทำให้เต็มที่ ขอให้โชคดีนะ!');
@@ -42,14 +42,82 @@ export function VocabProvider({ children }) {
   const [useMovieBackdrop, setUseMovieBackdrop] = useState(false);
   const [bgBlur, setBgBlur] = useState(16);
   const [bgOverlayOpacity, setBgOverlayOpacity] = useState(45);
+
+  // Itemized Text Formatting for All Vocabulary Components
+  const [activeFormatTarget, setActiveFormatTarget] = useState('all');
   const [textFormat, setTextFormat] = useState({
-    fontFamily: 'Inter',
-    textColor: '',
-    fontSize: 'normal',
-    bold: true,
-    italic: false,
-    underline: false,
-    textAlign: 'left'
+    global: {
+      fontFamily: 'Inter',
+      textColor: '',
+      fontSize: 'normal',
+      bold: true,
+      italic: false,
+      underline: false,
+      textAlign: 'left'
+    },
+    word: {
+      fontFamily: 'Inter',
+      textColor: '',
+      fontSize: 'large',
+      bold: true,
+      italic: false,
+      underline: false,
+      textAlign: 'center'
+    },
+    phonetic: {
+      fontFamily: 'Inter',
+      textColor: '',
+      fontSize: 'normal',
+      bold: false,
+      italic: false,
+      underline: false,
+      textAlign: 'center'
+    },
+    thaiRead: {
+      fontFamily: 'Prompt',
+      textColor: '#dc2626',
+      fontSize: 'normal',
+      bold: true,
+      italic: false,
+      underline: false,
+      textAlign: 'center'
+    },
+    meaning: {
+      fontFamily: 'Inter',
+      textColor: '',
+      fontSize: 'normal',
+      bold: true,
+      italic: false,
+      underline: false,
+      textAlign: 'center'
+    },
+    grammar: {
+      fontFamily: 'Inter',
+      textColor: '',
+      fontSize: 'normal',
+      bold: true,
+      italic: false,
+      underline: false,
+      textAlign: 'left'
+    },
+    ex1: {
+      fontFamily: 'Inter',
+      textColor: '',
+      fontSize: 'normal',
+      bold: true,
+      italic: false,
+      underline: false,
+      textAlign: 'left'
+    },
+    ex2: {
+      fontFamily: 'Inter',
+      textColor: '',
+      fontSize: 'normal',
+      bold: true,
+      italic: false,
+      underline: false,
+      textAlign: 'left'
+    }
   });
 
   // Social Profile
@@ -182,7 +250,11 @@ export function VocabProvider({ children }) {
         if (typeof d.bgBlur === 'number') setBgBlur(d.bgBlur);
         if (typeof d.bgOverlayOpacity === 'number') setBgOverlayOpacity(d.bgOverlayOpacity);
         if (d.textFormat && typeof d.textFormat === 'object') {
-          setTextFormat((prev) => ({ ...prev, ...d.textFormat }));
+          if (d.textFormat.global || d.textFormat.word) {
+            setTextFormat((prev) => ({ ...prev, ...d.textFormat }));
+          } else {
+            setTextFormat((prev) => ({ ...prev, global: { ...(prev.global || {}), ...d.textFormat } }));
+          }
         }
         if (d.channel) setChannel(d.channel);
         if (d.avatar) setAvatar(d.avatar);
@@ -305,7 +377,7 @@ export function VocabProvider({ children }) {
         setPhonetic('/breɪk ə leɡ/');
         setThaiRead('(เบรค อะ เลก)');
         setMeaning('ขอให้โชคดี (นิยมใช้ก่อนขึ้นเวทีแสดง)');
-        setGrammar('S + wish + [Someone] + to + break a leg → อวยพรให้โชคดี');
+        setGrammar('S + wish + [Someone] + to + break a leg (อวยพรให้โชคดี)');
         setEx1En('Go out there and break a leg!');
         setEx1Th('ออกไปทำให้เต็มที่ ขอให้โชคดีนะ!');
         setEx2En('Break a leg on your test today.');
@@ -317,13 +389,15 @@ export function VocabProvider({ children }) {
         setBgBlur(16);
         setBgOverlayOpacity(45);
         setTextFormat({
-          fontFamily: 'Inter',
-          textColor: '',
-          fontSize: 'normal',
-          bold: true,
-          italic: false,
-          underline: false,
-          textAlign: 'left'
+          global: {
+            fontFamily: 'Inter',
+            textColor: '',
+            fontSize: 'normal',
+            bold: true,
+            italic: false,
+            underline: false,
+            textAlign: 'left'
+          }
         });
         setClipAspectRatio('9:16');
         setActiveClipSequence([]);
@@ -332,6 +406,72 @@ export function VocabProvider({ children }) {
         showToast(lang === 'th' ? 'รีเซ็ตข้อมูลเรียบร้อยแล้ว' : 'All data reset');
       }
     });
+  };
+
+  // Trash Can Action: Clear Vocab Fields
+  const clearVocabData = () => {
+    showCustomDialog({
+      title: lang === 'th' ? 'ล้างข้อมูลคำศัพท์' : 'Clear Vocabulary Data',
+      message: lang === 'th' ? 'คุณต้องการล้างข้อมูลคำศัพท์ คำอ่าน ความหมาย ไวยากรณ์ และประโยคทั้งหมดใช่หรือไม่?' : 'Do you want to clear all vocabulary, grammar, and example sentence fields?',
+      icon: 'fa-trash-can',
+      onConfirm: () => {
+        setWord('');
+        setPhonetic('');
+        setThaiRead('');
+        setMeaning('');
+        setGrammar('');
+        setEx1En('');
+        setEx1Th('');
+        setEx2En('');
+        setEx2Th('');
+        setActiveClipSequence([]);
+        setCafeClipPool([]);
+        showToast(lang === 'th' ? 'ล้างข้อมูลคำศัพท์เรียบร้อยแล้ว' : 'Vocabulary fields cleared');
+      }
+    });
+  };
+
+  // Update itemized text format
+  const updateTextFormat = (field, value, target = activeFormatTarget) => {
+    setTextFormat((prev) => {
+      const copy = { ...prev };
+      const currentGlobal = copy.global || {};
+
+      if (target === 'all' || target === 'global') {
+        const patch = typeof field === 'object' ? field : { [field]: value };
+        copy.global = { ...currentGlobal, ...patch };
+      } else {
+        const currentItem = copy[target] || { ...currentGlobal };
+        const patch = typeof field === 'object' ? field : { [field]: value };
+        copy[target] = { ...currentItem, ...patch };
+      }
+      return copy;
+    });
+  };
+
+  // Reset text format for specific target or all
+  const resetItemTextFormat = (target = activeFormatTarget) => {
+    if (target === 'all' || target === 'global') {
+      setTextFormat({
+        global: {
+          fontFamily: 'Inter',
+          textColor: '',
+          fontSize: 'normal',
+          bold: true,
+          italic: false,
+          underline: false,
+          textAlign: 'left'
+        }
+      });
+      showToast(lang === 'th' ? 'รีเซ็ตสไตล์ข้อความทั้งหมดเรียบร้อย' : 'All text formatting reset');
+    } else {
+      setTextFormat((prev) => {
+        const copy = { ...prev };
+        delete copy[target];
+        return copy;
+      });
+      showToast(lang === 'th' ? `รีเซ็ตสไตล์สำหรับ ${target} เรียบร้อย` : `Reset style for ${target}`);
+    }
   };
 
   // Toggle Highlight
@@ -343,19 +483,8 @@ export function VocabProvider({ children }) {
     });
   };
 
-  // Reset Text Format
-  const resetTextFormat = () => {
-    setTextFormat({
-      fontFamily: 'Inter',
-      textColor: '',
-      fontSize: 'normal',
-      bold: true,
-      italic: false,
-      underline: false,
-      textAlign: 'left'
-    });
-    showToast(lang === 'th' ? 'รีเซ็ตสไตล์ข้อความเรียบร้อย' : 'Text style reset');
-  };
+  // Legacy reset alias
+  const resetTextFormat = () => resetItemTextFormat('all');
 
   // Clean Cache
   const cleanCache = async () => {
@@ -497,7 +626,7 @@ ${primaryClip ? `Real movie context: "${primaryClip.title}" quote: "${primaryCli
 CRITICAL RULES:
 1. Provide EXACTLY 2 example sentences ("ex1En" and "ex2En"). DO NOT provide a 3rd sentence!
 2. Each English example sentence MUST be VERY SHORT (4 to 7 words maximum), super punchy, simple, and unforgettable (ขอประโยคที่ง่ายและสั้น 2 ประโยค เน้นจำฝังหัว)!
-3. Grammar formula ("grammar"): Write a concise 1-line formula using "S" for Subject (e.g. S + Verb to be + ${targetWord} → แปลว่า...). NEVER use the words "Subject", "[Subject]", "โครงสร้าง", or "ตัวอย่าง". No emojis!
+3. Grammar formula ("grammar"): Write a concise 1-line formula using "S" for Subject, followed by the explanation in parentheses (e.g. S + Verb to be + ${targetWord} (แปลว่า...)). NEVER use "->", "→", the words "Subject", "[Subject]", "โครงสร้าง", or "ตัวอย่าง". No emojis!
 4. Thai translations ("ex1Th", "ex2Th") MUST be short, direct, and natural.
 5. "socialCaption": Short Thai caption teaching ${targetWord} with relevant hashtags (#MoovyEng).
 
@@ -506,7 +635,7 @@ Respond with ONLY valid JSON with no markdown formatting:
   "phonetic": "/.../ (IPA format)",
   "thaiRead": "(คำอ่านออกเสียงภาษาไทย)",
   "meaning": "คำแปลความหมายภาษาไทยสั้นกระชับ",
-  "grammar": "S + [verb/phrase] → คำอธิบายสั้นๆ 1 บรรทัด",
+  "grammar": "S + [verb/phrase] (คำอธิบายสั้นๆ 1 บรรทัด)",
   "ex1En": "Very short sentence 1 (4-7 words)",
   "ex1Th": "คำแปลไทยสั้นกระชับ",
   "ex2En": "Very short sentence 2 (4-7 words)",
@@ -811,6 +940,9 @@ Respond with ONLY valid JSON:
     bgBlur, setBgBlur,
     bgOverlayOpacity, setBgOverlayOpacity,
     textFormat, setTextFormat, resetTextFormat,
+    activeFormatTarget, setActiveFormatTarget,
+    updateTextFormat, resetItemTextFormat,
+    clearVocabData,
     cleanCache,
 
     // Profile

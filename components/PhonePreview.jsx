@@ -4,7 +4,7 @@ import React, { useRef, useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useVocab } from '../context/VocabContext';
 import { ASPECT_RATIO_CONFIG } from '../lib/constants';
-import { isColorDark, highlightKeyword, formatGrammarHtml, normalizeThumbUrl, getFontFamilyCss } from '../lib/utils';
+import { isColorDark, highlightKeyword, formatGrammarHtml, normalizeThumbUrl, getFontFamilyCss, getFontSizeScale, getItemFormat } from '../lib/utils';
 
 export default function PhonePreview({ isMobile = false }) {
   const {
@@ -35,20 +35,23 @@ export default function PhonePreview({ isMobile = false }) {
   } = useVocab();
 
   const videoRef = useRef(null);
+  const bgVideoRef = useRef(null);
   const [imgError, setImgError] = useState(false);
+  const [isBgVideoLoaded, setIsBgVideoLoaded] = useState(false);
+  const [bgVideoSrc, setBgVideoSrc] = useState('');
 
   const cfg = ASPECT_RATIO_CONFIG[clipAspectRatio] || ASPECT_RATIO_CONFIG['9:16'];
   const darkContrast = isColorDark(bgColor1) || isColorDark(bgColor2);
   const isDark = darkContrast || (useMovieBackdrop && (bgOverlayOpacity || 45) > 30);
 
-  const activeTextColor = textFormat?.textColor || (isDark ? '#f8fafc' : '#0c0a09');
-  const secondaryTextColor = textFormat?.textColor ? `${textFormat.textColor}d9` : (isDark ? '#cbd5e1' : '#57534e');
-  const phoneticColor = textFormat?.textColor ? `${textFormat.textColor}b3` : (isDark ? '#e2e8f0' : '#4e4e4e');
-  const fontFamilyCss = getFontFamilyCss(textFormat?.fontFamily);
-  const isBold = textFormat?.bold !== false;
-  const isItalic = Boolean(textFormat?.italic);
-  const isUnderline = Boolean(textFormat?.underline);
-  const textAlign = textFormat?.textAlign || 'left';
+  // Per-component itemized text formats
+  const fmtWord = getItemFormat(textFormat, 'word', isDark);
+  const fmtPhonetic = getItemFormat(textFormat, 'phonetic', isDark);
+  const fmtThaiRead = getItemFormat(textFormat, 'thaiRead', isDark);
+  const fmtMeaning = getItemFormat(textFormat, 'meaning', isDark);
+  const fmtGrammar = getItemFormat(textFormat, 'grammar', isDark);
+  const fmtEx1 = getItemFormat(textFormat, 'ex1', isDark);
+  const fmtEx2 = getItemFormat(textFormat, 'ex2', isDark);
 
   const backgroundStyle = {
     background: bgColor1 === bgColor2 ? bgColor1 : `linear-gradient(135deg, ${bgColor1}, ${bgColor2})`
@@ -64,6 +67,45 @@ export default function PhonePreview({ isMobile = false }) {
     setImgError(false);
   }, [thumbUrl]);
 
+  // Sync / preload backdrop movie video
+  useEffect(() => {
+    if (!useMovieBackdrop || !currentClip) return;
+    let cancelled = false;
+
+    async function loadBackdropVideo() {
+      let src = currentClip.localVideoUrl;
+      if (!src && (currentClip.slug || currentClip.videoUrl)) {
+        try {
+          const slug = currentClip.slug || currentClip.id || currentClip.videoUrl;
+          const resp = await fetch(`/api/cafe/python-video?slug=${encodeURIComponent(slug)}`);
+          if (resp.ok) {
+            const pyData = await resp.json();
+            if (pyData.success && pyData.publicUrl) {
+              src = pyData.publicUrl;
+              currentClip.localVideoUrl = pyData.publicUrl;
+            }
+          }
+        } catch (e) {}
+      }
+
+      if (!src && currentClip.videoUrl) {
+        src = `/api/cafe/stream?url=${encodeURIComponent(currentClip.videoUrl)}`;
+      }
+
+      if (!cancelled && src) {
+        setBgVideoSrc(src);
+        if (bgVideoRef.current) {
+          bgVideoRef.current.src = src;
+          bgVideoRef.current.load();
+          bgVideoRef.current.play().catch(() => {});
+        }
+      }
+    }
+
+    loadBackdropVideo();
+    return () => { cancelled = true; };
+  }, [useMovieBackdrop, currentClip]);
+
   // Video Playback Toggle
   const togglePlay = async (e) => {
     if (e) e.stopPropagation();
@@ -72,12 +114,13 @@ export default function PhonePreview({ isMobile = false }) {
     const vid = videoRef.current;
     if (isPlayingVideo) {
       if (vid) vid.pause();
+      if (bgVideoRef.current) bgVideoRef.current.pause();
       setIsPlayingVideo(false);
       return;
     }
 
     setIsPlayingVideo(true);
-    await playClipAt(0);
+    await playClipAt(currentSequenceIndex || 0);
   };
 
   const playClipAt = async (idx) => {
@@ -116,6 +159,14 @@ export default function PhonePreview({ isMobile = false }) {
         console.warn('Playback error:', err);
         setIsPlayingVideo(false);
       });
+
+      // Synchronize backdrop video
+      setBgVideoSrc(streamSrc);
+      if (bgVideoRef.current) {
+        bgVideoRef.current.src = streamSrc;
+        bgVideoRef.current.load();
+        bgVideoRef.current.play().catch(() => {});
+      }
     } else {
       setIsPlayingVideo(false);
     }
@@ -130,6 +181,17 @@ export default function PhonePreview({ isMobile = false }) {
     }
   };
 
+  const handleTimeUpdate = () => {
+    if (videoRef.current && bgVideoRef.current && isPlayingVideo) {
+      const diff = Math.abs(videoRef.current.currentTime - bgVideoRef.current.currentTime);
+      if (diff > 0.35) {
+        try {
+          bgVideoRef.current.currentTime = videoRef.current.currentTime;
+        } catch (e) {}
+      }
+    }
+  };
+
   const isWide = clipAspectRatio === '16:9' || clipAspectRatio === '3:2';
 
   return (
@@ -138,16 +200,34 @@ export default function PhonePreview({ isMobile = false }) {
       className={`${cfg.containerClass} ${isDark ? 'phone-dark-contrast' : ''}`}
       style={backgroundStyle}
     >
-      {/* Movie Background Backdrop & Live Blur Control */}
-      {useMovieBackdrop && thumbUrl && !imgError && (
+      {/* Movie Background Backdrop & Live Blur Video Playback */}
+      {useMovieBackdrop && (
         <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-          <img
-            crossOrigin="anonymous"
-            src={thumbUrl}
-            alt="Movie Backdrop"
-            className="w-full h-full object-cover scale-110 transition duration-300"
+          {/* Backdrop Video Player (Plays video of active clip with blur) */}
+          <video
+            ref={bgVideoRef}
+            src={bgVideoSrc}
+            autoPlay
+            loop
+            muted
+            playsInline
+            onCanPlay={() => setIsBgVideoLoaded(true)}
+            className={`w-full h-full object-cover scale-110 transition-opacity duration-500 ${
+              isBgVideoLoaded ? 'opacity-100' : 'opacity-0'
+            }`}
             style={{ filter: `blur(${bgBlur || 0}px)` }}
           />
+          {/* Fallback Poster Image */}
+          {thumbUrl && !imgError && !isBgVideoLoaded && (
+            <img
+              crossOrigin="anonymous"
+              src={thumbUrl}
+              alt="Movie Backdrop"
+              className="absolute inset-0 w-full h-full object-cover scale-110 transition duration-300"
+              style={{ filter: `blur(${bgBlur || 0}px)` }}
+            />
+          )}
+          {/* Tint / Dimming Overlay */}
           <div
             className="absolute inset-0 transition duration-200"
             style={{
@@ -210,7 +290,7 @@ export default function PhonePreview({ isMobile = false }) {
           </div>
           <span
             id="preview-top-channel"
-            style={{ color: activeTextColor }}
+            style={{ color: isDark ? '#ffffff' : '#0c0a09' }}
             className="font-semibold text-xs sm:text-[13px] tracking-tight truncate max-w-[170px] select-none"
           >
             {channel || '@MoovyEng'}
@@ -250,29 +330,48 @@ export default function PhonePreview({ isMobile = false }) {
               : 'w-full flex flex-col items-center justify-center space-y-0.5 text-center'
           }
         >
-          <div className="flex items-center justify-center">
+          <div className="flex items-center justify-center w-full">
             <h1
               id="preview-word"
-              className={cfg.wordClass}
-              style={{ color: activeTextColor, fontFamily: fontFamilyCss }}
+              className={`${cfg.wordClass} ${fmtWord.bold ? 'font-bold' : 'font-normal'} ${fmtWord.italic ? 'italic' : ''} ${fmtWord.underline ? 'underline' : ''}`}
+              style={{
+                color: fmtWord.textColor,
+                fontFamily: getFontFamilyCss(fmtWord.fontFamily),
+                textAlign: fmtWord.textAlign,
+                fontSize: getFontSizeScale(fmtWord.fontSize)
+              }}
             >
               {word}
             </h1>
           </div>
 
           {/* IPA Phonetic Guide */}
-          <div className="flex items-center justify-center pt-0.5">
+          <div className="flex items-center justify-center pt-0.5 w-full">
             <p
               id="preview-phonetic"
-              style={{ color: phoneticColor, fontFamily: fontFamilyCss }}
-              className="text-xs sm:text-sm font-mono tracking-wide text-center"
+              className={`text-xs sm:text-sm font-mono tracking-wide ${fmtPhonetic.bold ? 'font-bold' : 'font-normal'} ${fmtPhonetic.italic ? 'italic' : ''} ${fmtPhonetic.underline ? 'underline' : ''}`}
+              style={{
+                color: fmtPhonetic.textColor,
+                fontFamily: getFontFamilyCss(fmtPhonetic.fontFamily),
+                textAlign: fmtPhonetic.textAlign,
+                fontSize: getFontSizeScale(fmtPhonetic.fontSize)
+              }}
             >
               {phonetic}
             </p>
           </div>
 
-          {/* Thai Pronunciation in Bold Red */}
-          <p id="preview-thai-read" className="thai-vocab-font text-base sm:text-lg font-bold text-[#dc2626] text-center">
+          {/* Thai Pronunciation */}
+          <p
+            id="preview-thai-read"
+            className={`thai-vocab-font text-base sm:text-lg w-full ${fmtThaiRead.bold ? 'font-bold' : 'font-normal'} ${fmtThaiRead.italic ? 'italic' : ''} ${fmtThaiRead.underline ? 'underline' : ''}`}
+            style={{
+              color: fmtThaiRead.textColor,
+              fontFamily: getFontFamilyCss(fmtThaiRead.fontFamily),
+              textAlign: fmtThaiRead.textAlign,
+              fontSize: getFontSizeScale(fmtThaiRead.fontSize)
+            }}
+          >
             {thaiRead}
           </p>
         </div>
@@ -296,6 +395,7 @@ export default function PhonePreview({ isMobile = false }) {
               ref={videoRef}
               id="preview-video"
               onEnded={handleVideoEnded}
+              onTimeUpdate={handleTimeUpdate}
               className={`movie-uniform-fill bg-[#0c0a09] ${isPlayingVideo ? '' : 'hidden'} scale-[1.03]`}
               playsInline
             />
@@ -358,8 +458,13 @@ export default function PhonePreview({ isMobile = false }) {
           <div className="text-center w-full px-2">
             <h2
               id="preview-meaning"
-              className={cfg.meaningClass}
-              style={{ color: activeTextColor, fontFamily: fontFamilyCss }}
+              className={`${cfg.meaningClass} ${fmtMeaning.bold ? 'font-bold' : 'font-normal'} ${fmtMeaning.italic ? 'italic' : ''} ${fmtMeaning.underline ? 'underline' : ''}`}
+              style={{
+                color: fmtMeaning.textColor,
+                fontFamily: getFontFamilyCss(fmtMeaning.fontFamily),
+                textAlign: fmtMeaning.textAlign,
+                fontSize: getFontSizeScale(fmtMeaning.fontSize)
+              }}
             >
               {(meaning || '').replace(/["']/g, '')}
             </h2>
@@ -368,30 +473,40 @@ export default function PhonePreview({ isMobile = false }) {
           {/* Frameless Grammar & Examples Container (Clean, Proportional, No Heavy Box) */}
           <div
             id="grammar-detail-card"
-            className={`${cfg.grammarCardClass} ${isItalic ? 'italic' : ''} ${isUnderline ? 'underline' : ''}`}
-            style={{ fontFamily: fontFamilyCss, textAlign }}
+            className={cfg.grammarCardClass}
+            style={{ textAlign: fmtGrammar.textAlign }}
           >
-            {/* Formula (e.g. S + wish + [Someone] + to + break a leg → ...) */}
+            {/* Formula (with parentheses for explanation) */}
             <div
               id="preview-grammar"
-              className={`text-[13px] sm:text-[14px] leading-snug ${isBold ? 'font-semibold' : 'font-normal'}`}
-              style={{ color: activeTextColor }}
+              className={`text-[13px] sm:text-[14px] leading-snug ${fmtGrammar.bold ? 'font-semibold' : 'font-normal'} ${fmtGrammar.italic ? 'italic' : ''} ${fmtGrammar.underline ? 'underline' : ''}`}
+              style={{
+                color: fmtGrammar.textColor,
+                fontFamily: getFontFamilyCss(fmtGrammar.fontFamily),
+                fontSize: getFontSizeScale(fmtGrammar.fontSize)
+              }}
               dangerouslySetInnerHTML={{ __html: formatGrammarHtml(grammar, wordKeyword, showHighlight, isDark) }}
             />
             {/* 2 Punchy Example Sentences without numbers */}
             <div className={`space-y-1.5 pt-1.5 border-t ${isDark ? 'border-white/20' : 'border-black/10'}`}>
-              <div id="preview-ex1" className="leading-relaxed">
+              <div id="preview-ex1" className="leading-relaxed" style={{ textAlign: fmtEx1.textAlign, fontSize: getFontSizeScale(fmtEx1.fontSize) }}>
                 {ex1En && (
                   <>
                     <div
-                      className={`preview-example-en text-[12.5px] sm:text-[13.5px] leading-snug ${isBold ? 'font-bold' : 'font-normal'}`}
-                      style={{ color: activeTextColor }}
+                      className={`preview-example-en text-[12.5px] sm:text-[13.5px] leading-snug ${fmtEx1.bold ? 'font-bold' : 'font-normal'} ${fmtEx1.italic ? 'italic' : ''} ${fmtEx1.underline ? 'underline' : ''}`}
+                      style={{
+                        color: fmtEx1.textColor,
+                        fontFamily: getFontFamilyCss(fmtEx1.fontFamily)
+                      }}
                       dangerouslySetInnerHTML={{ __html: highlightKeyword(ex1En, wordKeyword, showHighlight) }}
                     />
                     {ex1Th && (
                       <div
                         className="preview-example-th text-[11.5px] sm:text-[12px] preview-thai-font pt-0.5"
-                        style={{ color: secondaryTextColor }}
+                        style={{
+                          color: fmtEx1.rawColor ? `${fmtEx1.rawColor}cc` : (isDark ? '#cbd5e1' : '#57534e'),
+                          fontFamily: getFontFamilyCss(fmtEx1.fontFamily)
+                        }}
                       >
                         → {cleanTh(ex1Th)}
                       </div>
@@ -399,18 +514,24 @@ export default function PhonePreview({ isMobile = false }) {
                   </>
                 )}
               </div>
-              <div id="preview-ex2" className="leading-relaxed">
+              <div id="preview-ex2" className="leading-relaxed" style={{ textAlign: fmtEx2.textAlign, fontSize: getFontSizeScale(fmtEx2.fontSize) }}>
                 {ex2En && (
                   <>
                     <div
-                      className={`preview-example-en text-[12.5px] sm:text-[13.5px] leading-snug ${isBold ? 'font-bold' : 'font-normal'}`}
-                      style={{ color: activeTextColor }}
+                      className={`preview-example-en text-[12.5px] sm:text-[13.5px] leading-snug ${fmtEx2.bold ? 'font-bold' : 'font-normal'} ${fmtEx2.italic ? 'italic' : ''} ${fmtEx2.underline ? 'underline' : ''}`}
+                      style={{
+                        color: fmtEx2.textColor,
+                        fontFamily: getFontFamilyCss(fmtEx2.fontFamily)
+                      }}
                       dangerouslySetInnerHTML={{ __html: highlightKeyword(ex2En, wordKeyword, showHighlight) }}
                     />
                     {ex2Th && (
                       <div
                         className="preview-example-th text-[11.5px] sm:text-[12px] preview-thai-font pt-0.5"
-                        style={{ color: secondaryTextColor }}
+                        style={{
+                          color: fmtEx2.rawColor ? `${fmtEx2.rawColor}cc` : (isDark ? '#cbd5e1' : '#57534e'),
+                          fontFamily: getFontFamilyCss(fmtEx2.fontFamily)
+                        }}
                       >
                         → {cleanTh(ex2Th)}
                       </div>

@@ -13,12 +13,13 @@ export default function StudioHeader() {
     setToolSearch,
     jumpToToolSection,
     toggleAllToolSections,
+    resetToInitialState,
     setIsExportModalOpen,
     t
   } = useVocab();
 
   return (
-    <header className="w-full bg-white/85 dark:bg-[#1c1917]/90 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] rounded-2xl px-4 py-3 shadow-2xs flex flex-wrap items-center justify-between gap-3 sticky top-5 z-30 transition-colors">
+    <header className="w-full bg-white/90 dark:bg-[#1c1917]/95 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] rounded-2xl px-4 py-3 shadow-[0_4px_20px_rgba(0,0,0,0.06)] flex flex-wrap items-center justify-between gap-3 sticky top-3 z-40 transition-all">
       <div className="flex items-center gap-3">
         {/* Frameless Enlarged Brand Logo */}
         <img src="/icon.png" alt="Logo" className="w-11 h-11 object-contain drop-shadow-sm flex-shrink-0" />
@@ -70,6 +71,18 @@ export default function StudioHeader() {
             className="w-full bg-[#fafafa] dark:bg-[#292524] border border-[#d6d3d1] dark:border-[#44403c] rounded-full pl-8 pr-4 py-1.5 text-xs text-[#0c0a09] dark:text-white focus:outline-none transition"
           />
         </div>
+
+        {/* Reset / Clear All Data (Trash Can) */}
+        <button
+          type="button"
+          id="btn-trash-reset"
+          onClick={resetToInitialState}
+          className="w-9 h-9 rounded-full bg-[#f0efed] dark:bg-[#292524] hover:bg-rose-50 dark:hover:bg-rose-950/40 text-[#777169] hover:text-rose-600 dark:text-[#a8a29e] dark:hover:text-rose-400 border border-[#d6d3d1] dark:border-[#44403c] transition flex items-center justify-center flex-shrink-0 t-btn-press"
+          title={lang === 'th' ? 'ล้างข้อมูลทั้งหมด (Clear / Reset All)' : 'Reset All Data'}
+          aria-label="Clear All Data"
+        >
+          <i className="fa-solid fa-trash-can text-xs" />
+        </button>
 
         {/* Export Button */}
         <button

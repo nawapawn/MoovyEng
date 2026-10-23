@@ -3,6 +3,7 @@
 import React, { useState, useRef } from 'react';
 import { useVocab } from '../context/VocabContext';
 import { normalizeThumbUrl } from '../lib/utils';
+import TextFormattingSuite from './TextFormattingSuite';
 
 function MovieClipCard({ clip, seqIdx, isSelected, onToggle }) {
   const [isPreviewing, setIsPreviewing] = useState(false);
@@ -128,6 +129,7 @@ export default function ToolStep2Vocab() {
     loadingText,
     collapsedSections,
     toggleToolCard,
+    clearVocabData,
     lang
   } = useVocab();
 
@@ -145,7 +147,7 @@ export default function ToolStep2Vocab() {
   return (
     <section
       id="tool-sec-vocab"
-      data-tool-keywords="2 vocabulary clips word translate phonetic meaning grammar examples คำศัพท์ คลิปหนัง แปล ประโยค"
+      data-tool-keywords="2 vocabulary clips word translate phonetic meaning grammar examples formatting คำศัพท์ คลิปหนัง แปล ประโยค รูปแบบอักษร"
       className={`tool-section-card bg-white dark:bg-[#1c1917] border border-[#e7e5e4] dark:border-[#292524] rounded-2xl p-4 shadow-[0_4px_16px_rgba(0,0,0,0.04)] ${
         isCollapsed ? 'is-collapsed' : ''
       }`}
@@ -160,7 +162,7 @@ export default function ToolStep2Vocab() {
           </span>
           <span>Vocabulary & Clips</span>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5">
           {clipCount > 0 && (
             <span
               id="clip-source-indicator"
@@ -169,6 +171,20 @@ export default function ToolStep2Vocab() {
               {clipCount} CLIPS
             </span>
           )}
+          {/* Step 2 Trash Button */}
+          <button
+            type="button"
+            id="btn-clear-vocab-card"
+            onClick={(e) => {
+              e.stopPropagation();
+              clearVocabData();
+            }}
+            className="w-6 h-6 rounded-full hover:bg-rose-50 dark:hover:bg-rose-950/40 text-[#777169] hover:text-rose-500 dark:text-[#a8a29e] dark:hover:text-rose-400 flex items-center justify-center transition t-btn-press"
+            title={lang === 'th' ? 'ล้างข้อมูลคำศัพท์ (Clear Vocab)' : 'Clear Vocab Data'}
+            aria-label="Clear Vocab"
+          >
+            <i className="fa-solid fa-trash-can text-[10.5px]" />
+          </button>
           <button
             type="button"
             className="w-6 h-6 rounded-full hover:bg-[#f0efed] dark:hover:bg-[#292524] text-[#777169] hover:text-[#0c0a09] dark:hover:text-white flex items-center justify-center transition"
@@ -183,15 +199,28 @@ export default function ToolStep2Vocab() {
         <div className="tool-card-inner space-y-3">
           {/* Unified Input: Search English Movie Clips & Translate Simultaneously */}
           <div className="flex items-center gap-2">
-            <input
-              type="text"
-              id="target-word"
-              value={word}
-              onChange={(e) => setWord(e.target.value)}
-              onKeyDown={handleKeyDown}
-              placeholder="Enter English word or idiom..."
-              className="flex-1 bg-white dark:bg-[#292524] border border-[#d6d3d1] dark:border-[#44403c] rounded-lg px-3.5 py-2 text-sm font-serif text-[#0c0a09] dark:text-white focus:border-[#0c0a09] dark:focus:border-white focus:outline-none transition"
-            />
+            <div className="relative flex-1">
+              <input
+                type="text"
+                id="target-word"
+                value={word}
+                onChange={(e) => setWord(e.target.value)}
+                onKeyDown={handleKeyDown}
+                placeholder="Enter English word or idiom..."
+                className="w-full bg-white dark:bg-[#292524] border border-[#d6d3d1] dark:border-[#44403c] rounded-lg pl-3.5 pr-8 py-2 text-sm font-serif text-[#0c0a09] dark:text-white focus:border-[#0c0a09] dark:focus:border-white focus:outline-none transition"
+              />
+              {word && (
+                <button
+                  type="button"
+                  onClick={() => setWord('')}
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#a8a29e] hover:text-[#0c0a09] dark:hover:text-white text-xs p-1"
+                  title="Clear input"
+                  aria-label="Clear input"
+                >
+                  <i className="fa-solid fa-xmark" />
+                </button>
+              )}
+            </div>
             <input type="hidden" id="clip-query" value={word} />
 
             {/* Random Word Generator via Selected AI */}
@@ -392,6 +421,11 @@ export default function ToolStep2Vocab() {
                   />
                 </div>
               </div>
+            </div>
+
+            {/* Text Formatting Suite for All Vocabulary Elements */}
+            <div className="pt-2">
+              <TextFormattingSuite />
             </div>
           </div>
         </div>
