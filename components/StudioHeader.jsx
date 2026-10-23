@@ -24,55 +24,11 @@ export default function StudioHeader() {
         <img src="/icon.png" alt="Logo" className="w-11 h-11 object-contain drop-shadow-sm flex-shrink-0" />
         <div>
           <h2 className="editorial-display text-2xl text-[#0c0a09] dark:text-white leading-none">
-            movyEng
+            MoovyEng
           </h2>
           <p className="text-[10px] text-[#777169] dark:text-[#a8a29e] mt-0.5" id="brand-tagline">
-            AI Vocab & Movie Studio • moovying(En)
+            AI Vocab & Movie Studio • MoovyEng
           </p>
-        </div>
-
-        {/* Quick Jump Tool Pills + Expand/Collapse All (Icon-Only with Tooltip) */}
-        <div className="flex items-center gap-1 pl-2 border-l border-[#e7e5e4] dark:border-[#292524]">
-          <button
-            type="button"
-            onClick={() => jumpToToolSection('tool-sec-ai')}
-            className="w-8 h-8 rounded-full bg-[#f0efed] dark:bg-[#292524] hover:bg-[#0c0a09] hover:text-white text-[#0c0a09] dark:text-white transition flex items-center justify-center t-btn-press"
-            title="1. AI Model"
-          >
-            <i className="fa-solid fa-microchip text-xs" />
-          </button>
-          <button
-            type="button"
-            onClick={() => jumpToToolSection('tool-sec-vocab')}
-            className="w-8 h-8 rounded-full bg-[#f0efed] dark:bg-[#292524] hover:bg-[#0c0a09] hover:text-white text-[#0c0a09] dark:text-white transition flex items-center justify-center t-btn-press"
-            title="2. Vocabulary & Clips"
-          >
-            <i className="fa-solid fa-wand-magic-sparkles text-xs" />
-          </button>
-          <button
-            type="button"
-            onClick={() => jumpToToolSection('tool-sec-ratio')}
-            className="w-8 h-8 rounded-full bg-[#f0efed] dark:bg-[#292524] hover:bg-[#0c0a09] hover:text-white text-[#0c0a09] dark:text-white transition flex items-center justify-center t-btn-press"
-            title="3. Aspect Ratio, Gradient & Queue"
-          >
-            <i className="fa-solid fa-crop-simple text-xs" />
-          </button>
-          <button
-            type="button"
-            onClick={() => jumpToToolSection('tool-sec-social')}
-            className="w-8 h-8 rounded-full bg-[#f0efed] dark:bg-[#292524] hover:bg-[#0c0a09] hover:text-white text-[#0c0a09] dark:text-white transition flex items-center justify-center t-btn-press"
-            title="4. Profile & Caption"
-          >
-            <i className="fa-solid fa-user text-xs" />
-          </button>
-          <button
-            type="button"
-            onClick={toggleAllToolSections}
-            className="w-8 h-8 rounded-full bg-[#f0efed] dark:bg-[#292524] hover:bg-[#0c0a09] hover:text-white text-[#0c0a09] dark:text-white transition flex items-center justify-center t-btn-press"
-            title="Expand / Collapse All Cards"
-          >
-            <i id="toggle-all-cards-icon" className="fa-solid fa-compress text-xs" />
-          </button>
         </div>
       </div>
 

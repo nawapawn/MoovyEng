@@ -19,7 +19,7 @@ export function VocabProvider({ children }) {
   const [phonetic, setPhonetic] = useState('/breɪk ə leɡ/');
   const [thaiRead, setThaiRead] = useState('(เบรค อะ เลก)');
   const [meaning, setMeaning] = useState('ขอให้โชคดี (นิยมใช้ก่อนขึ้นเวทีแสดง)');
-  const [grammar, setGrammar] = useState('s + wish + [Someone] + to + break a leg → อวยพรให้โชคดี');
+  const [grammar, setGrammar] = useState('S + wish + [Someone] + to + break a leg → อวยพรให้โชคดี');
   const [movieContextTh, setMovieContextTh] = useState('');
   const [ex1En, setEx1En] = useState('Go out there and break a leg!');
   const [ex1Th, setEx1Th] = useState('ออกไปทำให้เต็มที่ ขอให้โชคดีนะ!');
@@ -40,9 +40,9 @@ export function VocabProvider({ children }) {
   const [bgColor2, setBgColor2] = useState('#fafafa');
 
   // Social Profile
-  const [channel, setChannel] = useState('@movyEng');
+  const [channel, setChannel] = useState('@MoovyEng');
   const [avatar, setAvatar] = useState('');
-  const [caption, setCaption] = useState('สำนวน Break a leg แปลว่า ขอให้โชคดี นิยมใช้ให้กำลังใจก่อนขึ้นแสดงหรือทำภารกิจสำคัญ #ภาษาอังกฤษ #movyEng');
+  const [caption, setCaption] = useState('สำนวน Break a leg แปลว่า ขอให้โชคดี นิยมใช้ให้กำลังใจก่อนขึ้นแสดงหรือทำภารกิจสำคัญ #ภาษาอังกฤษ #MoovyEng');
 
   // AI Configuration
   const [aiVendor, setAiVendor] = useState('gemini');
@@ -246,7 +246,7 @@ export function VocabProvider({ children }) {
         setPhonetic('/breɪk ə leɡ/');
         setThaiRead('(เบรค อะ เลก)');
         setMeaning('ขอให้โชคดี (นิยมใช้ก่อนขึ้นเวทีแสดง)');
-        setGrammar('s + wish + [Someone] + to + break a leg → อวยพรให้โชคดี');
+        setGrammar('S + wish + [Someone] + to + break a leg → อวยพรให้โชคดี');
         setEx1En('Go out there and break a leg!');
         setEx1Th('ออกไปทำให้เต็มที่ ขอให้โชคดีนะ!');
         setEx2En('Break a leg on your test today.');
@@ -385,16 +385,16 @@ ${primaryClip ? `Real movie context: "${primaryClip.title}" quote: "${primaryCli
 CRITICAL RULES:
 1. Provide EXACTLY 2 example sentences ("ex1En" and "ex2En"). DO NOT provide a 3rd sentence!
 2. Each English example sentence MUST be VERY SHORT (4 to 7 words maximum), super punchy, simple, and unforgettable (ขอประโยคที่ง่ายและสั้น 2 ประโยค เน้นจำฝังหัว)!
-3. Grammar formula ("grammar"): Write a concise 1-line formula using "s" for Subject (e.g. s + Verb to be + ${targetWord} → แปลว่า...). NEVER use the words "Subject", "[Subject]", "โครงสร้าง", or "ตัวอย่าง". No emojis!
+3. Grammar formula ("grammar"): Write a concise 1-line formula using "S" for Subject (e.g. S + Verb to be + ${targetWord} → แปลว่า...). NEVER use the words "Subject", "[Subject]", "โครงสร้าง", or "ตัวอย่าง". No emojis!
 4. Thai translations ("ex1Th", "ex2Th") MUST be short, direct, and natural.
-5. "socialCaption": Short Thai caption teaching ${targetWord} with relevant hashtags.
+5. "socialCaption": Short Thai caption teaching ${targetWord} with relevant hashtags (#MoovyEng).
 
 Respond with ONLY valid JSON with no markdown formatting:
 {
   "phonetic": "/.../ (IPA format)",
   "thaiRead": "(คำอ่านออกเสียงภาษาไทย)",
   "meaning": "คำแปลความหมายภาษาไทยสั้นกระชับ",
-  "grammar": "s + [verb/phrase] → คำอธิบายสั้นๆ 1 บรรทัด",
+  "grammar": "S + [verb/phrase] → คำอธิบายสั้นๆ 1 บรรทัด",
   "ex1En": "Very short sentence 1 (4-7 words)",
   "ex1Th": "คำแปลไทยสั้นกระชับ",
   "ex2En": "Very short sentence 2 (4-7 words)",
@@ -485,23 +485,51 @@ Respond with ONLY valid JSON with no markdown formatting:
         const prompt = 'Give me exactly ONE popular, practical, or viral English idiom, phrasal verb, or slang that Thai learners love. Reply with ONLY the English phrase itself, no punctuation, no quotes, no extra words. Example: bite the bullet';
 
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 4000);
+        const timeoutId = setTimeout(() => controller.abort(), 12000);
 
-        const gemModel = (aiModel && !aiModel.includes('2.5')) ? aiModel : 'gemini-2.0-flash';
-        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${gemModel}:generateContent?key=${encodeURIComponent(apiKey)}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          signal: controller.signal,
-          body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
-        });
-        clearTimeout(timeoutId);
-        if (res.ok) {
-          const json = await res.json();
-          const raw = json.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
-          if (raw) picked = raw.replace(/["']/g, '');
+        if (aiVendor === 'gemini') {
+          const gemModel = aiModel || 'gemini-2.0-flash';
+          const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${gemModel}:generateContent?key=${encodeURIComponent(apiKey)}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            signal: controller.signal,
+            body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }] })
+          });
+          clearTimeout(timeoutId);
+          if (res.ok) {
+            const json = await res.json();
+            const raw = json.candidates?.[0]?.content?.parts?.[0]?.text?.trim();
+            if (raw) picked = raw.replace(/["'\n\r.]/g, '').trim();
+          }
+        } else {
+          let endpoint = 'https://api.openai.com/v1/chat/completions';
+          if (aiVendor === 'groq') endpoint = 'https://api.groq.com/openai/v1/chat/completions';
+          else if (aiVendor === 'deepseek') endpoint = 'https://api.deepseek.com/chat/completions';
+          else if (aiVendor === 'xai') endpoint = 'https://api.x.ai/v1/chat/completions';
+
+          const effectiveModel = aiModel || (DEFAULT_VENDOR_MODELS[aiVendor]?.[0]?.id || 'gpt-4o-mini');
+          const res = await fetch(endpoint, {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${apiKey}`,
+              'Content-Type': 'application/json'
+            },
+            signal: controller.signal,
+            body: JSON.stringify({
+              model: effectiveModel,
+              messages: [{ role: 'user', content: prompt }],
+              temperature: 0.9
+            })
+          });
+          clearTimeout(timeoutId);
+          if (res.ok) {
+            const json = await res.json();
+            const raw = json.choices?.[0]?.message?.content?.trim();
+            if (raw) picked = raw.replace(/["'\n\r.]/g, '').trim();
+          }
         }
       } catch (e) {
-        console.warn('AI random word error, falling back to list:', e);
+        // Silently fall back to curated list if timeout or API error occurs
       } finally {
         setIsLoading(false);
       }

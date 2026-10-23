@@ -54,34 +54,47 @@ export default function ExportModal() {
     const phone = document.getElementById('phone-container');
     const clipBox = document.getElementById('movie-clip-box');
 
-    if (document.fonts && document.fonts.ready) {
-      await document.fonts.ready.catch(() => {});
+    if (phone) {
+      phone.classList.add('is-exporting');
     }
 
-    const phoneRect = phone ? phone.getBoundingClientRect() : { left: 0, top: 0, width: 414, height: 736 };
-    const clipRect = clipBox ? clipBox.getBoundingClientRect() : { left: 0, top: 0, width: 356, height: 200 };
+    try {
+      if (document.fonts && document.fonts.ready) {
+        await document.fonts.ready.catch(() => {});
+      }
 
-    const relRect = {
-      xRatio: Math.max(0, (clipRect.left - phoneRect.left) / Math.max(1, phoneRect.width)),
-      yRatio: Math.max(0, (clipRect.top - phoneRect.top) / Math.max(1, phoneRect.height)),
-      wRatio: Math.min(1, clipRect.width / Math.max(1, phoneRect.width)),
-      hRatio: Math.min(1, clipRect.height / Math.max(1, phoneRect.height))
-    };
+      // Small delay for layout recomputation with is-exporting
+      await new Promise((r) => setTimeout(r, 60));
 
-    const canvas = await html2canvas(phone, {
-      scale: forVideo ? 2 : 2.5,
-      useCORS: true,
-      allowTaint: false,
-      logging: false,
-      backgroundColor: null,
-      ignoreElements: (element) => element.getAttribute('data-export-ignore') === 'true'
-    });
+      const phoneRect = phone ? phone.getBoundingClientRect() : { left: 0, top: 0, width: 414, height: 736 };
+      const clipRect = clipBox ? clipBox.getBoundingClientRect() : { left: 0, top: 0, width: 356, height: 200 };
 
-    return {
-      canvas,
-      dataUrl: canvas.toDataURL('image/png'),
-      clipRect: relRect
-    };
+      const relRect = {
+        xRatio: Math.max(0, (clipRect.left - phoneRect.left) / Math.max(1, phoneRect.width)),
+        yRatio: Math.max(0, (clipRect.top - phoneRect.top) / Math.max(1, phoneRect.height)),
+        wRatio: Math.min(1, clipRect.width / Math.max(1, phoneRect.width)),
+        hRatio: Math.min(1, clipRect.height / Math.max(1, phoneRect.height))
+      };
+
+      const canvas = await html2canvas(phone, {
+        scale: forVideo ? 2 : 2.5,
+        useCORS: true,
+        allowTaint: false,
+        logging: false,
+        backgroundColor: null,
+        ignoreElements: (element) => element.getAttribute('data-export-ignore') === 'true'
+      });
+
+      return {
+        canvas,
+        dataUrl: canvas.toDataURL('image/png'),
+        clipRect: relRect
+      };
+    } finally {
+      if (phone) {
+        phone.classList.remove('is-exporting');
+      }
+    }
   };
 
   // 1. Export High-Res PNG
@@ -93,7 +106,7 @@ export default function ExportModal() {
     try {
       const { canvas } = await capturePhoneSlide(false);
       const cleanWord = (word || 'vocab').replace(/[^a-zA-Z0-9]/g, '_');
-      const filename = `movyEng_${cleanWord}_slide_${clipAspectRatio.replace(':', 'x')}.png`;
+      const filename = `MoovyEng_${cleanWord}_slide_${clipAspectRatio.replace(':', 'x')}.png`;
 
       canvas.toBlob((blob) => {
         if (!blob) throw new Error('Blob creation failed');
@@ -151,13 +164,24 @@ export default function ExportModal() {
         })
       });
 
-      const data = await resp.json();
+      let data;
+      const respText = await resp.text();
+      try {
+        data = JSON.parse(respText);
+      } catch (parseErr) {
+        throw new Error(
+          resp.status >= 500
+            ? (lang === 'th' ? 'เซิร์ฟเวอร์ประมวลผลวิดีโอไม่สำเร็จ (กรุณาลองใหม่อีกครั้ง)' : `Server error (${resp.status})`)
+            : respText.slice(0, 100)
+        );
+      }
+
       if (!resp.ok || !data.success) {
         throw new Error(data.error || 'Python video export failed');
       }
 
       const dlUrl = `${data.publicUrl}?download=1`;
-      const outFilename = data.filename || `movyEng_${cleanWord}_${clipAspectRatio.replace(':', 'x')}.mp4`;
+      const outFilename = data.filename || `MoovyEng_${cleanWord}_${clipAspectRatio.replace(':', 'x')}.mp4`;
 
       setDownloadLink(dlUrl);
       setDownloadFilename(outFilename);

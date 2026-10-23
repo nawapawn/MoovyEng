@@ -73,10 +73,11 @@ export default function PhonePreview({ isMobile = false }) {
     const vid = videoRef.current;
     if (!vid) return;
 
-    let streamSrc = clip.localVideoUrl || clip.videoUrl;
-    if (!streamSrc && clip.slug) {
+    let streamSrc = clip.localVideoUrl;
+    if (!streamSrc && (clip.slug || clip.videoUrl)) {
       try {
-        const resp = await fetch(`/api/cafe/python-video?slug=${encodeURIComponent(clip.slug)}`);
+        const slug = clip.slug || clip.id || clip.videoUrl;
+        const resp = await fetch(`/api/cafe/python-video?slug=${encodeURIComponent(slug)}`);
         if (resp.ok) {
           const pyData = await resp.json();
           if (pyData.success && pyData.publicUrl) {
@@ -87,6 +88,10 @@ export default function PhonePreview({ isMobile = false }) {
       } catch (err) {
         console.warn('Could not fetch local video URL:', err);
       }
+    }
+
+    if (!streamSrc && clip.videoUrl) {
+      streamSrc = `/api/cafe/stream?url=${encodeURIComponent(clip.videoUrl)}`;
     }
 
     if (streamSrc) {
@@ -120,17 +125,18 @@ export default function PhonePreview({ isMobile = false }) {
     >
       {/* Subtle Internal Atmospheric Orbs inside Card */}
       <div
-        className="pointer-events-none absolute -top-16 -right-16 w-56 h-56 rounded-full opacity-35 blur-2xl"
+        className="pointer-events-none absolute -top-16 -right-16 w-56 h-56 rounded-full opacity-15 blur-2xl"
         style={{ background: 'radial-gradient(circle, #a8c8e8 0%, transparent 70%)' }}
       />
       <div
-        className="pointer-events-none absolute -bottom-16 -left-16 w-56 h-56 rounded-full opacity-35 blur-2xl"
+        className="pointer-events-none absolute -bottom-16 -left-16 w-56 h-56 rounded-full opacity-15 blur-2xl"
         style={{ background: 'radial-gradient(circle, #e8b8c4 0%, transparent 70%)' }}
       />
 
-      {/* Top iOS Status Bar (ElevenLabs Crisp Minimalist) */}
+      {/* Top iOS Status Bar (ElevenLabs Crisp Minimalist - Ignored on Export/Download) */}
       <div
         id="preview-ios-statusbar"
+        data-export-ignore="true"
         className={
           cfg.showStatusBar
             ? 'hidden sm:flex absolute top-0 left-0 w-full z-30 justify-between items-center px-7 pt-3.5 text-[#292524] text-xs font-medium'
@@ -149,8 +155,8 @@ export default function PhonePreview({ isMobile = false }) {
       {/* Top Navigation & Controls Header (ElevenLabs Clean Editorial Header) */}
       <div id="preview-top-header" className={cfg.headerClass}>
         {/* Brand Signature with Custom Profile Picture */}
-        <div className="flex items-center space-x-2 min-w-0">
-          <div className="w-7 h-7 rounded-full bg-[#292524] text-white flex items-center justify-center text-[10px] font-bold overflow-hidden border border-[#e7e5e4] flex-shrink-0">
+        <div className="flex items-center space-x-2.5 min-w-0">
+          <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-[#292524] text-white flex items-center justify-center text-[10px] font-bold overflow-hidden border border-[#d6d3d1] dark:border-[#44403c] shadow-xs flex-shrink-0">
             {avatar ? (
               <img
                 id="preview-top-avatar"
@@ -160,11 +166,11 @@ export default function PhonePreview({ isMobile = false }) {
                 className="w-full h-full object-cover"
               />
             ) : (
-              <i id="preview-top-avatar-icon" className="fa-solid fa-user text-[10px]" />
+              <i id="preview-top-avatar-icon" className="fa-solid fa-user text-xs" />
             )}
           </div>
-          <span id="preview-top-channel" className="text-[#0c0a09] font-medium text-xs tracking-tight truncate">
-            {channel || '@movyEng'}
+          <span id="preview-top-channel" className="text-[#0c0a09] dark:text-white font-semibold text-xs sm:text-[13px] tracking-tight truncate max-w-[170px] select-none">
+            {channel || '@MoovyEng'}
           </span>
         </div>
 
@@ -306,7 +312,7 @@ export default function PhonePreview({ isMobile = false }) {
 
           {/* Frameless Grammar & Examples Container (No Border, No Card Box, Clean Single Font) */}
           <div id="grammar-detail-card" className={`${cfg.grammarCardClass} preview-thai-font`}>
-            {/* Formula (e.g. s + wish + [Someone] + to + break a leg → ...) */}
+            {/* Formula (e.g. S + wish + [Someone] + to + break a leg → ...) */}
             <div
               id="preview-grammar"
               className="text-sm font-semibold text-[#0c0a09] leading-snug"

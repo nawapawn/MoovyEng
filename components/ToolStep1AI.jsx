@@ -3,6 +3,17 @@
 import React, { useState } from 'react';
 import { useVocab } from '../context/VocabContext';
 import { VENDOR_LABELS, DEFAULT_VENDOR_MODELS } from '../lib/constants';
+import ElevenLabsDropdown from './ElevenLabsDropdown';
+
+const VENDOR_OPTIONS = [
+  { id: 'gemini', label: 'Google Gemini' },
+  { id: 'openai', label: 'OpenAI (GPT & o-series)' },
+  { id: 'deepseek', label: 'DeepSeek AI (V3 & R1)' },
+  { id: 'groq', label: 'Groq Cloud (Fast Llama & Qwen)' },
+  { id: 'anthropic', label: 'Anthropic Claude' },
+  { id: 'xai', label: 'xAI Grok' },
+  { id: 'mistral', label: 'Mistral AI' },
+];
 
 export default function ToolStep1AI() {
   const {
@@ -238,20 +249,12 @@ export default function ToolStep1AI() {
               <label htmlFor="ai-vendor" className="block text-[11px] font-medium text-[#777169] dark:text-[#a8a29e] mb-1">
                 Provider
               </label>
-              <select
+              <ElevenLabsDropdown
                 id="ai-vendor"
                 value={aiVendor}
-                onChange={(e) => handleVendorChange(e.target.value)}
-                className="w-full bg-white dark:bg-[#292524] border border-[#d6d3d1] dark:border-[#44403c] rounded-lg px-2.5 py-1.5 text-xs text-[#0c0a09] dark:text-white focus:border-[#0c0a09] dark:focus:border-white focus:outline-none transition font-medium"
-              >
-                <option value="gemini">Google Gemini</option>
-                <option value="openai">OpenAI (GPT)</option>
-                <option value="deepseek">DeepSeek AI</option>
-                <option value="groq">Groq Cloud</option>
-                <option value="anthropic">Anthropic Claude</option>
-                <option value="xai">xAI Grok</option>
-                <option value="mistral">Mistral AI</option>
-              </select>
+                onChange={handleVendorChange}
+                options={VENDOR_OPTIONS}
+              />
             </div>
 
             <div className="sm:col-span-8">
@@ -299,18 +302,12 @@ export default function ToolStep1AI() {
                 {modelsToDisplay.length} models
               </span>
             </label>
-            <select
+            <ElevenLabsDropdown
               id="ai-provider"
               value={aiModel}
-              onChange={(e) => setAiModel(e.target.value)}
-              className="w-full bg-white dark:bg-[#292524] border border-[#0c0a09] dark:border-white rounded-lg px-3 py-1.5 text-xs text-[#0c0a09] dark:text-white focus:outline-none transition"
-            >
-              {modelsToDisplay.map((m) => (
-                <option key={m.id} value={m.id}>
-                  {m.label}
-                </option>
-              ))}
-            </select>
+              onChange={setAiModel}
+              options={modelsToDisplay}
+            />
           </div>
 
           {statusText && (

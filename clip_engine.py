@@ -209,6 +209,9 @@ def merge_and_export_clips(
     # Check if we are exporting the FULL PREVIEW CANVAS (Slide Image + 16:9 Movie Clip inside clip_rect)
     has_slide_bg = False
     bg_img_path = CACHE_DIR / f"slide_bg_{key_hash}.png"
+    mask_img_path = CACHE_DIR / f"clip_mask_{key_hash}.png"
+    has_clip_mask = False
+
     if slide_image and "base64," in slide_image:
         try:
             b64_data = slide_image.split("base64,", 1)[1]
@@ -216,6 +219,25 @@ def merge_and_export_clips(
             has_slide_bg = bg_img_path.exists() and bg_img_path.stat().st_size > 1000
         except Exception:
             has_slide_bg = False
+
+    # Compute exact pixel box for the 16:9 Movie Clip inside the Full Preview Canvas
+    if has_slide_bg and clip_rect:
+        box_w = make_even(float(clip_rect.get("wRatio", 0.85)) * target_w, 64)
+        box_h = make_even(float(clip_rect.get("hRatio", 0.25)) * target_h, 64)
+        box_x = max(0, min(target_w - box_w, int(round(float(clip_rect.get("xRatio", 0.075)) * target_w))))
+        box_y = max(0, min(target_h - box_h, int(round(float(clip_rect.get("yRatio", 0.28)) * target_h))))
+
+        # Create rounded mask matching #movie-clip-box rounded-2xl styling
+        try:
+            from PIL import Image, ImageDraw
+            mask_r = max(16, int(round(box_w * 0.038)))  # ~35px radius at 918px
+            mask_img = Image.new("L", (box_w, box_h), 0)
+            draw = ImageDraw.Draw(mask_img)
+            draw.rounded_rectangle([0, 0, box_w - 1, box_h - 1], radius=mask_r, fill=255)
+            mask_img.save(mask_img_path)
+            has_clip_mask = mask_img_path.exists() and mask_img_path.stat().st_size > 100
+        except Exception:
+            has_clip_mask = False
 
     cmd = ["ffmpeg", "-y"]
     if has_slide_bg:
@@ -229,12 +251,6 @@ def merge_and_export_clips(
     vid_offset = 1 if has_slide_bg else 0
 
     if has_slide_bg and clip_rect:
-        # Compute exact pixel box for the 16:9 Movie Clip inside the Full Preview Canvas
-        box_w = make_even(float(clip_rect.get("wRatio", 0.85)) * target_w, 64)
-        box_h = make_even(float(clip_rect.get("hRatio", 0.25)) * target_h, 64)
-        box_x = max(0, min(target_w - box_w, int(round(float(clip_rect.get("xRatio", 0.075)) * target_w))))
-        box_y = max(0, min(target_h - box_h, int(round(float(clip_rect.get("yRatio", 0.28)) * target_h))))
-
         # Scale background slide canvas to exact target resolution
         filter_parts.append(
             f"[0:v]scale={target_w}:{target_h},setsar=1,fps=30,format=yuv420p[bg];"
@@ -295,10 +311,15 @@ def merge_and_export_clips(
         str(out_path),
     ])
 
-    proc = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    try:
+        proc = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=60)
+    except subprocess.TimeoutExpired:
+        raise RuntimeError("FFmpeg process timed out after 60s")
     try:
         if bg_img_path.exists():
             bg_img_path.unlink()
+        if mask_img_path.exists():
+            mask_img_path.unlink()
     except Exception:
         pass
 

@@ -41,18 +41,43 @@ html.dark body {
 }
 
 .highlight-yellow {
-  background-color: #fde047;
+  background: linear-gradient(180deg, transparent 40%, #fde047 40%, #fde047 98%, transparent 98%);
   color: #0c0a09;
-  padding: 0 3px;
-  border-radius: 0px;
+  padding: 0 4px;
+  border-radius: 2px;
   font-weight: 700;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
 }
 
 html.dark .highlight-yellow {
-  background-color: #eab308;
-  color: #000;
+  background: linear-gradient(180deg, transparent 40%, #fde047 40%, #fde047 98%, transparent 98%);
+  color: #0c0a09;
+}
+
+.preview-example-en {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Export Mode: Clean full rectangular frame with square corners (border-radius: 0), no phone status bar */
+#phone-container.is-exporting {
+  border-radius: 0px !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+#phone-container.is-exporting #preview-ios-statusbar {
+  display: none !important;
+}
+
+#phone-container.is-exporting #preview-top-header {
+  padding-top: 18px !important;
+  padding-left: 20px !important;
+  padding-right: 20px !important;
+}
+
+#phone-container.is-exporting > div[class*="overflow-y-auto"] {
+  padding-top: 72px !important;
 }
 
 /* transitions.dev micro-interaction classes */

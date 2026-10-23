@@ -418,6 +418,85 @@ const server = http.createServer(async (req, res) => {
     return;
   }
 
+  // Direct Video Stream Proxy with CORS & Range support for instant preview
+  if (parsedUrl.pathname === '/api/cafe/stream' && req.method === 'GET') {
+    const rawSlug = parsedUrl.searchParams.get('slug') || '';
+    const rawUrl = parsedUrl.searchParams.get('url') || '';
+    const cleanSlug = (rawSlug || path.basename(rawUrl, '.mp4')).replace(/[^a-zA-Z0-9_\-]/g, '_');
+    
+    // Check if we have a locally cached file first
+    const localCandidates = [
+      path.join(__dirname, 'clips_cache', `${cleanSlug}_crop16x9.mp4`),
+      path.join(__dirname, 'clips_cache', `${cleanSlug}_raw.mp4`),
+      path.join(__dirname, 'clips_cache', `${cleanSlug}.mp4`),
+    ];
+    for (const cand of localCandidates) {
+      if (fs.existsSync(cand) && fs.statSync(cand).size > 5000) {
+        const stat = fs.statSync(cand);
+        if (req.headers.range) {
+          const parts = req.headers.range.replace(/bytes=/, '').split('-');
+          const start = parseInt(parts[0], 10);
+          const end = parts[1] ? parseInt(parts[1], 10) : stat.size - 1;
+          res.writeHead(206, {
+            'Content-Range': `bytes ${start}-${end}/${stat.size}`,
+            'Accept-Ranges': 'bytes',
+            'Content-Length': (end - start) + 1,
+            'Content-Type': 'video/mp4',
+            'Access-Control-Allow-Origin': '*'
+          });
+          fs.createReadStream(cand, { start, end }).pipe(res);
+          return;
+        } else {
+          res.writeHead(200, {
+            'Content-Length': stat.size,
+            'Accept-Ranges': 'bytes',
+            'Content-Type': 'video/mp4',
+            'Access-Control-Allow-Origin': '*'
+          });
+          fs.createReadStream(cand).pipe(res);
+          return;
+        }
+      }
+    }
+
+    // Proxy directly from clip.cafe
+    const targetUrl = (rawUrl.startsWith('http://') || rawUrl.startsWith('https://'))
+      ? rawUrl
+      : `https://clip.cafe/videos/${cleanSlug}.mp4`;
+
+    const parsedTarget = new URL(targetUrl);
+    const proxyReq = https.request({
+      hostname: parsedTarget.hostname,
+      port: 443,
+      path: parsedTarget.pathname + parsedTarget.search,
+      method: 'GET',
+      headers: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/125.0.0.0 Safari/537.36',
+        'Referer': 'https://clip.cafe/',
+        'Accept': 'video/webm,video/ogg,video/*;q=0.9,*/*;q=0.5',
+        ...(req.headers.range ? { 'Range': req.headers.range } : {})
+      }
+    }, (proxyRes) => {
+      res.writeHead(proxyRes.statusCode, {
+        'Content-Type': proxyRes.headers['content-type'] || 'video/mp4',
+        'Content-Length': proxyRes.headers['content-length'],
+        'Accept-Ranges': 'bytes',
+        'Content-Range': proxyRes.headers['content-range'],
+        'Access-Control-Allow-Origin': '*'
+      });
+      proxyRes.pipe(res);
+    });
+
+    proxyReq.on('error', (err) => {
+      if (!res.headersSent) {
+        res.writeHead(502, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify({ success: false, error: err.message }));
+      }
+    });
+    proxyReq.end();
+    return;
+  }
+
   // Python Video Engine Endpoints: Download single clip, Prepare sequence, or Merge & Export with Aspect Ratio
   if (parsedUrl.pathname === '/api/cafe/python-video' && req.method === 'GET') {
     const slug = parsedUrl.searchParams.get('slug') || '';
