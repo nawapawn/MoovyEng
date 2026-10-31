@@ -56,17 +56,18 @@ export default function PhonePreview({ isMobile = false }) {
   }, [currentSequenceIndex]);
 
   const cfg = ASPECT_RATIO_CONFIG[clipAspectRatio] || ASPECT_RATIO_CONFIG['9:16'];
+  // Keep phone canvas preview consistently crisp and light like the white theme, unless canvas bgColor itself is dark
   const isDark = isColorDark(bgColor || '#ffffff');
 
-  // Per-component itemized text formats
-  const fmtWord = getItemFormat(textFormat, 'word', isDark);
-  const fmtPhonetic = getItemFormat(textFormat, 'phonetic', isDark);
-  const fmtThaiRead = getItemFormat(textFormat, 'thaiRead', isDark);
-  const fmtMeaning = getItemFormat(textFormat, 'meaning', isDark);
-  const fmtGrammar = getItemFormat(textFormat, 'grammar', isDark);
-  const fmtEx1 = getItemFormat(textFormat, 'ex1', isDark);
-  const fmtEx2 = getItemFormat(textFormat, 'ex2', isDark);
-  const fmtChannel = getItemFormat(textFormat, 'channel', isDark);
+  // Per-component itemized text formats (Always default to crisp white-theme styling)
+  const fmtWord = getItemFormat(textFormat, 'word', false);
+  const fmtPhonetic = getItemFormat(textFormat, 'phonetic', false);
+  const fmtThaiRead = getItemFormat(textFormat, 'thaiRead', false);
+  const fmtMeaning = getItemFormat(textFormat, 'meaning', false);
+  const fmtGrammar = getItemFormat(textFormat, 'grammar', false);
+  const fmtEx1 = getItemFormat(textFormat, 'ex1', false);
+  const fmtEx2 = getItemFormat(textFormat, 'ex2', false);
+  const fmtChannel = getItemFormat(textFormat, 'channel', false);
 
   const backgroundStyle = {
     backgroundColor: bgColor || '#ffffff'
@@ -253,7 +254,7 @@ export default function PhonePreview({ isMobile = false }) {
         avatar={avatar}
         channel={channel}
         fmtChannel={fmtChannel}
-        isDark={isDark}
+        isDark={false}
         isMobile={isMobile}
         setActiveFormatTarget={setActiveFormatTarget}
         elementPositions={elementPositions}
@@ -282,7 +283,7 @@ export default function PhonePreview({ isMobile = false }) {
           fmtWord={fmtWord}
           fmtPhonetic={fmtPhonetic}
           fmtThaiRead={fmtThaiRead}
-          isDark={isDark}
+          isDark={false}
           setActiveFormatTarget={setActiveFormatTarget}
           elementPositions={elementPositions}
           updateElementPosition={updateElementPosition}
@@ -327,7 +328,7 @@ export default function PhonePreview({ isMobile = false }) {
           fmtGrammar={fmtGrammar}
           fmtEx1={fmtEx1}
           fmtEx2={fmtEx2}
-          isDark={isDark}
+          isDark={false}
           setActiveFormatTarget={setActiveFormatTarget}
           elementPositions={elementPositions}
           updateElementPosition={updateElementPosition}

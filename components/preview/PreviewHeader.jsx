@@ -40,7 +40,7 @@ export default function PreviewHeader({
         {/* การ์ดแสดงผลโปรไฟล์ (ไม่มีแคปซูล/ไม่มีกรอบพื้นหลัง) */}
         <div className="flex items-center space-x-4 max-w-sm w-full transition-all">
           {/* รูปอวาตาร์ (Avatar) */}
-          <div className="relative w-14 h-14 rounded-full overflow-hidden shrink-0 bg-gray-100 dark:bg-stone-800 shadow-sm">
+          <div className="relative w-14 h-14 rounded-full overflow-hidden shrink-0 bg-gray-100 shadow-sm">
             <img
               id="preview-top-avatar"
               crossOrigin="anonymous"
@@ -60,14 +60,14 @@ export default function PreviewHeader({
               data-preview-field="channel"
               onClick={() => setActiveFormatTarget?.('channel')}
               style={{
-                ...getTextElementStyle(fmtChannel, isDark),
+                ...getTextElementStyle(fmtChannel, false),
                 fontFamily: fmtChannel?.fontFamily
-                  ? getTextElementStyle(fmtChannel, isDark).fontFamily
+                  ? getTextElementStyle(fmtChannel, false).fontFamily
                   : "'Inter', sans-serif",
-                color: fmtChannel?.rawColor ? fmtChannel.textColor : isDark ? '#f9fafb' : '#111827',
+                color: fmtChannel?.rawColor ? fmtChannel.textColor : '#111827',
                 lineHeight: 1
               }}
-              className={`text-xl font-bold text-gray-900 dark:text-white tracking-tight leading-none cursor-pointer transition hover:opacity-90 whitespace-nowrap select-none ${getTextElementClass(
+              className={`text-xl font-bold text-gray-900 tracking-tight leading-none cursor-pointer transition hover:opacity-90 whitespace-nowrap select-none ${getTextElementClass(
                 fmtChannel
               )}`}
               title={lang === 'th' ? 'คลิกเพื่อปรับชื่อช่อง' : 'Click to format Channel'}
