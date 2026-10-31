@@ -84,6 +84,42 @@
   font-display: swap;
 }
 
+/* FC Mee Sakul Serif (เอฟซี มีสกุล เซอริฟ) - Luxury Thai Serif */
+@font-face {
+  font-family: 'FC Mee Sakul Serif';
+  src: local('FC Mee Sakul Serif Regular'),
+       local('FC Mee Sakul Serif'),
+       local('FC MeeSakul Serif'),
+       local('FCMeeSakulSerif-Regular'),
+       local('FCMeeSakulSerif'),
+       url('/fonts/MNRodjana-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'FC Mee Sakul Serif';
+  src: local('FC Mee Sakul Serif Bold'),
+       local('FC MeeSakul Serif Bold'),
+       local('FCMeeSakulSerif-Bold'),
+       url('/fonts/MNRodjana-Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'FC Mee Sakul Serif';
+  src: local('FC Mee Sakul Serif Italic'),
+       local('FC MeeSakul Serif Italic'),
+       local('FCMeeSakulSerif-Italic'),
+       url('/fonts/MNRodjana-RegularItalic.ttf') format('truetype');
+  font-weight: normal;
+  font-style: italic;
+  font-display: swap;
+}
+
 /* MN Rodjana (รจนา) - Luxury Classic Thai Serif from f0nt.com tag หรูหรา */
 @font-face {
   font-family: 'MN Rodjana';
@@ -154,7 +190,7 @@ html.dark body {
 }
 
 .editorial-display {
-  font-family: 'MN Rodjana', 'EB Garamond', 'Times New Roman', serif;
+  font-family: 'FC Mee Sakul Serif', 'FC MeeSakul Serif', 'MN Rodjana', 'EB Garamond', 'Times New Roman', serif;
   font-weight: 300;
   letter-spacing: -0.96px;
 }
