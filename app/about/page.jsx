@@ -54,6 +54,23 @@ export default function PersonalShowcasePage() {
       titleMobile: 'โหมดสร้างสรรค์บนมือถือ ใช้งานได้ทุกที่',
       descMobile:
         'ออกแบบแยกสำหรับสมาร์ตโฟนโดยเฉพาะ เลื่อนสัมผัสง่าย พร้อมแถบเมนูลัดด้านล่าง และปุ่ม Export สไลด์และวิดีโอได้จากบนมือถือโดยตรง',
+      
+      // Guide / How to use
+      guideHeading: 'วิธีใช้งาน MoovyEng ง่ายๆ ใน 4 ขั้นตอน',
+      guideSub: 'ขั้นตอนสร้างวิดีโอสั้นพร้อมโพสต์ลงโซเชียลตั้งแต่เริ่มต้นจนจบ',
+      step1Num: '01',
+      step1Title: 'เลือกหรือค้นหาคำศัพท์ / ให้ AI ช่วยแต่ง',
+      step1Desc: 'พิมพ์คำศัพท์หรือสำนวนที่ต้องการ หรือกดสุ่มคำศัพท์ Phrasal Verbs ระบบ AI จะช่วยเติมคำอ่านไทย คำแปล และตัวอย่างประโยคจากบริบทจริงให้อัตโนมัติ',
+      step2Num: '02',
+      step2Title: 'เลือกคลิปภาพยนตร์ภาษาอังกฤษจริง',
+      step2Desc: 'ระบบจะดึงซีนภาพยนตร์จาก clip.cafe ที่มีบทพูดตรงกับคำศัพท์นั้นๆ ให้คุณสามารถกดฟังเสียง กดเลือกคลิปเข้าคิวเล่นต่อเนื่อง หรือสลับซีนที่ชอบได้ทันที',
+      step3Num: '03',
+      step3Title: 'ปรับแต่งสไตล์ สี และสัดส่วนวิดีโอ',
+      step3Desc: 'เลือกสัดส่วน 9:16 (แนวตั้งสำหรับ TikTok/Reels) หรือ 16:9 (แนวนอน) ปรับโทนสีพื้นหลัง การไล่ระดับสี และเลือกฟอนต์ลายมือหรือโมเดิร์นที่ต้องการ',
+      step4Num: '04',
+      step4Title: 'กดส่งออกวิดีโอ MP4 คมชัดพร้อมแคปชัน',
+      step4Desc: 'คลิกปุ่ม Export ด้านบนขวา ระบบจะเรนเดอร์ทั้งหน้าพรีวิวพร้อมคลิปรวมเป็นไฟล์ MP4 คุณภาพสูง และล้างไฟล์แคชในเซิร์ฟเวอร์ให้อัตโนมัติทันทีที่ดาวน์โหลดเสร็จ',
+
       feat1Title: 'Multi-AI Prompt Engine',
       feat1Desc:
         'รองรับ Google Gemini 2.5, OpenAI GPT-4o, Groq LLaMA 3, Claude 3.5 และ OpenRouter ช่วยแนะนำประโยคตัวอย่าง คำอ่านไทย และแคปชันอย่างแม่นยำ',
@@ -66,7 +83,12 @@ export default function PersonalShowcasePage() {
       ctaFinalTitle: 'พร้อมเริ่มสร้างสรรค์คลิปภาษาอังกฤษแล้วหรือยัง?',
       ctaFinalDesc: 'เปิดใช้งาน MoovyEng ได้ทันทีผ่านเบราว์เซอร์ของคุณ ทั้งบนคอมพิวเตอร์และมือถือ',
       ctaFinalBtn: 'เข้าสู่สตูดิโอ MoovyEng ตอนนี้',
-      footerRights: '2026 MoovyEng. Designed & Developed by Nawapawn.',
+      
+      // Footer Creator & Repo
+      creatorHeading: 'เกี่ยวกับผู้พัฒนา & โอเพนซอร์สเพื่อการศึกษา',
+      creatorDesc: 'โปรเจกต์นี้สร้างขึ้นโดย Nawapawn เพื่อเป็นสื่อการเรียนรู้ ทดลองพัฒนาระบบ Full-Stack Next.js + Python Clip Processing Engine และเปิดเป็นโอเพนซอร์สสำหรับผู้ที่สนใจศึกษาต่อยอด',
+      githubBtn: 'ศึกษาโค้ดบน GitHub (Open Source)',
+      footerRights: '© 2026 MoovyEng. Created with passion by Nawapawn for educational & creative purposes.',
       footerHome: 'หน้าสตูดิโอหลัก',
       footerMobile: 'โหมดมือถือ',
       footerAbout: 'เกี่ยวกับโปรเจกต์',
@@ -101,6 +123,23 @@ export default function PersonalShowcasePage() {
       titleMobile: 'Dedicated Touch Studio for On-the-Go Creators',
       descMobile:
         'Seamless mobile interface with bottom quick navigation, live slide renderer, and direct export actions tailored for iOS and Android displays.',
+      
+      // Guide / How to use
+      guideHeading: 'How to Use MoovyEng in 4 Simple Steps',
+      guideSub: 'The complete workflow from discovering words to rendering short videos ready for social posting.',
+      step1Num: '01',
+      step1Title: 'Select or Search Vocabulary / Let AI Formulate',
+      step1Desc: 'Type your target word or pick curated phrasal verbs. The Multi-AI engine automatically generates authentic example sentences, Thai phonetics, and grammatical nuances.',
+      step2Num: '02',
+      step2Title: 'Browse & Queue Real Movie Dialogue Clips',
+      step2Desc: 'The system indexes high-definition movie clips from clip.cafe containing the exact line. Audition audio, queue multiple scenes, and watch them play sequentially in the preview.',
+      step3Num: '03',
+      step3Title: 'Customize Canvas Palette, Font & Aspect Ratio',
+      step3Desc: 'Choose 9:16 vertical (TikTok/Reels/Shorts) or 16:9 widescreen. Refine background gradient, adjust padding, and apply hand-drawn or editorial fonts.',
+      step4Num: '04',
+      step4Title: 'Export MP4 Video with 1-Click Server Cleanup',
+      step4Desc: 'Click Export in the top header. The Python FFmpeg engine renders the full canvas with audio, and purges intermediate server cache immediately once downloaded.',
+
       feat1Title: 'Multi-AI Prompt Engine',
       feat1Desc:
         'Integrated with Gemini 2.5, OpenAI GPT-4o, Groq LLaMA 3, Claude 3.5 and OpenRouter for natural collocations, Thai phonetics, and viral social hooks.',
@@ -113,7 +152,12 @@ export default function PersonalShowcasePage() {
       ctaFinalTitle: 'Ready to create engaging video lessons?',
       ctaFinalDesc: 'Jump into MoovyEng Studio directly in your browser — zero installation required.',
       ctaFinalBtn: 'Launch MoovyEng Studio',
-      footerRights: '2026 MoovyEng. Designed & Developed by Nawapawn.',
+      
+      // Footer Creator & Repo
+      creatorHeading: 'Creator & Educational Open Source',
+      creatorDesc: 'Created by Nawapawn as a full-stack learning project combining Next.js with Python media engines, and open-sourced for developers and creators to study and build upon.',
+      githubBtn: 'Study Source Code on GitHub',
+      footerRights: '© 2026 MoovyEng. Created with passion by Nawapawn for educational & creative purposes.',
       footerHome: 'Studio Home',
       footerMobile: 'Mobile Mode',
       footerAbout: 'About Showcase',
@@ -309,7 +353,7 @@ export default function PersonalShowcasePage() {
             </Link>
           </div>
 
-          {/* Browser Window Frame with Subtle Shadow */}
+          {/* Browser Window Frame with Responsive Next-Gen Picture */}
           <div className="rounded-xl overflow-hidden border border-[#e7e5e4] dark:border-[#292524] bg-[#fafafa] dark:bg-[#12100e] shadow-sm">
             <div className="px-3.5 py-2 bg-white/80 dark:bg-[#1c1917]/80 backdrop-blur-md border-b border-[#e7e5e4] dark:border-[#292524] flex items-center justify-between text-[11px] text-[#777169] dark:text-[#a8a29e]">
               <div className="flex items-center gap-1.5">
@@ -341,8 +385,70 @@ export default function PersonalShowcasePage() {
         </div>
       </section>
 
-      {/* Feature Pillars (3 Minimal Cards) */}
+      {/* NEW: Step-by-Step Interactive Guide (เข้าใจง่ายใน 4 ขั้นตอน) */}
       <section className="relative z-10 max-w-5xl mx-auto px-6 py-14">
+        <div className="text-center mb-10">
+          <h2 className="editorial-display text-2xl sm:text-3xl font-normal text-[#0c0a09] dark:text-white mb-2">
+            {t.guideHeading}
+          </h2>
+          <p className="text-xs text-[#777169] dark:text-[#a8a29e]">
+            {t.guideSub}
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="p-5 rounded-2xl bg-white/85 dark:bg-[#1c1917]/85 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] shadow-2xs hover:border-[#0c0a09] dark:hover:border-white transition-all space-y-2.5">
+            <div className="w-8 h-8 rounded-lg bg-[#0c0a09] dark:bg-white text-white dark:text-[#0c0a09] text-xs font-mono font-bold flex items-center justify-center">
+              {t.step1Num}
+            </div>
+            <h3 className="text-sm font-semibold text-[#0c0a09] dark:text-white">
+              {t.step1Title}
+            </h3>
+            <p className="text-xs text-[#777169] dark:text-[#a8a29e] leading-relaxed">
+              {t.step1Desc}
+            </p>
+          </div>
+
+          <div className="p-5 rounded-2xl bg-white/85 dark:bg-[#1c1917]/85 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] shadow-2xs hover:border-[#0c0a09] dark:hover:border-white transition-all space-y-2.5">
+            <div className="w-8 h-8 rounded-lg bg-[#0c0a09] dark:bg-white text-white dark:text-[#0c0a09] text-xs font-mono font-bold flex items-center justify-center">
+              {t.step2Num}
+            </div>
+            <h3 className="text-sm font-semibold text-[#0c0a09] dark:text-white">
+              {t.step2Title}
+            </h3>
+            <p className="text-xs text-[#777169] dark:text-[#a8a29e] leading-relaxed">
+              {t.step2Desc}
+            </p>
+          </div>
+
+          <div className="p-5 rounded-2xl bg-white/85 dark:bg-[#1c1917]/85 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] shadow-2xs hover:border-[#0c0a09] dark:hover:border-white transition-all space-y-2.5">
+            <div className="w-8 h-8 rounded-lg bg-[#0c0a09] dark:bg-white text-white dark:text-[#0c0a09] text-xs font-mono font-bold flex items-center justify-center">
+              {t.step3Num}
+            </div>
+            <h3 className="text-sm font-semibold text-[#0c0a09] dark:text-white">
+              {t.step3Title}
+            </h3>
+            <p className="text-xs text-[#777169] dark:text-[#a8a29e] leading-relaxed">
+              {t.step3Desc}
+            </p>
+          </div>
+
+          <div className="p-5 rounded-2xl bg-white/85 dark:bg-[#1c1917]/85 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] shadow-2xs hover:border-[#0c0a09] dark:hover:border-white transition-all space-y-2.5">
+            <div className="w-8 h-8 rounded-lg bg-[#0c0a09] dark:bg-white text-white dark:text-[#0c0a09] text-xs font-mono font-bold flex items-center justify-center">
+              {t.step4Num}
+            </div>
+            <h3 className="text-sm font-semibold text-[#0c0a09] dark:text-white">
+              {t.step4Title}
+            </h3>
+            <p className="text-xs text-[#777169] dark:text-[#a8a29e] leading-relaxed">
+              {t.step4Desc}
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Feature Pillars (3 Minimal Cards) */}
+      <section className="relative z-10 max-w-5xl mx-auto px-6 py-6">
         <div className="text-center mb-10">
           <h2 className="editorial-display text-2xl sm:text-3xl font-normal text-[#0c0a09] dark:text-white mb-2">
             {t.featuresHeading}
@@ -392,7 +498,7 @@ export default function PersonalShowcasePage() {
       </section>
 
       {/* Clean Call to Action */}
-      <section className="relative z-10 max-w-4xl mx-auto px-6 pb-20 text-center">
+      <section className="relative z-10 max-w-4xl mx-auto px-6 py-12 text-center">
         <div className="p-10 rounded-2xl bg-white/90 dark:bg-[#1c1917]/90 border border-[#e7e5e4] dark:border-[#292524] backdrop-blur-md shadow-sm">
           <h2 className="editorial-display text-2xl sm:text-3xl font-normal text-[#0c0a09] dark:text-white mb-3">
             {t.ctaFinalTitle}
@@ -412,6 +518,40 @@ export default function PersonalShowcasePage() {
         </div>
       </section>
 
+      {/* Creator Profile & Open Source Section */}
+      <section className="relative z-10 max-w-4xl mx-auto px-6 pb-16">
+        <div className="p-6 sm:p-8 rounded-2xl bg-white/80 dark:bg-[#1c1917]/80 border border-[#e7e5e4] dark:border-[#292524] backdrop-blur-md flex flex-col sm:flex-row items-center justify-between gap-6 shadow-2xs">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 rounded-full bg-[#f0efed] dark:bg-[#292524] border border-[#e7e5e4] dark:border-[#44403c] flex items-center justify-center text-xl text-[#0c0a09] dark:text-white flex-shrink-0">
+              <i className="fa-brands fa-github" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-semibold text-[#0c0a09] dark:text-white">
+                  nawapawn / MoovyEng
+                </span>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-[#f0efed] dark:bg-[#292524] text-[#777169] dark:text-[#a8a29e]">
+                  Public Repo
+                </span>
+              </div>
+              <p className="text-xs text-[#777169] dark:text-[#a8a29e] mt-1 max-w-xl leading-relaxed">
+                {t.creatorDesc}
+              </p>
+            </div>
+          </div>
+
+          <a
+            href="https://github.com/nawapawn/MoovyEng"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-4 py-2.5 rounded-xl bg-[#0c0a09] dark:bg-white text-white dark:text-[#0c0a09] text-xs font-semibold hover:opacity-90 transition flex items-center gap-2 flex-shrink-0 shadow-xs"
+          >
+            <i className="fa-brands fa-github text-sm" />
+            <span>{t.githubBtn}</span>
+          </a>
+        </div>
+      </section>
+
       {/* Editorial Footer */}
       <footer className="relative z-10 border-t border-[#e7e5e4] dark:border-[#292524] py-8 text-center text-xs text-[#777169] dark:text-[#a8a29e]">
         <p className="font-mono text-[11px]">{t.footerRights}</p>
@@ -427,6 +567,16 @@ export default function PersonalShowcasePage() {
           <Link href="/about" className="hover:text-[#0c0a09] dark:hover:text-white transition">
             {t.footerAbout}
           </Link>
+          <span>•</span>
+          <a
+            href="https://github.com/nawapawn/MoovyEng"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-[#0c0a09] dark:hover:text-white transition inline-flex items-center gap-1"
+          >
+            <i className="fa-brands fa-github text-[11px]" />
+            <span>GitHub</span>
+          </a>
         </div>
       </footer>
     </div>
