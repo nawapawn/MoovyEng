@@ -80,10 +80,10 @@ export default function StudioHeader() {
         <a
           href="/about"
           className="w-9 h-9 rounded-full bg-[#f0efed] dark:bg-[#292524] hover:bg-[#e7e5e4] dark:hover:bg-[#3f3b38] text-[#0c0a09] dark:text-white border border-[#d6d3d1] dark:border-[#44403c] transition flex items-center justify-center flex-shrink-0 t-btn-press"
-          title={lang === 'th' ? 'เกี่ยวกับ MoovyEng (Personal Showcase)' : 'About MoovyEng'}
+          title={lang === 'th' ? 'เกี่ยวกับ MoovyEng & คู่มือการใช้งาน' : 'About MoovyEng & User Guide'}
           aria-label="About"
         >
-          <i className="fa-solid fa-sparkles text-xs" />
+          <i className="fa-solid fa-circle-info text-xs" />
         </a>
 
         {/* Undo Button */}
