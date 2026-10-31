@@ -1,90 +1,191 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 export default function PersonalShowcasePage() {
+  const [lang, setLang] = useState('th');
   const [activeTab, setActiveTab] = useState('desktop');
 
-  const galleryItems = [
-    {
-      id: 'desktop',
-      label: 'Desktop All-in-One Studio',
-      icon: 'fa-desktop',
-      tag: 'Desktop Studio 1920x1080',
-      title: 'สตูดิโอแบบ 2 คอลัมน์ ออกแบบพร้อมพรีวิวแบบเรียลไทม์',
-      description:
-        'จัดวางฝั่งซ้ายเป็น Phone Live Preview แบบเกาะติดหน้าจอ (Sticky) และฝั่งขวาเป็นชุดเครื่องมือ 4 ขั้นตอน AI Generator, Clip Search, Aspect Ratio & Color Lab, และ Social Profile',
-      image: '/screenshots/studio_desktop_preview.png',
-    },
-    {
-      id: 'dark',
-      label: 'ElevenLabs Luxury Dark Theme',
-      icon: 'fa-moon',
-      tag: 'Dark Mode Aesthetic',
-      title: 'โหมดกลางคืนระดับพรีเมียม สบายตาและเน้นโฟกัส',
-      description:
-        'สลับโหมด Dark Theme ได้ในคลิกเดียว พร้อมการปรับ Contrast ตัวหนังสืออัตโนมัติ ให้การอ่านตัวอย่างประโยคและคำศัพท์คมชัดที่สุด',
-      image: '/screenshots/studio_dark_mode.png',
-    },
-    {
-      id: 'colorlab',
-      label: 'Minimalist Color Laboratory',
-      icon: 'fa-palette',
-      tag: 'Color & Typography Studio',
-      title: 'ระบบจัดสี การไล่ระดับเฉดสี และฟอนต์พรีเมียม 14 แบบ',
-      description:
-        'ปรับแต่งสีพื้นหลังทั้งแบบสีเดี่ยวและแบบ Gradient ดูดสีจากโปสเตอร์หนัง หรือใส่ฟอนต์ลายมือภาษาอังกฤษและภาษาไทยอย่างอิสระ',
-      image: '/screenshots/studio_color_lab.png',
-    },
-    {
-      id: 'mobile',
-      label: 'Mobile Creator View (/edit)',
-      icon: 'fa-mobile-screen',
-      tag: 'Touch-Optimized Mobile UI',
-      title: 'โหมดมือถือใช้งานง่าย ออกแบบได้ทุกที่ทุกเวลา',
-      description:
-        'อินเทอร์เฟซแยกสำหรับสมาร์ตโฟน ออกแบบให้เลื่อนสัมผัสลื่นไหล มีแถบเมนูด้านล่าง Quick Actions และสามารถสั่ง Export ได้ทันทีจากมือถือ',
-      image: '/screenshots/studio_mobile_tools.png',
-    },
-    {
-      id: 'export',
-      label: 'Video & Slide Exporter',
-      icon: 'fa-cloud-arrow-down',
-      tag: 'Python FFmpeg Video Engine',
-      title: 'ส่งออกวิดีโอ MP4 คมชัดพร้อมแคปชันสำหรับโซเชียล',
-      description:
-        'เรนเดอร์เนื้อหาทั้งหมดทั้งหน้าพรีวิวพร้อมคลิปภาพยนตร์ 16:9 รวมเป็นวิดีโอสั้นพร้อมโพสต์ลง TikTok, IG Reels และ YouTube Shorts ทันที',
-      image: '/screenshots/studio_export_modal.png',
-    },
-  ];
+  // Load language preference from localStorage
+  useEffect(() => {
+    try {
+      const savedLang = localStorage.getItem('movy_lang') || 'th';
+      setLang(savedLang);
+    } catch (e) {}
+  }, []);
 
-  const currentItem = galleryItems.find((item) => item.id === activeTab) || galleryItems[0];
+  const toggleLanguage = () => {
+    const nextLang = lang === 'th' ? 'en' : 'th';
+    setLang(nextLang);
+    try {
+      localStorage.setItem('movy_lang', nextLang);
+    } catch (e) {}
+  };
+
+  const t = {
+    th: {
+      brandSub: 'Personal Creator Studio & Showcase',
+      openStudio: 'เข้าสู่สตูดิโอสร้างสรรค์',
+      openMobile: 'โหมดมือถือ',
+      badge: 'Production-Grade AI Vocab & Movie Studio',
+      heroTitleLine1: 'สร้างคอนเทนต์สอนภาษาอังกฤษ',
+      heroTitleLine2: 'จากซีนภาพยนตร์ฮอลลีวูดจริง',
+      heroDesc:
+        'MoovyEng คือสตูดิโอเว็บแอปพลิเคชันส่วนตัวที่ผสมผสาน AI ขั้นสูงหลายค่าย (Gemini, GPT-4o, Groq) เข้ากับคลิปภาพยนตร์ภาษาอังกฤษความละเอียดสูง พร้อมระบบเรนเดอร์วิดีโอ Full Canvas สำหรับ TikTok, Reels และ Shorts',
+      ctaPrimary: 'เข้าสู่สตูดิโอ (Desktop)',
+      ctaSecondary: 'เปิดบนมือถือ (Mobile /edit)',
+      galleryHeading: 'ภาพรวมการทำงานและอินเทอร์เฟซจริง',
+      gallerySub: 'คลิกเพื่อดูหน้าจอและขั้นตอนการทำงานของสตูดิโอในแต่ละมุมมอง',
+      featuresHeading: 'สถาปัตยกรรมและเทคโนโลยีสำคัญ',
+      featuresSub: 'ออกแบบด้วยมาตรฐาน ElevenLabs Editorial Aesthetic มินิมอล คมชัด และทำงานรวดเร็ว',
+      tabDesktop: 'Desktop Two-Column Studio',
+      tabDark: 'ElevenLabs Luxury Dark Theme',
+      tabMobile: 'Mobile Creator Interface',
+      tagDesktop: 'Desktop Layout (1440x900)',
+      titleDesktop: 'สตูดิโอแบบ 2 คอลัมน์ ออกแบบพร้อมพรีวิวแบบเรียลไทม์',
+      descDesktop:
+        'ฝั่งซ้ายเป็น Phone Canvas พรีวิวสดแบบ Sticky ตรึงตำแหน่งขณะเลื่อน และฝั่งขวาเป็นชุดเครื่องมือ 4 ขั้นตอน: AI Generator, คลังคลิปหนัง, Color Lab และข้อมูล Social Profile',
+      tagDark: 'Dark Mode Aesthetic',
+      titleDark: 'โหมดกลางคืนพรีเมียม สบายตาและเปี่ยมสมาธิ',
+      descDark:
+        'สลับโหมด Dark Theme ได้ทันที พร้อมระบบคำนวณ Contrast สีตัวหนังสืออัตโนมัติ ทำให้การอ่านและจัดสไลด์ตัวอย่างประโยคชัดเจนในทุกระดับความสว่าง',
+      tagMobile: 'Touch-Optimized Mobile View',
+      titleMobile: 'โหมดสร้างสรรค์บนมือถือ ใช้งานได้ทุกที่',
+      descMobile:
+        'ออกแบบแยกสำหรับสมาร์ตโฟนโดยเฉพาะ เลื่อนสัมผัสง่าย พร้อมแถบเมนูลัดด้านล่าง และปุ่ม Export สไลด์และวิดีโอได้จากบนมือถือโดยตรง',
+      feat1Title: 'Multi-AI Prompt Engine',
+      feat1Desc:
+        'รองรับ Google Gemini 2.5, OpenAI GPT-4o, Groq LLaMA 3, Claude 3.5 และ OpenRouter ช่วยแนะนำประโยคตัวอย่าง คำอ่านไทย และแคปชันอย่างแม่นยำ',
+      feat2Title: 'Clip.cafe High-Res Cinema',
+      feat2Desc:
+        'ดึงคลิปภาพยนตร์ภาษาอังกฤษจริงที่พูดตรงกับคำศัพท์หรือสำนวน พร้อมระบบเล่นวิดีโอต่อเนื่องและพรีวิวลงบนการ์ดแบบ Real-time',
+      feat3Title: 'Automated Cache Pruning',
+      feat3Desc:
+        'ระบบส่งออกวิดีโอ MP4 คมชัดด้วย Python FFmpeg พร้อมคำสั่งล้างแคชไฟล์ชั่วคราวทั้งหมดอัตโนมัติทันทีที่ดาวน์โหลดเสร็จสิ้น ไม่กินพื้นที่เครื่อง',
+      ctaFinalTitle: 'พร้อมเริ่มสร้างสรรค์คลิปภาษาอังกฤษแล้วหรือยัง?',
+      ctaFinalDesc: 'เปิดใช้งาน MoovyEng ได้ทันทีผ่านเบราว์เซอร์ของคุณ ทั้งบนคอมพิวเตอร์และมือถือ',
+      ctaFinalBtn: 'เข้าสู่สตูดิโอ MoovyEng ตอนนี้',
+      footerRights: '2026 MoovyEng. Designed & Developed by Nawapawn.',
+      footerHome: 'หน้าสตูดิโอหลัก',
+      footerMobile: 'โหมดมือถือ',
+      footerAbout: 'เกี่ยวกับโปรเจกต์',
+    },
+    en: {
+      brandSub: 'Personal Creator Studio & Showcase',
+      openStudio: 'Launch Studio',
+      openMobile: 'Mobile Mode',
+      badge: 'Production-Grade AI Vocab & Movie Studio',
+      heroTitleLine1: 'Craft Engaging English Videos',
+      heroTitleLine2: 'From Iconic Hollywood Scenes',
+      heroDesc:
+        'MoovyEng is a personal creator web studio that unites Multi-Provider AI (Gemini, GPT-4o, Groq) with authentic English movie scenes, rendering production-ready full canvas short videos for TikTok, Reels, and Shorts.',
+      ctaPrimary: 'Launch Studio (Desktop)',
+      ctaSecondary: 'Open Mobile View (/edit)',
+      galleryHeading: 'System Architecture & Live Interface',
+      gallerySub: 'Explore real system captures across desktop, dark theme, and mobile experiences.',
+      featuresHeading: 'Core Pillars & Engineering',
+      featuresSub: 'Crafted with ElevenLabs Editorial Aesthetics — minimal, precise, and highly responsive.',
+      tabDesktop: 'Desktop Two-Column Studio',
+      tabDark: 'ElevenLabs Luxury Dark Theme',
+      tabMobile: 'Mobile Creator Interface',
+      tagDesktop: 'Desktop Layout (1440x900)',
+      titleDesktop: 'Dual-Column Studio with Live Synchronized Preview',
+      descDesktop:
+        'Left pinned phone canvas stays sticky while you scroll through 4 progressive tool suites on the right: AI Generator, Clip Pool, Color Lab, and Social Captioning.',
+      tagDark: 'Dark Mode Aesthetic',
+      titleDark: 'ElevenLabs Luxury Dark Theme with Smart Contrast',
+      descDark:
+        'Instant light/dark switching with dynamic text color inversion, ensuring optimal readability and eye comfort across movie clip backdrops.',
+      tagMobile: 'Touch-Optimized Mobile View',
+      titleMobile: 'Dedicated Touch Studio for On-the-Go Creators',
+      descMobile:
+        'Seamless mobile interface with bottom quick navigation, live slide renderer, and direct export actions tailored for iOS and Android displays.',
+      feat1Title: 'Multi-AI Prompt Engine',
+      feat1Desc:
+        'Integrated with Gemini 2.5, OpenAI GPT-4o, Groq LLaMA 3, Claude 3.5 and OpenRouter for natural collocations, Thai phonetics, and viral social hooks.',
+      feat2Title: 'Clip.cafe High-Res Cinema',
+      feat2Desc:
+        'Indexes verified movie moments matching your vocabulary, providing seamless sequential multi-clip playback inside 16:9 canvas apertures.',
+      feat3Title: 'Automated Cache Pruning',
+      feat3Desc:
+        'Python FFmpeg video compiler with intelligent post-download cleanup that purges server temporary files immediately upon completed download.',
+      ctaFinalTitle: 'Ready to create engaging video lessons?',
+      ctaFinalDesc: 'Jump into MoovyEng Studio directly in your browser — zero installation required.',
+      ctaFinalBtn: 'Launch MoovyEng Studio',
+      footerRights: '2026 MoovyEng. Designed & Developed by Nawapawn.',
+      footerHome: 'Studio Home',
+      footerMobile: 'Mobile Mode',
+      footerAbout: 'About Showcase',
+    },
+  }[lang];
+
+  const galleryData = {
+    desktop: {
+      tag: t.tagDesktop,
+      title: t.titleDesktop,
+      desc: t.descDesktop,
+      image: '/screenshots/hero_studio_1440.png',
+      badge: '1440 x 900 Desktop View',
+    },
+    dark: {
+      tag: t.tagDark,
+      title: t.titleDark,
+      desc: t.descDark,
+      image: '/screenshots/studio_dark_1440.png',
+      badge: 'Dark Mode Activated',
+    },
+    mobile: {
+      tag: t.tagMobile,
+      title: t.titleMobile,
+      desc: t.descMobile,
+      image: '/screenshots/mobile_editor_touch.png',
+      badge: '414 x 896 Mobile Touch View',
+    },
+  };
+
+  const currentShot = galleryData[activeTab] || galleryData.desktop;
 
   return (
-    <div className="min-h-screen bg-[#faf9f6] dark:bg-[#0c0a09] text-[#1c1917] dark:text-[#f5f5f4] selection:bg-[#f4c5a8]/40 overflow-x-hidden">
-      {/* ElevenLabs Pastel Atmosphere Glows */}
-      <div className="pointer-events-none fixed -top-36 -left-36 w-[38rem] h-[38rem] rounded-full opacity-45 dark:opacity-20 blur-3xl z-0" style={{ background: 'radial-gradient(circle, #a7e5d3 0%, transparent 70%)' }} />
-      <div className="pointer-events-none fixed top-1/3 -right-36 w-[40rem] h-[40rem] rounded-full opacity-45 dark:opacity-20 blur-3xl z-0" style={{ background: 'radial-gradient(circle, #f4c5a8 0%, transparent 70%)' }} />
-      <div className="pointer-events-none fixed -bottom-36 left-1/4 w-[40rem] h-[40rem] rounded-full opacity-35 dark:opacity-15 blur-3xl z-0" style={{ background: 'radial-gradient(circle, #c8b8e0 0%, transparent 70%)' }} />
+    <div className="min-h-screen bg-[#f5f5f5] dark:bg-[#0c0a09] text-[#292524] dark:text-[#f5f5f4] selection:bg-[#f4c5a8]/40 transition-colors duration-300 relative overflow-x-hidden font-sans">
+      {/* ElevenLabs Atmospheric Pastel Ambient Glows */}
+      <div className="pointer-events-none fixed -top-40 -left-40 w-[42rem] h-[42rem] rounded-full opacity-40 dark:opacity-15 blur-3xl z-0" style={{ background: 'radial-gradient(circle, #a7e5d3 0%, transparent 70%)' }} />
+      <div className="pointer-events-none fixed top-1/3 -right-40 w-[44rem] h-[44rem] rounded-full opacity-40 dark:opacity-15 blur-3xl z-0" style={{ background: 'radial-gradient(circle, #f4c5a8 0%, transparent 70%)' }} />
+      <div className="pointer-events-none fixed -bottom-40 left-1/4 w-[42rem] h-[42rem] rounded-full opacity-35 dark:opacity-10 blur-3xl z-0" style={{ background: 'radial-gradient(circle, #c8b8e0 0%, transparent 70%)' }} />
 
-      {/* Top Floating Glass Navigation */}
-      <nav className="sticky top-4 z-50 max-w-6xl mx-auto px-4 sm:px-6">
-        <div className="bg-white/85 dark:bg-[#1c1917]/85 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] rounded-2xl px-4 py-3 shadow-[0_4px_24px_rgba(0,0,0,0.06)] flex items-center justify-between gap-4">
+      {/* Floating Editorial Top Navigation */}
+      <nav className="sticky top-4 z-50 max-w-5xl mx-auto px-4 sm:px-6">
+        <div className="bg-white/90 dark:bg-[#1c1917]/90 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] rounded-2xl px-4 py-3 shadow-[0_4px_20px_rgba(0,0,0,0.05)] flex items-center justify-between gap-4 transition-all">
           <Link href="/" className="flex items-center gap-3 group">
             <img src="/icon.svg" alt="MoovyEng Logo" className="w-10 h-10 object-contain drop-shadow-sm group-hover:scale-105 transition-transform" />
             <div>
-              <span className="text-xl font-bold tracking-tight text-[#0c0a09] dark:text-white leading-tight block">MoovyEng</span>
-              <span className="text-[10px] text-[#78716c] dark:text-[#a8a29e] block font-medium">Personal Creator Showcase</span>
+              <span className="editorial-display text-xl font-bold tracking-tight text-[#0c0a09] dark:text-white leading-none block">
+                MoovyEng
+              </span>
+              <span className="text-[10px] text-[#777169] dark:text-[#a8a29e] block font-medium mt-0.5">
+                {t.brandSub}
+              </span>
             </div>
           </Link>
 
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2">
+            {/* Language Switcher Button (TH / EN) */}
+            <button
+              type="button"
+              onClick={toggleLanguage}
+              className="h-8 px-3 rounded-full bg-[#f0efed] dark:bg-[#292524] text-[#0c0a09] dark:text-[#f5f5f4] text-xs font-semibold border border-[#d6d3d1] dark:border-[#44403c] hover:bg-[#e7e5e4] dark:hover:bg-[#3b3633] transition flex items-center gap-1.5 shadow-2xs"
+              title="Switch Language (TH / EN)"
+            >
+              <i className="fa-solid fa-globe text-[11px] text-[#777169] dark:text-[#a8a29e]" />
+              <span>{lang.toUpperCase()}</span>
+            </button>
+
+            {/* Launch Studio CTA */}
             <Link
               href="/"
-              className="px-4 py-2 rounded-xl text-xs font-semibold bg-[#0c0a09] dark:bg-white text-white dark:text-[#0c0a09] hover:opacity-90 shadow-xs hover:shadow-md transition flex items-center gap-2"
+              className="h-8 px-4 rounded-full bg-[#0c0a09] dark:bg-white text-white dark:text-[#0c0a09] text-xs font-semibold hover:opacity-90 transition flex items-center gap-1.5 shadow-xs"
             >
-              <span>เข้าใช้งานเว็บเลย</span>
+              <span>{t.openStudio}</span>
               <i className="fa-solid fa-arrow-right text-[10px]" />
             </Link>
           </div>
@@ -92,186 +193,225 @@ export default function PersonalShowcasePage() {
       </nav>
 
       {/* Hero Header */}
-      <header className="relative z-10 max-w-5xl mx-auto px-6 pt-16 pb-12 text-center">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/80 dark:bg-white/10 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] text-xs font-semibold text-[#78716c] dark:text-[#d6d3d1] mb-6 shadow-2xs">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
-          ✨ Official Personal Project Portfolio & Showcase
+      <header className="relative z-10 max-w-4xl mx-auto px-6 pt-16 pb-12 text-center">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/80 dark:bg-white/10 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] text-xs font-medium text-[#777169] dark:text-[#d6d3d1] mb-6 shadow-2xs">
+          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+          <span>{t.badge}</span>
         </div>
 
-        <h1 className="text-4xl sm:text-6xl font-black tracking-tight text-[#0c0a09] dark:text-white leading-[1.12] mb-6">
-          ยินดีต้อนรับสู่ <span className="bg-gradient-to-r from-amber-600 via-rose-500 to-indigo-600 bg-clip-text text-transparent">MoovyEng</span>
-          <br className="hidden sm:inline" /> สตูดิโอสอนภาษาอังกฤษจากคลิปหนัง
+        <h1 className="editorial-display text-4xl sm:text-6xl font-light text-[#0c0a09] dark:text-white leading-[1.15] mb-6 tracking-tight">
+          {t.heroTitleLine1} <br />
+          <span className="font-normal text-[#292524] dark:text-[#f5f5f4] underline decoration-[#f4c5a8] decoration-wavy decoration-2 underline-offset-8">
+            {t.heroTitleLine2}
+          </span>
         </h1>
 
-        <p className="text-base sm:text-lg text-[#57534e] dark:text-[#a8a29e] max-w-3xl mx-auto leading-relaxed mb-8">
-          โปรเจกต์ส่วนตัวที่ผสานคลิปภาพยนตร์ฮอลลีวูดจริง เข้ากับพลังของ <strong>Multi-AI Generator</strong> สร้างเป็นสื่อการเรียนการสอนภาษาอังกฤษแบบวิดีโอสั้น (TikTok, Reels, Shorts) ที่สวยงาม สะดุดตา และเข้าใจง่ายที่สุด
+        <p className="text-sm sm:text-base text-[#777169] dark:text-[#a8a29e] max-w-2xl mx-auto leading-relaxed mb-8">
+          {t.heroDesc}
         </p>
 
-        {/* Call-to-action buttons */}
-        <div className="flex flex-wrap items-center justify-center gap-4">
+        {/* Action Buttons */}
+        <div className="flex flex-wrap items-center justify-center gap-3.5">
           <Link
             href="/"
-            className="px-7 py-4 rounded-2xl bg-[#0c0a09] dark:bg-white text-white dark:text-[#0c0a09] text-sm font-bold shadow-lg hover:shadow-xl hover:-translate-y-0.5 transition-all flex items-center gap-3 group"
+            className="px-6 py-3.5 rounded-xl bg-[#0c0a09] dark:bg-white text-white dark:text-[#0c0a09] text-xs font-semibold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all flex items-center gap-2.5"
           >
-            <i className="fa-solid fa-wand-magic-sparkles text-amber-400 group-hover:rotate-12 transition-transform" />
-            <span>กดเข้าใช้งานเว็บสตูดิโอ (Desktop)</span>
+            <span>{t.ctaPrimary}</span>
+            <i className="fa-solid fa-arrow-right text-[10px]" />
           </Link>
           <Link
             href="/edit"
-            className="px-6 py-4 rounded-2xl bg-white dark:bg-[#1c1917] border border-[#e7e5e4] dark:border-[#292524] text-[#0c0a09] dark:text-white text-sm font-bold hover:bg-[#f5f5f4] dark:hover:bg-[#25221f] shadow-2xs transition-all flex items-center gap-2.5"
+            className="px-5 py-3.5 rounded-xl bg-white dark:bg-[#1c1917] border border-[#e7e5e4] dark:border-[#292524] text-[#0c0a09] dark:text-white text-xs font-semibold hover:bg-[#fafafa] dark:hover:bg-[#25221f] transition shadow-2xs flex items-center gap-2"
           >
-            <i className="fa-solid fa-mobile-screen text-indigo-500" />
-            <span>เปิดบนมือถือ (Mobile Mode)</span>
+            <i className="fa-solid fa-mobile-screen text-xs text-[#777169] dark:text-[#a8a29e]" />
+            <span>{t.ctaSecondary}</span>
           </Link>
         </div>
       </header>
 
-      {/* Interactive Gallery & Screenshots Showcase */}
-      <section className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 py-8">
+      {/* Live Interactive UI Gallery Section */}
+      <section className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 py-8">
         <div className="text-center mb-8">
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-[#0c0a09] dark:text-white mb-2">
-            ตัวอย่างภาพหน้าจอจริงของ MoovyEng
+          <h2 className="editorial-display text-2xl sm:text-3xl font-normal text-[#0c0a09] dark:text-white mb-2">
+            {t.galleryHeading}
           </h2>
-          <p className="text-xs sm:text-sm text-[#78716c] dark:text-[#a8a29e]">
-            คลิกเลือกหมวดหมู่ด้านล่างเพื่อชมภาพตัวอย่างแต่ละฟีเจอร์อย่างละเอียด
+          <p className="text-xs text-[#777169] dark:text-[#a8a29e]">
+            {t.gallerySub}
           </p>
         </div>
 
-        {/* Tab Buttons */}
-        <div className="flex flex-wrap items-center justify-center gap-2 mb-8">
-          {galleryItems.map((item) => {
-            const isActive = activeTab === item.id;
-            return (
-              <button
-                key={item.id}
-                type="button"
-                onClick={() => setActiveTab(item.id)}
-                className={`px-4 py-2.5 rounded-xl text-xs font-semibold transition-all flex items-center gap-2 ${
-                  isActive
-                    ? 'bg-[#0c0a09] dark:bg-white text-white dark:text-[#0c0a09] shadow-md scale-105'
-                    : 'bg-white/80 dark:bg-[#1c1917]/80 backdrop-blur-md text-[#57534e] dark:text-[#a8a29e] border border-[#e7e5e4] dark:border-[#292524] hover:bg-white dark:hover:bg-[#25221f]'
-                }`}
-              >
-                <i className={`fa-solid ${item.icon} ${isActive ? 'text-amber-400 dark:text-amber-500' : ''}`} />
-                <span>{item.label}</span>
-              </button>
-            );
-          })}
+        {/* Minimalist Tabs */}
+        <div className="flex flex-wrap items-center justify-center gap-2 mb-6">
+          <button
+            type="button"
+            onClick={() => setActiveTab('desktop')}
+            className={`px-4 py-2 rounded-xl text-xs font-medium transition-all flex items-center gap-2 ${
+              activeTab === 'desktop'
+                ? 'bg-[#0c0a09] dark:bg-white text-white dark:text-[#0c0a09] shadow-xs'
+                : 'bg-white/80 dark:bg-[#1c1917]/80 text-[#777169] dark:text-[#a8a29e] border border-[#e7e5e4] dark:border-[#292524] hover:bg-white dark:hover:bg-[#25221f]'
+            }`}
+          >
+            <i className="fa-solid fa-desktop text-xs" />
+            <span>{t.tabDesktop}</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('dark')}
+            className={`px-4 py-2 rounded-xl text-xs font-medium transition-all flex items-center gap-2 ${
+              activeTab === 'dark'
+                ? 'bg-[#0c0a09] dark:bg-white text-white dark:text-[#0c0a09] shadow-xs'
+                : 'bg-white/80 dark:bg-[#1c1917]/80 text-[#777169] dark:text-[#a8a29e] border border-[#e7e5e4] dark:border-[#292524] hover:bg-white dark:hover:bg-[#25221f]'
+            }`}
+          >
+            <i className="fa-solid fa-moon text-xs" />
+            <span>{t.tabDark}</span>
+          </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('mobile')}
+            className={`px-4 py-2 rounded-xl text-xs font-medium transition-all flex items-center gap-2 ${
+              activeTab === 'mobile'
+                ? 'bg-[#0c0a09] dark:bg-white text-white dark:text-[#0c0a09] shadow-xs'
+                : 'bg-white/80 dark:bg-[#1c1917]/80 text-[#777169] dark:text-[#a8a29e] border border-[#e7e5e4] dark:border-[#292524] hover:bg-white dark:hover:bg-[#25221f]'
+            }`}
+          >
+            <i className="fa-solid fa-mobile-screen text-xs" />
+            <span>{t.tabMobile}</span>
+          </button>
         </div>
 
-        {/* Showcase Main Display Card */}
-        <div className="bg-white/90 dark:bg-[#1c1917]/90 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] rounded-3xl p-5 sm:p-8 shadow-[0_12px_40px_rgba(0,0,0,0.06)] space-y-6">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4 border-b border-[#f0efed] dark:border-[#292524]">
+        {/* Master Showcase Frame with Minimal Chrome */}
+        <div className="bg-white/90 dark:bg-[#1c1917]/90 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] rounded-2xl p-5 sm:p-7 shadow-[0_8px_32px_rgba(0,0,0,0.05)] space-y-5 transition-all">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#f0efed] dark:border-[#292524]">
             <div>
-              <div className="inline-block px-2.5 py-0.5 rounded-md bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 text-[10px] font-bold tracking-wide uppercase mb-2">
-                {currentItem.tag}
-              </div>
-              <h3 className="text-xl sm:text-2xl font-bold text-[#0c0a09] dark:text-white">
-                {currentItem.title}
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[#777169] dark:text-[#a8a29e]">
+                {currentShot.tag}
+              </span>
+              <h3 className="text-lg font-semibold text-[#0c0a09] dark:text-white mt-0.5">
+                {currentShot.title}
               </h3>
-              <p className="text-xs sm:text-sm text-[#78716c] dark:text-[#a8a29e] mt-1 max-w-3xl leading-relaxed">
-                {currentItem.description}
+              <p className="text-xs text-[#777169] dark:text-[#a8a29e] mt-1 max-w-2xl leading-relaxed">
+                {currentShot.desc}
               </p>
             </div>
-
             <Link
               href="/"
-              className="px-5 py-2.5 rounded-xl bg-[#0c0a09] dark:bg-white text-white dark:text-[#0c0a09] text-xs font-bold shadow-xs hover:shadow-md transition flex items-center gap-2 flex-shrink-0"
+              className="px-4 py-2 rounded-lg bg-[#f0efed] dark:bg-[#292524] hover:bg-[#0c0a09] hover:text-white dark:hover:bg-white dark:hover:text-[#0c0a09] text-xs font-semibold text-[#0c0a09] dark:text-white transition flex items-center gap-1.5 self-start sm:self-center flex-shrink-0"
             >
-              <span>ทดลองใช้งานหน้านี้</span>
-              <i className="fa-solid fa-arrow-up-right-from-square text-[10px]" />
+              <span>{t.openStudio}</span>
+              <i className="fa-solid fa-arrow-up-right-from-square text-[9px]" />
             </Link>
           </div>
 
-          {/* Screenshot Preview with Browser Frame */}
-          <div className="rounded-2xl overflow-hidden border border-[#e7e5e4] dark:border-[#292524] bg-[#f5f5f4] dark:bg-[#12100e] shadow-inner relative group">
-            {/* Fake macOS / Browser Header Dots */}
-            <div className="px-4 py-2.5 bg-white/70 dark:bg-[#1c1917]/70 backdrop-blur-md border-b border-[#e7e5e4] dark:border-[#292524] flex items-center gap-2">
-              <span className="w-2.5 h-2.5 rounded-full bg-rose-400 inline-block" />
-              <span className="w-2.5 h-2.5 rounded-full bg-amber-400 inline-block" />
-              <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 inline-block" />
-              <span className="text-[10px] text-[#78716c] dark:text-[#a8a29e] ml-2 font-mono">
-                moovyeng.app • {currentItem.label}
-              </span>
+          {/* Browser Window Frame with Subtle Shadow */}
+          <div className="rounded-xl overflow-hidden border border-[#e7e5e4] dark:border-[#292524] bg-[#fafafa] dark:bg-[#12100e] shadow-sm">
+            <div className="px-3.5 py-2 bg-white/80 dark:bg-[#1c1917]/80 backdrop-blur-md border-b border-[#e7e5e4] dark:border-[#292524] flex items-center justify-between text-[11px] text-[#777169] dark:text-[#a8a29e]">
+              <div className="flex items-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-[#e7e5e4] dark:bg-[#292524]" />
+                <span className="w-2.5 h-2.5 rounded-full bg-[#e7e5e4] dark:bg-[#292524]" />
+                <span className="w-2.5 h-2.5 rounded-full bg-[#e7e5e4] dark:bg-[#292524]" />
+                <span className="ml-2 font-mono text-[10px]">https://moovyeng.vercel.app</span>
+              </div>
+              <span className="text-[10px] font-medium hidden sm:inline">{currentShot.badge}</span>
             </div>
 
-            {/* Actual Screenshot Image */}
             <div className="relative aspect-video sm:aspect-[16/10] w-full overflow-hidden bg-black/5 flex items-center justify-center">
               <img
-                src={currentItem.image}
-                alt={currentItem.title}
-                className="w-full h-full object-contain sm:object-cover transition-transform duration-500 group-hover:scale-[1.01]"
+                src={currentShot.image}
+                alt={currentShot.title}
+                className="w-full h-full object-contain sm:object-cover transition-opacity duration-300"
               />
             </div>
           </div>
         </div>
       </section>
 
-      {/* Feature Pillars */}
-      <section className="relative z-10 max-w-5xl mx-auto px-6 py-16">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-          <div className="p-6 rounded-3xl bg-white/80 dark:bg-[#1c1917]/80 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] shadow-2xs">
-            <div className="w-12 h-12 rounded-2xl bg-amber-100 dark:bg-amber-950/50 text-amber-600 flex items-center justify-center text-xl mb-4">
-              <i className="fa-solid fa-brain" />
+      {/* Feature Pillars (3 Minimal Cards) */}
+      <section className="relative z-10 max-w-5xl mx-auto px-6 py-14">
+        <div className="text-center mb-10">
+          <h2 className="editorial-display text-2xl sm:text-3xl font-normal text-[#0c0a09] dark:text-white mb-2">
+            {t.featuresHeading}
+          </h2>
+          <p className="text-xs text-[#777169] dark:text-[#a8a29e]">
+            {t.featuresSub}
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
+          <div className="p-6 rounded-2xl bg-white/85 dark:bg-[#1c1917]/85 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] shadow-2xs hover:border-[#0c0a09] dark:hover:border-white transition-all group">
+            <div className="w-10 h-10 rounded-xl bg-[#f0efed] dark:bg-[#292524] text-[#0c0a09] dark:text-white flex items-center justify-center text-sm mb-4 transition-colors">
+              <i className="fa-solid fa-microchip" />
             </div>
-            <h4 className="text-base font-bold text-[#0c0a09] dark:text-white mb-2">Smart Multi-AI</h4>
-            <p className="text-xs text-[#78716c] dark:text-[#a8a29e] leading-relaxed">
-              สลับใช้ Gemini 2.5, OpenAI GPT-4o หรือ Groq ช่วยคิดตัวอย่างประโยคและคำอ่านไทยที่แม่นยำ พร้อมบันทึกคีย์ไว้ใน Browser ของคุณ
+            <h3 className="text-sm font-semibold text-[#0c0a09] dark:text-white mb-2">
+              {t.feat1Title}
+            </h3>
+            <p className="text-xs text-[#777169] dark:text-[#a8a29e] leading-relaxed">
+              {t.feat1Desc}
             </p>
           </div>
 
-          <div className="p-6 rounded-3xl bg-white/80 dark:bg-[#1c1917]/80 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] shadow-2xs">
-            <div className="w-12 h-12 rounded-2xl bg-indigo-100 dark:bg-indigo-950/50 text-indigo-600 flex items-center justify-center text-xl mb-4">
-              <i className="fa-solid fa-clapperboard" />
+          <div className="p-6 rounded-2xl bg-white/85 dark:bg-[#1c1917]/85 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] shadow-2xs hover:border-[#0c0a09] dark:hover:border-white transition-all group">
+            <div className="w-10 h-10 rounded-xl bg-[#f0efed] dark:bg-[#292524] text-[#0c0a09] dark:text-white flex items-center justify-center text-sm mb-4 transition-colors">
+              <i className="fa-solid fa-film" />
             </div>
-            <h4 className="text-base font-bold text-[#0c0a09] dark:text-white mb-2">Real Movie Clips</h4>
-            <p className="text-xs text-[#78716c] dark:text-[#a8a29e] leading-relaxed">
-              ค้นหาซีนภาพยนตร์ที่ตรงกับสำนวนภาษาอังกฤษโดยตรง เล่นวิดีโอต่อเนื่องและฝังในหน้าพรีวิวให้เห็นผลลัพธ์ทันที
+            <h3 className="text-sm font-semibold text-[#0c0a09] dark:text-white mb-2">
+              {t.feat2Title}
+            </h3>
+            <p className="text-xs text-[#777169] dark:text-[#a8a29e] leading-relaxed">
+              {t.feat2Desc}
             </p>
           </div>
 
-          <div className="p-6 rounded-3xl bg-white/80 dark:bg-[#1c1917]/80 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] shadow-2xs">
-            <div className="w-12 h-12 rounded-2xl bg-emerald-100 dark:bg-emerald-950/50 text-emerald-600 flex items-center justify-center text-xl mb-4">
-              <i className="fa-solid fa-bolt" />
+          <div className="p-6 rounded-2xl bg-white/85 dark:bg-[#1c1917]/85 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] shadow-2xs hover:border-[#0c0a09] dark:hover:border-white transition-all group">
+            <div className="w-10 h-10 rounded-xl bg-[#f0efed] dark:bg-[#292524] text-[#0c0a09] dark:text-white flex items-center justify-center text-sm mb-4 transition-colors">
+              <i className="fa-solid fa-trash-can-arrow-up" />
             </div>
-            <h4 className="text-base font-bold text-[#0c0a09] dark:text-white mb-2">1-Click Full Export</h4>
-            <p className="text-xs text-[#78716c] dark:text-[#a8a29e] leading-relaxed">
-              รวมคลิปหนังและสไลด์คำศัพท์เป็นวิดีโอ MP4 อัตราส่วน 9:16 หรือ 16:9 ในคลิกเดียว พร้อมล้างไฟล์แคชอัตโนมัติทันทีที่ดาวน์โหลดเสร็จ
+            <h3 className="text-sm font-semibold text-[#0c0a09] dark:text-white mb-2">
+              {t.feat3Title}
+            </h3>
+            <p className="text-xs text-[#777169] dark:text-[#a8a29e] leading-relaxed">
+              {t.feat3Desc}
             </p>
           </div>
         </div>
       </section>
 
-      {/* Big Final Call to Action */}
+      {/* Clean Call to Action */}
       <section className="relative z-10 max-w-4xl mx-auto px-6 pb-20 text-center">
-        <div className="p-10 rounded-3xl bg-gradient-to-r from-amber-500/10 via-rose-500/10 to-indigo-500/10 border border-[#e7e5e4] dark:border-[#292524] backdrop-blur-lg">
-          <h2 className="text-3xl sm:text-4xl font-black text-[#0c0a09] dark:text-white mb-4">
-            พร้อมที่จะสร้างคลิปสอนภาษาอังกฤษของคุณหรือยัง?
+        <div className="p-10 rounded-2xl bg-white/90 dark:bg-[#1c1917]/90 border border-[#e7e5e4] dark:border-[#292524] backdrop-blur-md shadow-sm">
+          <h2 className="editorial-display text-2xl sm:text-3xl font-normal text-[#0c0a09] dark:text-white mb-3">
+            {t.ctaFinalTitle}
           </h2>
-          <p className="text-sm text-[#78716c] dark:text-[#a8a29e] max-w-xl mx-auto mb-8">
-            กดเข้ามาทดลองใช้งาน MoovyEng Studio ตอนนี้ได้ฟรีทันที โดยไม่ต้องลงทะเบียนใดๆ
+          <p className="text-xs sm:text-sm text-[#777169] dark:text-[#a8a29e] max-w-lg mx-auto mb-6 leading-relaxed">
+            {t.ctaFinalDesc}
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3">
             <Link
               href="/"
-              className="px-8 py-4 rounded-2xl bg-[#0c0a09] dark:bg-white text-white dark:text-[#0c0a09] text-sm font-bold shadow-xl hover:scale-105 transition-transform flex items-center gap-2"
+              className="px-6 py-3 rounded-xl bg-[#0c0a09] dark:bg-white text-white dark:text-[#0c0a09] text-xs font-semibold shadow-xs hover:shadow-md transition flex items-center gap-2"
             >
-              <span>เข้าสู่สตูดิโอ MoovyEng เลยทันที</span>
-              <i className="fa-solid fa-arrow-right text-xs" />
+              <span>{t.ctaFinalBtn}</span>
+              <i className="fa-solid fa-arrow-right text-[10px]" />
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="relative z-10 border-t border-[#e7e5e4] dark:border-[#292524] py-8 text-center text-xs text-[#a8a29e]">
-        <p>© 2026 MoovyEng. Personal Creator Studio & Portfolio.</p>
+      {/* Editorial Footer */}
+      <footer className="relative z-10 border-t border-[#e7e5e4] dark:border-[#292524] py-8 text-center text-xs text-[#777169] dark:text-[#a8a29e]">
+        <p className="font-mono text-[11px]">{t.footerRights}</p>
         <div className="mt-2 flex items-center justify-center gap-4 text-[11px]">
-          <Link href="/" className="hover:text-[#0c0a09] dark:hover:text-white transition">หน้าสตูดิโอหลัก</Link>
+          <Link href="/" className="hover:text-[#0c0a09] dark:hover:text-white transition">
+            {t.footerHome}
+          </Link>
           <span>•</span>
-          <Link href="/edit" className="hover:text-[#0c0a09] dark:hover:text-white transition">โหมดมือถือ</Link>
+          <Link href="/edit" className="hover:text-[#0c0a09] dark:hover:text-white transition">
+            {t.footerMobile}
+          </Link>
           <span>•</span>
-          <Link href="/about" className="hover:text-[#0c0a09] dark:hover:text-white transition">Personal Showcase</Link>
+          <Link href="/about" className="hover:text-[#0c0a09] dark:hover:text-white transition">
+            {t.footerAbout}
+          </Link>
         </div>
       </footer>
     </div>
