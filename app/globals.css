@@ -51,6 +51,39 @@
   font-display: swap;
 }
 
+/* PrintAble4U - Modern Clean Thai Font (Fontcraft Studio) */
+@font-face {
+  font-family: 'PrintAble4U';
+  src: url('/fonts/PrintAble4U-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'PrintAble4U';
+  src: url('/fonts/PrintAble4U-Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'PrintAble4U';
+  src: url('/fonts/PrintAble4U-Italic.ttf') format('truetype');
+  font-weight: normal;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'PrintAble4U';
+  src: url('/fonts/PrintAble4U-BoldItalic.ttf') format('truetype');
+  font-weight: bold;
+  font-style: italic;
+  font-display: swap;
+}
+
 /* transitions.dev inspiration: Production-ready CSS curves, spring micro-interactions & smooth state transitions */
 :root {
   --t-ease-spring: cubic-bezier(0.16, 1, 0.3, 1);

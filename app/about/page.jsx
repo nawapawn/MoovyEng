@@ -174,7 +174,10 @@ export default function LuxuryAboutPage() {
   return (
     <div
       ref={mainContainerRef}
-      className="min-h-screen bg-[#fafaf9] dark:bg-[#0c0a09] text-[#0c0a09] dark:text-[#f5f5f4] transition-colors duration-300 font-sans selection:bg-[#0c0a09] selection:text-white dark:selection:bg-white dark:selection:text-[#0c0a09] relative overflow-hidden"
+      style={{
+        fontFamily: isTh ? "'PrintAble4U', 'Prompt', sans-serif" : "'Inter', -apple-system, sans-serif"
+      }}
+      className="min-h-screen bg-[#fafaf9] dark:bg-[#0c0a09] text-[#0c0a09] dark:text-[#f5f5f4] transition-colors duration-300 selection:bg-[#0c0a09] selection:text-white dark:selection:bg-white dark:selection:text-[#0c0a09] relative overflow-hidden"
     >
       {/* Ambient Floating Glow Orbs (Subtle luxury ElevenLabs background) */}
       <div className="pointer-events-none fixed inset-0 overflow-hidden z-0">
