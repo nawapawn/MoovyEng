@@ -32,11 +32,11 @@ export default function PersonalShowcasePage() {
       heroTitleLine1: 'สร้างคอนเทนต์สอนภาษาอังกฤษ',
       heroTitleLine2: 'จากซีนภาพยนตร์ฮอลลีวูดจริง',
       heroDesc:
-        'MoovyEng คือสตูดิโอเว็บแอปพลิเคชันส่วนตัวที่ผสมผสาน AI ขั้นสูงหลายค่าย (Gemini, GPT-4o, Groq) เข้ากับคลิปภาพยนตร์ภาษาอังกฤษความละเอียดสูง พร้อมระบบเรนเดอร์วิดีโอ Full Canvas สำหรับ TikTok, Reels และ Shorts',
+        'MoovyEng คือสตูดิโอเว็บแอปพลิเคชันที่ผสานความอัจฉริยะของ Multi-AI Engine เข้ากับคลิปภาพยนตร์ภาษาอังกฤษความละเอียดสูง พร้อมระบบเรนเดอร์วิดีโอ Full Canvas สำหรับ TikTok, Reels และ Shorts',
       ctaPrimary: 'เข้าสู่สตูดิโอ (Desktop)',
       ctaSecondary: 'เปิดบนมือถือ (Mobile /edit)',
-      galleryHeading: 'ภาพรวมการทำงานและอินเทอร์เฟซจริง',
-      gallerySub: 'คลิกเพื่อดูหน้าจอและขั้นตอนการทำงานของสตูดิโอในแต่ละมุมมอง',
+      galleryHeading: 'ภาพรวมระบบและการทำงานจริง',
+      gallerySub: 'คลิกดูตัวอย่างหน้าจอของสตูดิโอในแต่ละมุมมองแบบเต็มตา',
       featuresHeading: 'สถาปัตยกรรมและเทคโนโลยีสำคัญ',
       featuresSub: 'ออกแบบด้วยมาตรฐาน ElevenLabs Editorial Aesthetic มินิมอล คมชัด และทำงานรวดเร็ว',
       tabDesktop: 'Desktop Two-Column Studio',
@@ -53,7 +53,7 @@ export default function PersonalShowcasePage() {
       tagMobile: 'Touch-Optimized Mobile View',
       titleMobile: 'โหมดสร้างสรรค์บนมือถือ ใช้งานได้ทุกที่',
       descMobile:
-        'ออกแบบแยกสำหรับสมาร์ตโฟนโดยเฉพาะ เลื่อนสัมผัสง่าย พร้อมแถบเมนูลัดด้านล่าง และปุ่ม Export สไลด์และวิดีโอได้จากบนมือถือโดยตรง',
+        'อินเทอร์เฟซแยกสำหรับสมาร์ตโฟนโดยเฉพาะ เลื่อนสัมผัสง่าย พร้อมแถบเมนูลัดด้านล่าง และปุ่ม Export สไลด์และวิดีโอได้จากบนมือถือโดยตรง',
       
       // Guide / How to use
       guideHeading: 'วิธีใช้งาน MoovyEng ง่ายๆ ใน 4 ขั้นตอน',
@@ -172,6 +172,7 @@ export default function PersonalShowcasePage() {
       avif: '/screenshots/hero_studio_1440.avif',
       webp: '/screenshots/hero_studio_1440.webp',
       png: '/screenshots/hero_studio_1440.png',
+      isMobileFrame: false,
       badge: '1440 x 900 Desktop View',
     },
     dark: {
@@ -181,6 +182,7 @@ export default function PersonalShowcasePage() {
       avif: '/screenshots/studio_dark_1440.avif',
       webp: '/screenshots/studio_dark_1440.webp',
       png: '/screenshots/studio_dark_1440.png',
+      isMobileFrame: false,
       badge: 'Dark Mode Activated',
     },
     mobile: {
@@ -190,6 +192,7 @@ export default function PersonalShowcasePage() {
       avif: '/screenshots/mobile_editor_touch.avif',
       webp: '/screenshots/mobile_editor_touch.webp',
       png: '/screenshots/mobile_editor_touch.png',
+      isMobileFrame: true,
       badge: '414 x 896 Mobile Touch View',
     },
   };
@@ -280,8 +283,8 @@ export default function PersonalShowcasePage() {
       </header>
 
       {/* Live Interactive UI Gallery Section */}
-      <section className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 py-8">
-        <div className="text-center mb-8">
+      <section className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 py-6">
+        <div className="text-center mb-6">
           <h2 className="editorial-display text-2xl sm:text-3xl font-normal text-[#0c0a09] dark:text-white mb-2">
             {t.galleryHeading}
           </h2>
@@ -353,9 +356,10 @@ export default function PersonalShowcasePage() {
             </Link>
           </div>
 
-          {/* Browser Window Frame with Responsive Next-Gen Picture */}
-          <div className="rounded-xl overflow-hidden border border-[#e7e5e4] dark:border-[#292524] bg-[#fafafa] dark:bg-[#12100e] shadow-sm">
-            <div className="px-3.5 py-2 bg-white/80 dark:bg-[#1c1917]/80 backdrop-blur-md border-b border-[#e7e5e4] dark:border-[#292524] flex items-center justify-between text-[11px] text-[#777169] dark:text-[#a8a29e]">
+          {/* Picture Display - Custom ratio depending on Desktop vs Mobile Frame */}
+          <div className="rounded-xl overflow-hidden border border-[#e7e5e4] dark:border-[#292524] bg-[#fafafa] dark:bg-[#12100e] shadow-sm flex flex-col items-center">
+            {/* Top Minimal Address Bar */}
+            <div className="w-full px-3.5 py-2 bg-white/80 dark:bg-[#1c1917]/80 backdrop-blur-md border-b border-[#e7e5e4] dark:border-[#292524] flex items-center justify-between text-[11px] text-[#777169] dark:text-[#a8a29e]">
               <div className="flex items-center gap-1.5">
                 <span className="w-2.5 h-2.5 rounded-full bg-[#e7e5e4] dark:bg-[#292524]" />
                 <span className="w-2.5 h-2.5 rounded-full bg-[#e7e5e4] dark:bg-[#292524]" />
@@ -365,28 +369,45 @@ export default function PersonalShowcasePage() {
               <span className="text-[10px] font-medium hidden sm:inline">{currentShot.badge}</span>
             </div>
 
-            <div className="relative aspect-video sm:aspect-[16/10] w-full overflow-hidden bg-black/5 flex items-center justify-center">
-              <picture className="w-full h-full">
-                {/* 1. Ultra modern AVIF format (High compression, smallest footprint ~48KB) */}
-                <source srcSet={currentShot.avif} type="image/avif" />
-                {/* 2. Modern WebP format (Supported on 98%+ browsers ~80KB) */}
-                <source srcSet={currentShot.webp} type="image/webp" />
-                {/* 3. Fallback standard PNG format */}
-                <img
-                  src={currentShot.png}
-                  alt={currentShot.title}
-                  loading="eager"
-                  decoding="async"
-                  className="w-full h-full object-contain sm:object-cover transition-opacity duration-300"
-                />
-              </picture>
-            </div>
+            {/* If mobile tab, present in dedicated centered smartphone card */}
+            {currentShot.isMobileFrame ? (
+              <div className="w-full py-8 px-4 flex justify-center bg-gradient-to-b from-[#f5f5f4] to-[#e7e5e4] dark:from-[#181614] dark:to-[#0f0e0d]">
+                <div className="w-[320px] sm:w-[360px] rounded-[36px] p-2 bg-[#292524] shadow-[0_24px_50px_rgba(0,0,0,0.2)] border-2 border-[#57534e]">
+                  <div className="rounded-[28px] overflow-hidden bg-white dark:bg-[#0c0a09] relative shadow-inner">
+                    <picture className="w-full h-auto block">
+                      <source srcSet={currentShot.avif} type="image/avif" />
+                      <source srcSet={currentShot.webp} type="image/webp" />
+                      <img
+                        src={currentShot.png}
+                        alt={currentShot.title}
+                        loading="eager"
+                        className="w-full h-auto max-h-[580px] object-cover object-top"
+                      />
+                    </picture>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              /* Desktop Widescreen Display */
+              <div className="relative aspect-[16/10] w-full overflow-hidden bg-black/5 flex items-center justify-center">
+                <picture className="w-full h-full">
+                  <source srcSet={currentShot.avif} type="image/avif" />
+                  <source srcSet={currentShot.webp} type="image/webp" />
+                  <img
+                    src={currentShot.png}
+                    alt={currentShot.title}
+                    loading="eager"
+                    className="w-full h-full object-contain object-top"
+                  />
+                </picture>
+              </div>
+            )}
           </div>
         </div>
       </section>
 
       {/* NEW: Step-by-Step Interactive Guide (เข้าใจง่ายใน 4 ขั้นตอน) */}
-      <section className="relative z-10 max-w-5xl mx-auto px-6 py-14">
+      <section className="relative z-10 max-w-5xl mx-auto px-6 py-12">
         <div className="text-center mb-10">
           <h2 className="editorial-display text-2xl sm:text-3xl font-normal text-[#0c0a09] dark:text-white mb-2">
             {t.guideHeading}
@@ -447,9 +468,9 @@ export default function PersonalShowcasePage() {
         </div>
       </section>
 
-      {/* Feature Pillars (3 Minimal Cards) */}
+      {/* Feature Pillars: Horizontal Modern Row Layout (3 คอลัมน์ ไม่เป็น 3 กล่องเรียงยาวแบบเดิม) */}
       <section className="relative z-10 max-w-5xl mx-auto px-6 py-6">
-        <div className="text-center mb-10">
+        <div className="text-center mb-8">
           <h2 className="editorial-display text-2xl sm:text-3xl font-normal text-[#0c0a09] dark:text-white mb-2">
             {t.featuresHeading}
           </h2>
@@ -458,48 +479,54 @@ export default function PersonalShowcasePage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-          <div className="p-6 rounded-2xl bg-white/85 dark:bg-[#1c1917]/85 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] shadow-2xs hover:border-[#0c0a09] dark:hover:border-white transition-all group">
-            <div className="w-10 h-10 rounded-xl bg-[#f0efed] dark:bg-[#292524] text-[#0c0a09] dark:text-white flex items-center justify-center text-sm mb-4 transition-colors">
-              <i className="fa-solid fa-microchip" />
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="p-5 rounded-2xl bg-white/90 dark:bg-[#1c1917]/90 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] shadow-2xs hover:border-[#0c0a09] dark:hover:border-white transition-all flex flex-col justify-between">
+            <div>
+              <div className="w-9 h-9 rounded-xl bg-[#f0efed] dark:bg-[#292524] text-[#0c0a09] dark:text-white flex items-center justify-center text-xs mb-3">
+                <i className="fa-solid fa-microchip" />
+              </div>
+              <h3 className="text-sm font-semibold text-[#0c0a09] dark:text-white mb-1.5">
+                {t.feat1Title}
+              </h3>
+              <p className="text-xs text-[#777169] dark:text-[#a8a29e] leading-relaxed">
+                {t.feat1Desc}
+              </p>
             </div>
-            <h3 className="text-sm font-semibold text-[#0c0a09] dark:text-white mb-2">
-              {t.feat1Title}
-            </h3>
-            <p className="text-xs text-[#777169] dark:text-[#a8a29e] leading-relaxed">
-              {t.feat1Desc}
-            </p>
           </div>
 
-          <div className="p-6 rounded-2xl bg-white/85 dark:bg-[#1c1917]/85 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] shadow-2xs hover:border-[#0c0a09] dark:hover:border-white transition-all group">
-            <div className="w-10 h-10 rounded-xl bg-[#f0efed] dark:bg-[#292524] text-[#0c0a09] dark:text-white flex items-center justify-center text-sm mb-4 transition-colors">
-              <i className="fa-solid fa-film" />
+          <div className="p-5 rounded-2xl bg-white/90 dark:bg-[#1c1917]/90 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] shadow-2xs hover:border-[#0c0a09] dark:hover:border-white transition-all flex flex-col justify-between">
+            <div>
+              <div className="w-9 h-9 rounded-xl bg-[#f0efed] dark:bg-[#292524] text-[#0c0a09] dark:text-white flex items-center justify-center text-xs mb-3">
+                <i className="fa-solid fa-film" />
+              </div>
+              <h3 className="text-sm font-semibold text-[#0c0a09] dark:text-white mb-1.5">
+                {t.feat2Title}
+              </h3>
+              <p className="text-xs text-[#777169] dark:text-[#a8a29e] leading-relaxed">
+                {t.feat2Desc}
+              </p>
             </div>
-            <h3 className="text-sm font-semibold text-[#0c0a09] dark:text-white mb-2">
-              {t.feat2Title}
-            </h3>
-            <p className="text-xs text-[#777169] dark:text-[#a8a29e] leading-relaxed">
-              {t.feat2Desc}
-            </p>
           </div>
 
-          <div className="p-6 rounded-2xl bg-white/85 dark:bg-[#1c1917]/85 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] shadow-2xs hover:border-[#0c0a09] dark:hover:border-white transition-all group">
-            <div className="w-10 h-10 rounded-xl bg-[#f0efed] dark:bg-[#292524] text-[#0c0a09] dark:text-white flex items-center justify-center text-sm mb-4 transition-colors">
-              <i className="fa-solid fa-trash-can-arrow-up" />
+          <div className="p-5 rounded-2xl bg-white/90 dark:bg-[#1c1917]/90 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] shadow-2xs hover:border-[#0c0a09] dark:hover:border-white transition-all flex flex-col justify-between">
+            <div>
+              <div className="w-9 h-9 rounded-xl bg-[#f0efed] dark:bg-[#292524] text-[#0c0a09] dark:text-white flex items-center justify-center text-xs mb-3">
+                <i className="fa-solid fa-trash-can-arrow-up" />
+              </div>
+              <h3 className="text-sm font-semibold text-[#0c0a09] dark:text-white mb-1.5">
+                {t.feat3Title}
+              </h3>
+              <p className="text-xs text-[#777169] dark:text-[#a8a29e] leading-relaxed">
+                {t.feat3Desc}
+              </p>
             </div>
-            <h3 className="text-sm font-semibold text-[#0c0a09] dark:text-white mb-2">
-              {t.feat3Title}
-            </h3>
-            <p className="text-xs text-[#777169] dark:text-[#a8a29e] leading-relaxed">
-              {t.feat3Desc}
-            </p>
           </div>
         </div>
       </section>
 
       {/* Clean Call to Action */}
-      <section className="relative z-10 max-w-4xl mx-auto px-6 py-12 text-center">
-        <div className="p-10 rounded-2xl bg-white/90 dark:bg-[#1c1917]/90 border border-[#e7e5e4] dark:border-[#292524] backdrop-blur-md shadow-sm">
+      <section className="relative z-10 max-w-4xl mx-auto px-6 py-10 text-center">
+        <div className="p-8 sm:p-10 rounded-2xl bg-white/90 dark:bg-[#1c1917]/90 border border-[#e7e5e4] dark:border-[#292524] backdrop-blur-md shadow-sm">
           <h2 className="editorial-display text-2xl sm:text-3xl font-normal text-[#0c0a09] dark:text-white mb-3">
             {t.ctaFinalTitle}
           </h2>
