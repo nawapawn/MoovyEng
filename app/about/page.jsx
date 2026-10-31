@@ -125,21 +125,27 @@ export default function PersonalShowcasePage() {
       tag: t.tagDesktop,
       title: t.titleDesktop,
       desc: t.descDesktop,
-      image: '/screenshots/hero_studio_1440.png',
+      avif: '/screenshots/hero_studio_1440.avif',
+      webp: '/screenshots/hero_studio_1440.webp',
+      png: '/screenshots/hero_studio_1440.png',
       badge: '1440 x 900 Desktop View',
     },
     dark: {
       tag: t.tagDark,
       title: t.titleDark,
       desc: t.descDark,
-      image: '/screenshots/studio_dark_1440.png',
+      avif: '/screenshots/studio_dark_1440.avif',
+      webp: '/screenshots/studio_dark_1440.webp',
+      png: '/screenshots/studio_dark_1440.png',
       badge: 'Dark Mode Activated',
     },
     mobile: {
       tag: t.tagMobile,
       title: t.titleMobile,
       desc: t.descMobile,
-      image: '/screenshots/mobile_editor_touch.png',
+      avif: '/screenshots/mobile_editor_touch.avif',
+      webp: '/screenshots/mobile_editor_touch.webp',
+      png: '/screenshots/mobile_editor_touch.png',
       badge: '414 x 896 Mobile Touch View',
     },
   };
@@ -316,11 +322,20 @@ export default function PersonalShowcasePage() {
             </div>
 
             <div className="relative aspect-video sm:aspect-[16/10] w-full overflow-hidden bg-black/5 flex items-center justify-center">
-              <img
-                src={currentShot.image}
-                alt={currentShot.title}
-                className="w-full h-full object-contain sm:object-cover transition-opacity duration-300"
-              />
+              <picture className="w-full h-full">
+                {/* 1. Ultra modern AVIF format (High compression, smallest footprint ~48KB) */}
+                <source srcSet={currentShot.avif} type="image/avif" />
+                {/* 2. Modern WebP format (Supported on 98%+ browsers ~80KB) */}
+                <source srcSet={currentShot.webp} type="image/webp" />
+                {/* 3. Fallback standard PNG format */}
+                <img
+                  src={currentShot.png}
+                  alt={currentShot.title}
+                  loading="eager"
+                  decoding="async"
+                  className="w-full h-full object-contain sm:object-cover transition-opacity duration-300"
+                />
+              </picture>
             </div>
           </div>
         </div>
