@@ -381,14 +381,14 @@ export default function PersonalShowcasePage() {
         <div className="flex flex-wrap items-center justify-center gap-3.5">
           <Link
             href="/"
-            className="hero-cta-btn px-6 py-3.5 rounded-xl bg-[#0c0a09] dark:bg-white text-white dark:text-[#0c0a09] text-xs font-semibold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all flex items-center gap-2.5"
+            className="hero-cta-btn btn-magical px-6 py-3.5 rounded-xl bg-[#0c0a09] dark:bg-white text-white dark:text-[#0c0a09] text-xs font-semibold shadow-md flex items-center gap-2.5"
           >
             <span>{t.ctaPrimary}</span>
-            <i className="fa-solid fa-arrow-right text-[10px]" />
+            <i className="fa-solid fa-arrow-right text-[10px] transition-transform duration-200 group-hover:translate-x-1" />
           </Link>
           <Link
             href="/edit"
-            className="hero-cta-btn px-5 py-3.5 rounded-xl bg-white dark:bg-[#1c1917] border border-[#e7e5e4] dark:border-[#292524] text-[#0c0a09] dark:text-white text-xs font-semibold hover:bg-[#fafafa] dark:hover:bg-[#25221f] transition shadow-2xs flex items-center gap-2"
+            className="hero-cta-btn btn-magical px-5 py-3.5 rounded-xl bg-white dark:bg-[#1c1917] border border-[#e7e5e4] dark:border-[#292524] text-[#0c0a09] dark:text-white text-xs font-semibold shadow-2xs flex items-center gap-2"
           >
             <i className="fa-solid fa-mobile-screen text-xs text-[#777169] dark:text-[#a8a29e]" />
             <span>{t.ctaSecondary}</span>
@@ -532,7 +532,7 @@ export default function PersonalShowcasePage() {
         </div>
 
         <div className="guide-steps-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="guide-step-card p-5 rounded-2xl bg-white/85 dark:bg-[#1c1917]/85 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] shadow-2xs hover:border-[#0c0a09] dark:hover:border-white transition-all space-y-2.5">
+          <div className="guide-step-card card-magical p-5 rounded-2xl bg-white/85 dark:bg-[#1c1917]/85 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] shadow-2xs space-y-2.5">
             <div className="w-8 h-8 rounded-lg bg-[#0c0a09] dark:bg-white text-white dark:text-[#0c0a09] text-xs font-mono font-bold flex items-center justify-center">
               {t.step1Num}
             </div>
@@ -544,7 +544,7 @@ export default function PersonalShowcasePage() {
             </p>
           </div>
 
-          <div className="guide-step-card p-5 rounded-2xl bg-white/85 dark:bg-[#1c1917]/85 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] shadow-2xs hover:border-[#0c0a09] dark:hover:border-white transition-all space-y-2.5">
+          <div className="guide-step-card card-magical p-5 rounded-2xl bg-white/85 dark:bg-[#1c1917]/85 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] shadow-2xs space-y-2.5">
             <div className="w-8 h-8 rounded-lg bg-[#0c0a09] dark:bg-white text-white dark:text-[#0c0a09] text-xs font-mono font-bold flex items-center justify-center">
               {t.step2Num}
             </div>
@@ -556,7 +556,7 @@ export default function PersonalShowcasePage() {
             </p>
           </div>
 
-          <div className="guide-step-card p-5 rounded-2xl bg-white/85 dark:bg-[#1c1917]/85 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] shadow-2xs hover:border-[#0c0a09] dark:hover:border-white transition-all space-y-2.5">
+          <div className="guide-step-card card-magical p-5 rounded-2xl bg-white/85 dark:bg-[#1c1917]/85 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] shadow-2xs space-y-2.5">
             <div className="w-8 h-8 rounded-lg bg-[#0c0a09] dark:bg-white text-white dark:text-[#0c0a09] text-xs font-mono font-bold flex items-center justify-center">
               {t.step3Num}
             </div>
@@ -568,7 +568,7 @@ export default function PersonalShowcasePage() {
             </p>
           </div>
 
-          <div className="guide-step-card p-5 rounded-2xl bg-white/85 dark:bg-[#1c1917]/85 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] shadow-2xs hover:border-[#0c0a09] dark:hover:border-white transition-all space-y-2.5">
+          <div className="guide-step-card card-magical p-5 rounded-2xl bg-white/85 dark:bg-[#1c1917]/85 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] shadow-2xs space-y-2.5">
             <div className="w-8 h-8 rounded-lg bg-[#0c0a09] dark:bg-white text-white dark:text-[#0c0a09] text-xs font-mono font-bold flex items-center justify-center">
               {t.step4Num}
             </div>
