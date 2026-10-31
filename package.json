@@ -1,11 +1,12 @@
 {
-  "name": "moovying-en",
+  "name": "moovyeng",
   "version": "2.0.0",
   "private": true,
   "scripts": {
     "dev": "next dev -p 3000",
     "build": "next build",
-    "start": "next start -p 3000"
+    "start": "next start -p 3000",
+    "test:e2e": "node tests/run-all.mjs"
   },
   "dependencies": {
     "autoprefixer": "^10.6.1",

@@ -11,10 +11,15 @@ export default function ToolStep4Social() {
     setAvatar,
     caption,
     setCaption,
+    captionStyle,
+    setCaptionStyle,
     collapsedSections,
     toggleToolCard,
     showToast,
-    lang
+    lang,
+    setActiveFormatTarget,
+    isRegenerating,
+    regenerateCaption
   } = useVocab();
 
   const isCollapsed = Boolean(collapsedSections['tool-sec-social']);
@@ -52,7 +57,7 @@ export default function ToolStep4Social() {
     <section
       id="tool-sec-social"
       data-tool-keywords="4 profile avatar channel handle caption hashtag โปรไฟล์ ช่อง แคปชั่น"
-      className={`tool-section-card bg-white dark:bg-[#1c1917] border border-[#e7e5e4] dark:border-[#292524] rounded-2xl p-4 shadow-[0_4px_16px_rgba(0,0,0,0.04)] ${
+      className={`tool-section-card relative z-10 bg-white dark:bg-[#1c1917] border border-[#e7e5e4] dark:border-[#292524] rounded-2xl p-4 shadow-[0_4px_16px_rgba(0,0,0,0.04)] ${
         isCollapsed ? 'is-collapsed' : ''
       }`}
     >
@@ -64,12 +69,12 @@ export default function ToolStep4Social() {
           <span className="w-5 h-5 rounded-full bg-[#0c0a09] dark:bg-white text-white dark:text-[#0c0a09] flex items-center justify-center text-[10px] font-mono">
             4
           </span>
-          <span>Profile & Caption</span>
+          <span>{lang === 'th' ? 'โปรไฟล์ & แคปชั่น' : 'Profile & Caption'}</span>
         </div>
         <button
           type="button"
           className="w-6 h-6 rounded-full hover:bg-[#f0efed] dark:hover:bg-[#292524] text-[#777169] hover:text-[#0c0a09] dark:hover:text-white flex items-center justify-center transition"
-          title="Collapse / Expand"
+          title={lang === 'th' ? 'ย่อ / ขยาย' : 'Collapse / Expand'}
         >
           <i className="fa-solid fa-chevron-down text-[10px] tool-collapse-chevron" />
         </button>
@@ -90,8 +95,8 @@ export default function ToolStep4Social() {
             <div className="flex-1 min-w-0 flex items-center gap-1.5">
               <label
                 className="w-8 h-8 bg-[#292524] dark:bg-white hover:bg-[#0c0a09] text-white dark:text-[#0c0a09] rounded-full cursor-pointer transition inline-flex items-center justify-center flex-shrink-0"
-                title="Upload Avatar"
-                aria-label="Upload Avatar"
+                title={lang === 'th' ? 'อัปโหลดรูปโปรไฟล์' : 'Upload Avatar'}
+                aria-label={lang === 'th' ? 'อัปโหลดรูปโปรไฟล์' : 'Upload Avatar'}
               >
                 <i className="fa-solid fa-upload text-xs" />
                 <input type="file" accept="image/*" className="hidden" onChange={handleFileUpload} />
@@ -102,7 +107,7 @@ export default function ToolStep4Social() {
                 id="social-avatar-url"
                 value={avatar}
                 onChange={(e) => setAvatar(e.target.value)}
-                placeholder="Avatar image URL..."
+                placeholder={lang === 'th' ? 'หรือใส่ลิงก์รูป URL...' : 'Avatar image URL...'}
                 className="flex-1 min-w-0 bg-white dark:bg-[#292524] border border-[#d6d3d1] dark:border-[#44403c] rounded-lg px-2.5 py-1 text-xs text-[#0c0a09] dark:text-white focus:border-[#0c0a09] dark:focus:border-white focus:outline-none"
               />
 
@@ -111,8 +116,8 @@ export default function ToolStep4Social() {
                   type="button"
                   onClick={handleClearAvatar}
                   className="w-8 h-8 rounded-full bg-white dark:bg-[#292524] border border-[#e7e5e4] dark:border-[#44403c] text-[#777169] hover:text-[#dc2626] hover:border-[#dc2626] transition flex items-center justify-center flex-shrink-0"
-                  title="Remove Avatar"
-                  aria-label="Remove Avatar"
+                  title={lang === 'th' ? 'ลบรูปโปรไฟล์' : 'Remove Avatar'}
+                  aria-label={lang === 'th' ? 'ลบรูปโปรไฟล์' : 'Remove Avatar'}
                 >
                   <i className="fa-solid fa-trash-can text-xs" />
                 </button>
@@ -121,13 +126,25 @@ export default function ToolStep4Social() {
           </div>
 
           <div>
-            <label className="block text-[11px] font-medium text-[#777169] dark:text-[#a8a29e] mb-1">
-              Channel (@username)
-            </label>
+            <div className="flex items-center justify-between mb-1">
+              <label className="block text-[11px] font-medium text-[#777169] dark:text-[#a8a29e]">
+                {lang === 'th' ? 'ชื่อช่อง (@username)' : 'Channel (@username)'}
+              </label>
+              <button
+                type="button"
+                onClick={() => setActiveFormatTarget?.('channel')}
+                className="text-[10px] text-[#6b38c2] dark:text-[#c4a5f3] font-semibold flex items-center gap-1 hover:underline"
+                title={lang === 'th' ? 'จัดรูปแบบสไตล์ชื่อช่อง' : 'Format Channel Style'}
+              >
+                <i className="fa-solid fa-font text-[9px]" />
+                <span>{lang === 'th' ? 'Aa สไตล์' : 'Aa Style'}</span>
+              </button>
+            </div>
             <input
               type="text"
               id="social-handle"
               value={channel}
+              onFocus={() => setActiveFormatTarget?.('channel')}
               onChange={(e) => setChannel(e.target.value)}
               placeholder="@username"
               className="w-full bg-white dark:bg-[#292524] border border-[#d6d3d1] dark:border-[#44403c] rounded-lg px-3 py-1.5 text-xs text-[#0c0a09] dark:text-white focus:border-[#0c0a09] dark:focus:border-white focus:outline-none"
@@ -137,23 +154,69 @@ export default function ToolStep4Social() {
           <div>
             <div className="flex items-center justify-between mb-1">
               <label className="block text-[11px] font-medium text-[#777169] dark:text-[#a8a29e]">
-                Social Caption
+                {lang === 'th' ? 'ขั้นตอนที่ 4: แคปชั่นโซเชียลมีเดีย (ไม่มีอิโมจิ)' : 'Step 4: Social Caption (No Emojis)'}
               </label>
+              <div className="flex items-center gap-1.5">
+                <button
+                  type="button"
+                  id="btn-regen-caption"
+                  onClick={() => regenerateCaption?.(captionStyle)}
+                  disabled={isRegenerating?.caption}
+                  className="px-2 py-0.5 rounded-full bg-[#f0efed] dark:bg-[#292524] hover:bg-[#e7e5e4] text-[#0c0a09] dark:text-white flex items-center gap-1 text-[10px] font-medium transition disabled:opacity-50"
+                  title={lang === 'th' ? 'สร้างแคปชั่นโซเชียลใหม่' : 'Regenerate Caption'}
+                >
+                  <i className={`fa-solid fa-arrows-rotate text-[9px] ${isRegenerating?.caption ? 'fa-spin text-amber-500' : ''}`} />
+                  <span>{lang === 'th' ? 'สร้างใหม่' : 'Regenerate'}</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={copyCaption}
+                  className="text-[10px] text-[#0c0a09] dark:text-white font-medium flex items-center gap-1 hover:underline ml-1"
+                >
+                  <i className={`fa-solid ${copied ? 'fa-check text-emerald-500' : 'fa-copy'}`} />
+                  <span>{copied ? (lang === 'th' ? 'คัดลอกแล้ว' : 'Copied') : (lang === 'th' ? 'คัดลอก' : 'Copy')}</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Caption Style Switcher (Educational vs Viral Movie Scene) */}
+            <div className="grid grid-cols-2 gap-1.5 mb-2">
               <button
                 type="button"
-                onClick={copyCaption}
-                className="text-[10px] text-[#0c0a09] dark:text-white font-medium flex items-center gap-1 hover:underline"
+                onClick={() => {
+                  setCaptionStyle?.('educational');
+                  regenerateCaption?.('educational');
+                }}
+                className={`px-2 py-1 rounded-lg text-[10px] font-medium border transition truncate ${
+                  (captionStyle || 'educational') === 'educational'
+                    ? 'bg-[#0c0a09] text-white border-[#0c0a09] dark:bg-white dark:text-[#0c0a09] dark:border-white'
+                    : 'bg-[#fafafa] dark:bg-[#201d1a] text-[#777169] dark:text-[#a8a29e] border-[#e7e5e4] dark:border-[#292524] hover:text-[#0c0a09] dark:hover:text-white'
+                }`}
               >
-                <i className={`fa-solid ${copied ? 'fa-check text-emerald-500' : 'fa-copy'}`} />
-                <span>{copied ? (lang === 'th' ? 'คัดลอกแล้ว' : 'Copied') : (lang === 'th' ? 'คัดลอก' : 'Copy')}</span>
+                {lang === 'th' ? 'สายความรู้ / การศึกษา' : 'Educational / Study'}
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setCaptionStyle?.('viral');
+                  regenerateCaption?.('viral');
+                }}
+                className={`px-2 py-1 rounded-lg text-[10px] font-medium border transition truncate ${
+                  captionStyle === 'viral'
+                    ? 'bg-[#0c0a09] text-white border-[#0c0a09] dark:bg-white dark:text-[#0c0a09] dark:border-white'
+                    : 'bg-[#fafafa] dark:bg-[#201d1a] text-[#777169] dark:text-[#a8a29e] border-[#e7e5e4] dark:border-[#292524] hover:text-[#0c0a09] dark:hover:text-white'
+                }`}
+              >
+                {lang === 'th' ? 'สายบันเทิง / คลิปไวรัล' : 'Viral Movie Scene'}
               </button>
             </div>
+
             <textarea
               id="social-description"
               value={caption}
               onChange={(e) => setCaption(e.target.value)}
-              rows={2}
-              placeholder="Caption & hashtags..."
+              rows={3}
+              placeholder={lang === 'th' ? 'แคปชั่น & แฮชแท็ก...' : 'Caption & hashtags...'}
               className="w-full bg-white dark:bg-[#292524] border border-[#d6d3d1] dark:border-[#44403c] rounded-lg px-3 py-1.5 text-xs text-[#0c0a09] dark:text-white focus:border-[#0c0a09] dark:focus:border-white focus:outline-none leading-relaxed"
             />
           </div>

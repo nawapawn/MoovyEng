@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Python Video Downloader, Queue Sequencer & Full-Preview Composite Exporter for Move0nyoung.
+Python Video Downloader, Queue Sequencer & Full-Preview Composite Exporter for MoovyEng.
 Fetches English movie clips from clip.cafe, caches them locally for smooth playback
 with full audio, concatenates multiple queued clips in order, and exports the ENTIRE
 Preview Canvas (Background + Vocab + Grammar + Examples + 16:9 Movie Clip) in chosen
@@ -16,6 +16,7 @@ import os
 import re
 import subprocess
 import sys
+import time
 import urllib.request
 from pathlib import Path
 
@@ -36,12 +37,23 @@ HEADERS = {
 HEADER_END = True
 RATIO_DIMENSIONS = {
     "9:16": (1080, 1920),
-    "4:5": (1080, 1350),
-    "2:3": (1080, 1620),
-    "1:1": (1080, 1080),
     "16:9": (1920, 1080),
-    "3:2": (1620, 1080),
 }
+
+
+def escape_ffmpeg_drawtext(text: str) -> str:
+    if not text:
+        return ""
+    # 1. Backslash
+    s = str(text).replace("\\", "\\\\")
+    # 2. Straight single quote / apostrophe:
+    # Replace with typographical apostrophe ’ (U+2019) to completely prevent FFmpeg outer '...' syntax collisions
+    s = s.replace("'", "’")
+    # 3. Colon: escape with \: so FFmpeg filter argument parser does not treat it as an option separator
+    s = s.replace(":", "\\:")
+    # 4. Percent: in drawtext, % must be \\% so level-1 filter parser leaves \% for drawtext
+    s = s.replace("%", "\\\\%")
+    return s
 
 
 def has_audio_stream(video_path: str) -> bool:
@@ -102,11 +114,46 @@ def resolve_video_url(slug_or_url: str) -> str:
     return f"https://clip.cafe/videos/{clean_slug}.mp4"
 
 
-def download_single_clip(slug_or_url: str) -> dict:
+def prune_cache_except(preserve_slugs: list = None):
+    """Keep active clips in CACHE_DIR while safely cleaning older unneeded files."""
+    if not preserve_slugs:
+        return
+    try:
+        prefixes = tuple(preserve_slugs)
+        for f in CACHE_DIR.iterdir():
+            if f.is_file() and not f.name.startswith(prefixes):
+                try:
+                    f.unlink()
+                except Exception:
+                    pass
+    except Exception:
+        pass
+
+
+def prune_old_exports(keep_filename: str = ""):
+    """Safely keep only the current export and clean older exports so disk space never accumulates."""
+    try:
+        now = time.time()
+        files = sorted(EXPORT_DIR.glob("*.mp4"), key=lambda p: p.stat().st_mtime, reverse=True)
+        # Keep at most 2 most recent exports, remove the rest immediately so no disk is wasted
+        for f in files[2:]:
+            if f.name != keep_filename:
+                try:
+                    f.unlink()
+                except Exception:
+                    pass
+    except Exception:
+        pass
+
+
+def download_single_clip(slug_or_url: str, preserve_slugs: list = None) -> dict:
     video_url = resolve_video_url(slug_or_url)
     slug = sanitize_slug(slug_or_url)
     raw_path = CACHE_DIR / f"{slug}_raw.mp4"
     target_path = CACHE_DIR / f"{slug}_crop16x9.mp4"
+
+    # Keep active queue clips in cache
+    # (Do not prune during download to prevent race condition)
 
     if target_path.exists() and target_path.stat().st_size > 10_000:
         return {
@@ -180,22 +227,36 @@ def merge_and_export_clips(
     if not clips:
         raise ValueError("No clips provided for sequence merge")
 
+    # Preserve all active sequence clips in cache
+    active_slugs = []
+    for item in clips:
+        s_or_u = item.get("videoUrl") or item.get("slug") or item.get("id", "") if isinstance(item, dict) else str(item)
+        if s_or_u:
+            active_slugs.append(sanitize_slug(s_or_u))
+
+    # Download all clips in sequence queue
     downloaded = []
     for item in clips:
         slug_or_url = item.get("videoUrl") or item.get("slug") or item.get("id", "") if isinstance(item, dict) else str(item)
-        info = download_single_clip(slug_or_url)
-        downloaded.append(info)
+        title = (item.get("title") or item.get("movieTitle") or "") if isinstance(item, dict) else ""
+        if slug_or_url:
+            info = download_single_clip(slug_or_url, preserve_slugs=active_slugs)
+            info["title"] = title
+            downloaded.append(info)
+
+    if not downloaded:
+        raise ValueError("Could not download clips for export")
 
     safe_word = re.sub(r"[^a-zA-Z0-9_\-]", "_", (word or "vocab").strip())[:40] or "vocab"
     safe_ratio = ratio.replace(":", "x")
 
-    slide_hash = hashlib.md5((slide_image[:2048] if slide_image else "no_slide").encode("utf-8")).hexdigest()[:8]
+    slide_hash = hashlib.md5((slide_image if slide_image else "no_slide").encode("utf-8")).hexdigest()[:10]
     rect_hash = hashlib.md5(json.dumps(clip_rect or {}, sort_keys=True).encode("utf-8")).hexdigest()[:6]
     key_hash = hashlib.md5(
-        json.dumps([d["slug"] for d in downloaded] + [ratio, fit_mode, slide_hash, rect_hash]).encode("utf-8")
+        json.dumps([(d["slug"], d.get("title", "")) for d in downloaded] + [ratio, fit_mode, slide_hash, rect_hash]).encode("utf-8")
     ).hexdigest()[:10]
 
-    out_filename = f"move0nyoung_{safe_word}_{safe_ratio}_{key_hash}.mp4"
+    out_filename = f"MoovyEng_{safe_word}_{safe_ratio}_{key_hash}.mp4"
     out_path = EXPORT_DIR / out_filename
 
     if out_path.exists() and out_path.stat().st_size > 20_000:
@@ -215,8 +276,6 @@ def merge_and_export_clips(
     # Check if we are exporting the FULL PREVIEW CANVAS (Slide Image + 16:9 Movie Clip inside clip_rect)
     has_slide_bg = False
     bg_img_path = CACHE_DIR / f"slide_bg_{key_hash}.png"
-    mask_img_path = CACHE_DIR / f"clip_mask_{key_hash}.png"
-    has_clip_mask = False
 
     if slide_image and "base64," in slide_image:
         try:
@@ -228,22 +287,10 @@ def merge_and_export_clips(
 
     # Compute exact pixel box for the 16:9 Movie Clip inside the Full Preview Canvas
     if has_slide_bg and clip_rect:
-        box_w = make_even(float(clip_rect.get("wRatio", 0.85)) * target_w, 64)
-        box_h = make_even(float(clip_rect.get("hRatio", 0.25)) * target_h, 64)
-        box_x = max(0, min(target_w - box_w, int(round(float(clip_rect.get("xRatio", 0.075)) * target_w))))
-        box_y = max(0, min(target_h - box_h, int(round(float(clip_rect.get("yRatio", 0.28)) * target_h))))
-
-        # Create rounded mask matching #movie-clip-box rounded-2xl styling
-        try:
-            from PIL import Image, ImageDraw
-            mask_r = max(16, int(round(box_w * 0.038)))  # ~35px radius at 918px
-            mask_img = Image.new("L", (box_w, box_h), 0)
-            draw = ImageDraw.Draw(mask_img)
-            draw.rounded_rectangle([0, 0, box_w - 1, box_h - 1], radius=mask_r, fill=255)
-            mask_img.save(mask_img_path)
-            has_clip_mask = mask_img_path.exists() and mask_img_path.stat().st_size > 100
-        except Exception:
-            has_clip_mask = False
+        box_w = make_even(float(clip_rect.get("wRatio", 0.85)) * target_w, 2)
+        box_h = make_even(float(clip_rect.get("hRatio", 0.25)) * target_h, 2)
+        box_x = make_even(float(clip_rect.get("xRatio", 0.075)) * target_w, 0)
+        box_y = make_even(float(clip_rect.get("yRatio", 0.28)) * target_h, 0)
 
     cmd = ["ffmpeg", "-y"]
     if has_slide_bg:
@@ -262,20 +309,32 @@ def merge_and_export_clips(
             f"[0:v]scale={target_w}:{target_h},setsar=1,fps=30,format=yuv420p[bg];"
         )
 
-        # Normalize each movie clip to fill the 16:9 movie-clip-box uniformly with zero black bars
+        font_file = "C\\:/Windows/Fonts/segoeui.ttf" if Path("C:/Windows/Fonts/segoeui.ttf").exists() else "C\\:/Windows/Fonts/arial.ttf"
+
+        # Normalize each movie clip: zero delay PTS reset, 30fps sync, credit watermark, and 44.1kHz audio
         for i in range(len(downloaded)):
             in_idx = i + vid_offset
             local_p = downloaded[i]["localPath"]
             debar_crop = "" if "_crop16x9.mp4" in str(local_p) else detect_black_bars_crop(local_p)
-            # Always scale with increase + crop to box_w:box_h so every movie clip fills the frame equally with no black bars
+            clip_title = downloaded[i].get("title", "")
+            draw_filter = ""
+            if clip_title:
+                safe_title = escape_ffmpeg_drawtext(clip_title)
+                draw_filter = (
+                    f",drawtext=fontfile='{font_file}':text='{safe_title}':"
+                    f"fontsize=20:fontcolor=white:box=1:boxcolor=black@0.65:boxborderw=6:x=16:y=16"
+                )
             v_filter = (
                 f"[{in_idx}:v]{debar_crop}scale={box_w}:{box_h}:force_original_aspect_ratio=increase,"
-                f"crop={box_w}:{box_h},setsar=1,fps=30,format=yuv420p[v{i}];"
+                f"crop={box_w}:{box_h}{draw_filter},setsar=1,fps=30,setpts=PTS-STARTPTS,format=yuv420p[v{i}];"
             )
             if has_audio_stream(local_p):
-                a_filter = f"[{in_idx}:a]aformat=sample_rates=44100:channel_layouts=stereo[a{i}];"
+                a_filter = (
+                    f"[{in_idx}:a]aformat=sample_rates=44100:channel_layouts=stereo,"
+                    f"aresample=async=1000:min_hard_comp=0.100000:first_pts=0,asetpts=PTS-STARTPTS[a{i}];"
+                )
             else:
-                a_filter = f"aevalsrc=0:c=stereo:s=44100:d=4[a{i}];"
+                a_filter = f"aevalsrc=0:c=stereo:s=44100:d=4,asetpts=PTS-STARTPTS[a{i}];"
             filter_parts.append(v_filter + a_filter)
             concat_inputs.append(f"[v{i}][a{i}]")
 
@@ -284,19 +343,32 @@ def merge_and_export_clips(
         overlay_str = f"[bg][clipv]overlay={box_x}:{box_y}:shortest=1,format=yuv420p[outv]"
         full_filter = "".join(filter_parts) + concat_str + overlay_str
     else:
+        font_file = "C\\:/Windows/Fonts/segoeui.ttf" if Path("C:/Windows/Fonts/segoeui.ttf").exists() else "C\\:/Windows/Fonts/arial.ttf"
+
         # Fallback if no slide background image was provided
         for i in range(len(downloaded)):
             in_idx = i + vid_offset
             local_p = downloaded[i]["localPath"]
             debar_crop = "" if "_crop16x9.mp4" in str(local_p) else detect_black_bars_crop(local_p)
+            clip_title = downloaded[i].get("title", "")
+            draw_filter = ""
+            if clip_title:
+                safe_title = escape_ffmpeg_drawtext(clip_title)
+                draw_filter = (
+                    f",drawtext=fontfile='{font_file}':text='{safe_title}':"
+                    f"fontsize=22:fontcolor=white:box=1:boxcolor=black@0.65:boxborderw=8:x=20:y=20"
+                )
             v_filter = (
                 f"[{in_idx}:v]{debar_crop}scale={target_w}:{target_h}:force_original_aspect_ratio=increase,"
-                f"crop={target_w}:{target_h},setsar=1,fps=30,format=yuv420p[v{i}];"
+                f"crop={target_w}:{target_h}{draw_filter},setsar=1,fps=30,setpts=PTS-STARTPTS,format=yuv420p[v{i}];"
             )
             if has_audio_stream(local_p):
-                a_filter = f"[{in_idx}:a]aformat=sample_rates=44100:channel_layouts=stereo[a{i}];"
+                a_filter = (
+                    f"[{in_idx}:a]aformat=sample_rates=44100:channel_layouts=stereo,"
+                    f"aresample=async=1000:min_hard_comp=0.100000:first_pts=0,asetpts=PTS-STARTPTS[a{i}];"
+                )
             else:
-                a_filter = f"aevalsrc=0:c=stereo:s=44100:d=4[a{i}];"
+                a_filter = f"aevalsrc=0:c=stereo:s=44100:d=4,asetpts=PTS-STARTPTS[a{i}];"
             filter_parts.append(v_filter + a_filter)
             concat_inputs.append(f"[v{i}][a{i}]")
 
@@ -313,24 +385,28 @@ def merge_and_export_clips(
         "-crf", "21",
         "-c:a", "aac",
         "-b:a", "128k",
+        "-shortest",
         "-movflags", "+faststart",
         str(out_path),
     ])
 
     try:
-        proc = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=60)
+        proc = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, timeout=90)
     except subprocess.TimeoutExpired:
-        raise RuntimeError("FFmpeg process timed out after 60s")
+        raise RuntimeError("FFmpeg process timed out after 90s")
     try:
         if bg_img_path.exists():
             bg_img_path.unlink()
-        if mask_img_path.exists():
-            mask_img_path.unlink()
     except Exception:
         pass
 
     if proc.returncode != 0:
-        raise RuntimeError(f"FFmpeg merge failed: {proc.stderr[-600:]}")
+        err_lines = [line.strip() for line in proc.stderr.splitlines() if any(k in line.lower() for k in ["error", "invalid", "no such", "failed", "cannot"])]
+        summary = " | ".join(err_lines[-4:]) if err_lines else proc.stderr[-800:].strip()
+        raise RuntimeError(f"FFmpeg merge failed: {summary}")
+
+    # Remove older exports so they do not accumulate on disk
+    prune_old_exports(out_filename)
 
     return {
         "success": True,
@@ -346,7 +422,7 @@ def merge_and_export_clips(
 
 
 def main():
-    parser = argparse.ArgumentParser(description="Move0nyoung Python Clip Engine")
+    parser = argparse.ArgumentParser(description="MoovyEng Python Clip Engine")
     parser.add_argument("--action", choices=["download", "sequence", "export"], required=True)
     parser.add_argument("--slug", help="Single clip slug or video URL")
     parser.add_argument("--payload", help="JSON payload string for sequence/export")

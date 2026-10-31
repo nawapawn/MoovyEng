@@ -1,0 +1,9 @@
+# MoovyEng Railway Configuration
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "Dockerfile"
+
+[deploy]
+startCommand = "node server.js & npm start"
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10

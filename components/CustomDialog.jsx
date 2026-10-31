@@ -73,7 +73,7 @@ export default function CustomDialog() {
               id="custom-dialog-cancel"
               onClick={() => closeCustomDialog(false)}
               className="px-3 py-1.5 rounded-xl bg-[#f0efed] dark:bg-[#292524] hover:bg-[#e7e5e4] dark:hover:bg-[#38332e] text-xs font-medium text-[#292524] dark:text-[#f5f5f4] flex items-center gap-1.5 transition t-btn-press"
-              title="Cancel"
+              title={lang === 'th' ? 'ยกเลิก' : 'Cancel'}
             >
               <i className="fa-solid fa-xmark text-[10px]" />
               <span>{lang === 'th' ? 'ยกเลิก' : 'Cancel'}</span>
@@ -89,7 +89,7 @@ export default function CustomDialog() {
                 ? 'bg-rose-600 hover:bg-rose-700 text-white'
                 : 'bg-[#0c0a09] dark:bg-white hover:bg-[#292524] dark:hover:bg-[#f5f5f4] text-white dark:text-[#0c0a09]'
             }`}
-            title="Confirm"
+            title={lang === 'th' ? 'ยืนยัน' : 'Confirm'}
           >
             <i className="fa-solid fa-check text-[10px]" />
             <span>{lang === 'th' ? 'ยืนยัน' : 'Confirm'}</span>

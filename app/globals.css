@@ -2,6 +2,55 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Custom Thai Handwriting & Display Web Fonts */
+@font-face {
+  font-family: 'Biscuit';
+  src: url('/fonts/Biscuit.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Lemon';
+  src: url('/fonts/Lemon.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'MiPancake';
+  src: url('/fonts/MiPancake.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'MiPancake';
+  src: url('/fonts/MiPancakeBold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'MN PangPing';
+  src: url('/fonts/MN-PangPing.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'MN PangPing';
+  src: url('/fonts/MN-PangPing-Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* transitions.dev inspiration: Production-ready CSS curves, spring micro-interactions & smooth state transitions */
 :root {
   --t-ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
@@ -19,6 +68,20 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+/* Enable smooth text selection inside Phone Preview fields & editable inputs */
+[data-preview-field],
+[data-preview-field] *,
+input,
+textarea {
+  user-select: text !important;
+  -webkit-user-select: text !important;
+}
+
+::selection {
+  background-color: rgba(139, 92, 246, 0.35);
+  color: inherit;
+}
+
 html.dark body {
   background-color: #0c0a09;
   color: #f5f5f4;
@@ -31,35 +94,21 @@ html.dark body {
 }
 
 .vocab-font {
-  font-family: 'Fredoka', 'Itim', cursive, sans-serif;
+  font-family: 'Kanit', 'Inter', -apple-system, sans-serif;
+  letter-spacing: -0.02em;
 }
 
-/* Use Itim font for all Thai vocab, meaning, and preview grammar/example cards */
+/* Use Kanit & Prompt for modern, sleek Thai typography */
 .thai-vocab-font,
 .preview-thai-font {
-  font-family: 'Itim', cursive, sans-serif;
-}
-
-.highlight-yellow {
-  background: linear-gradient(180deg, transparent 40%, #fde047 40%, #fde047 98%, transparent 98%);
-  color: #0c0a09;
-  padding: 0 4px;
-  border-radius: 2px;
-  font-weight: 700;
-  box-decoration-break: clone;
-  -webkit-box-decoration-break: clone;
-}
-
-html.dark .highlight-yellow {
-  background: linear-gradient(180deg, transparent 40%, #fde047 40%, #fde047 98%, transparent 98%);
-  color: #0c0a09;
+  font-family: 'Kanit', 'Prompt', sans-serif;
 }
 
 .preview-example-en {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 }
 
-/* Export Mode: Clean full rectangular frame with square corners (border-radius: 0), no phone status bar */
+/* Export Mode: Clean border & shadow removal while strictly preserving 100% exact preview layout */
 #phone-container.is-exporting {
   border-radius: 0px !important;
   border: none !important;
@@ -68,16 +117,6 @@ html.dark .highlight-yellow {
 
 #phone-container.is-exporting #preview-ios-statusbar {
   display: none !important;
-}
-
-#phone-container.is-exporting #preview-top-header {
-  padding-top: 18px !important;
-  padding-left: 20px !important;
-  padding-right: 20px !important;
-}
-
-#phone-container.is-exporting > div[class*="overflow-y-auto"] {
-  padding-top: 72px !important;
 }
 
 /* transitions.dev micro-interaction classes */
@@ -139,7 +178,6 @@ html {
   width: 100%;
   max-width: 100%;
   min-width: 0;
-  overflow: hidden;
   box-sizing: border-box;
   transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1),
               opacity 0.35s cubic-bezier(0.22, 1, 0.36, 1),
@@ -147,6 +185,14 @@ html {
               background-color 0.25s ease,
               border-color 0.25s ease;
   will-change: transform, opacity;
+}
+
+.tool-section-card:not(.is-collapsed) {
+  overflow: visible;
+}
+
+.tool-section-card.is-collapsed {
+  overflow: hidden;
 }
 
 .tool-section-card:hover {
@@ -197,6 +243,10 @@ html.dark .tool-section-card.search-matched {
   overflow: hidden;
 }
 
+.tool-section-card:not(.is-collapsed) > .tool-card-body {
+  overflow: visible;
+}
+
 .tool-section-card:not(.is-collapsed) > .tool-card-body > .tool-card-inner {
   overflow: visible;
 }
@@ -229,39 +279,693 @@ html.dark .tool-section-card.search-matched {
   object-position: center;
 }
 
-/* Clean Scrollbar */
+/* ==========================================================================
+   Hidden Scrollbar (ซ่อนแถบเลื่อนทุกจุดแต่ยังสามารถเลื่อน Scroll ได้ตามปกติ)
+   Cross-browser: WebKit (Chrome, Safari, Edge, Opera) + Firefox + IE/Old Edge
+   ========================================================================== */
+html,
+body,
+* {
+  -ms-overflow-style: none !important;  /* IE and Legacy Edge */
+  scrollbar-width: none !important;     /* Firefox */
+}
+
+*::-webkit-scrollbar,
+html::-webkit-scrollbar,
+body::-webkit-scrollbar,
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  display: none !important;             /* Chrome, Safari, Edge, Opera */
+  width: 0 !important;
+  height: 0 !important;
+  background: transparent !important;
 }
 
-::-webkit-scrollbar-track {
-  background: #f0efed;
+.no-scrollbar,
+.hidden-scrollbar,
+.scrollbar-none {
+  -ms-overflow-style: none !important;  /* IE and Edge */
+  scrollbar-width: none !important;     /* Firefox */
 }
 
-html.dark ::-webkit-scrollbar-track {
-  background: #1c1917;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #d6d3d1;
-  border-radius: 9999px;
+.no-scrollbar::-webkit-scrollbar,
+.hidden-scrollbar::-webkit-scrollbar,
+.scrollbar-none::-webkit-scrollbar {
+  display: none !important;             /* Chrome, Safari, Edge, Opera */
+  width: 0 !important;
+  height: 0 !important;
 }
 
 /* Ensure Phone Preview container sizing and typography are solid */
 @media (min-width: 640px) {
-  #phone-container {
+  #phone-container[data-aspect-ratio="9:16"],
+  #phone-container:not([data-aspect-ratio="16:9"]) {
     width: 414px !important;
     height: 736px !important;
     min-height: 736px !important;
     max-height: 736px !important;
   }
+  #phone-container[data-aspect-ratio="16:9"] {
+    width: 600px !important;
+    height: 338px !important;
+    min-height: 338px !important;
+    max-height: 338px !important;
+  }
 }
 
-html.dark ::-webkit-scrollbar-thumb {
-  background: #44403c;
+
+
+/* ==========================================================================
+   Canva-Style Text Animation Keyframes & Utility Classes
+   ========================================================================== */
+@keyframes canva-typewriter {
+  0%, 100% { opacity: 0.85; filter: drop-shadow(0 0 1px rgba(0,0,0,0.2)); }
+  50% { opacity: 1; filter: drop-shadow(0 0 4px rgba(120,50,220,0.4)); }
+}
+@keyframes canva-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-7px); }
+}
+@keyframes canva-pop {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.06); }
+}
+@keyframes canva-fade {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+@keyframes canva-slideUp {
+  0% { transform: translateY(12px); opacity: 0.6; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+@keyframes canva-shift {
+  0%, 100% { transform: translateX(0); }
+  50% { transform: translateX(5px); }
+}
+@keyframes canva-neon {
+  0%, 100% { filter: brightness(100%) drop-shadow(0 0 5px rgba(225, 29, 72, 0.7)); }
+  50% { filter: brightness(130%) drop-shadow(0 0 16px rgba(225, 29, 72, 1)); }
+}
+@keyframes canva-wiggle {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(-3deg); }
+  75% { transform: rotate(3deg); }
+}
+@keyframes canva-flicker {
+  0%, 100% { opacity: 1; }
+  25% { opacity: 0.5; }
+  50% { opacity: 0.9; }
+  75% { opacity: 0.6; }
+}
+@keyframes canva-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes canva-drift {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(4px, -3px); }
+}
+@keyframes canva-roll {
+  0%, 100% { transform: perspective(400px) rotateY(0deg); }
+  50% { transform: perspective(400px) rotateY(180deg); }
+}
+@keyframes canva-blur {
+  0%, 100% { filter: blur(0px); }
+  50% { filter: blur(2.5px); }
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: #a8a29e;
+.animate-canva-typewriter { animation: canva-typewriter 2.2s ease-in-out infinite; }
+.animate-canva-bounce { animation: canva-bounce 1.4s ease-in-out infinite; }
+.animate-canva-pop { animation: canva-pop 1.8s ease-in-out infinite; }
+.animate-canva-fade { animation: canva-fade 2s ease-in-out infinite; }
+.animate-canva-slideUp { animation: canva-slideUp 1.2s ease-out infinite alternate; }
+.animate-canva-shift { animation: canva-shift 2s ease-in-out infinite; }
+.animate-canva-neon { animation: canva-neon 1.6s ease-in-out infinite; }
+.animate-canva-wiggle { animation: canva-wiggle 1.2s ease-in-out infinite; }
+.animate-canva-flicker { animation: canva-flicker 2.4s infinite; }
+.animate-canva-spin { animation: canva-spin 8s linear infinite; }
+.animate-canva-drift { animation: canva-drift 3s ease-in-out infinite; }
+.animate-canva-roll { animation: canva-roll 3s ease-in-out infinite; }
+.animate-canva-blur { animation: canva-blur 2s ease-in-out infinite; }
+.animate-canva-ascend { animation: canva-slideUp 1.2s ease-out infinite alternate; }
+.animate-canva-merge { animation: canva-pop 2s ease-in-out infinite; }
+.animate-canva-block { animation: canva-shift 1.5s ease-in-out infinite; }
+.animate-canva-burst { animation: canva-pop 1.2s ease-out infinite; }
+.animate-canva-skate { animation: canva-drift 2s ease-in-out infinite; }
+.animate-canva-spread { animation: canva-pop 2.5s ease-in-out infinite; }
+.animate-canva-wipe { animation: canva-fade 1.8s ease-in-out infinite; }
+.animate-canva-rise { animation: canva-slideUp 1.5s ease-out infinite alternate; }
+.animate-canva-pan { animation: canva-shift 2.5s ease-in-out infinite; }
+.animate-canva-breathe { animation: canva-pop 3s ease-in-out infinite; }
+.animate-canva-stomp { animation: canva-bounce 1s ease-in-out infinite; }
+.animate-canva-reveal { animation: canva-fade 2s ease-in-out infinite; }
+.animate-canva-tumble { animation: canva-wiggle 1.5s ease-in-out infinite; }
+.animate-canva-scrapbook { animation: canva-wiggle 2s ease-in-out infinite; }
+.animate-canva-drop { animation: canva-bounce 2s ease-in-out infinite; }
+
+/* ============================================================
+   CANVA TEXT EFFECTS STUDIO STYLES (MATCHING USER SPEC)
+   ============================================================ */
+
+/* 1. หมวดลักษณะพิเศษ (BASIC / STANDARD EFFECTS) */
+.fx-none {
+  color: #8b5cf6;
+  font-weight: 700;
 }
+.fx-shadow {
+  color: #8b5cf6;
+  font-weight: 700;
+  text-shadow: 4px 4px 6px rgba(139, 92, 246, 0.45);
+}
+.fx-lift {
+  color: #8b5cf6;
+  font-weight: 700;
+  text-shadow: 0 0 16px rgba(139, 92, 246, 0.65), 0 0 30px rgba(139, 92, 246, 0.4);
+}
+.fx-reflection {
+  color: #8b5cf6;
+  font-weight: 700;
+  text-shadow: 5px 6px 0px rgba(139, 92, 246, 0.35);
+}
+.fx-outline {
+  color: transparent;
+  -webkit-text-stroke: 2.5px #8b5cf6;
+  font-weight: 700;
+}
+.fx-background-box {
+  color: #8b5cf6;
+  font-weight: 700;
+  background: #ede9fe;
+  padding: 0.15em 0.35em;
+  border-radius: 0.3em;
+  display: inline-block;
+  line-height: 1.1;
+}
+.fx-splice {
+  color: transparent;
+  -webkit-text-stroke: 2px #8b5cf6;
+  font-weight: 700;
+  filter: drop-shadow(4px 4px 0px rgba(167, 139, 250, 0.9));
+}
+.fx-hollow {
+  color: transparent;
+  -webkit-text-stroke: 2px #7c3aed;
+  font-weight: 700;
+}
+.fx-neon {
+  color: #ffffff;
+  font-weight: 700;
+  text-shadow: 
+    0 0 4px #ffffff,
+    0 0 10px #c084fc,
+    0 0 20px #a855f7,
+    0 0 40px #9333ea,
+    0 0 60px #7e22ce;
+}
+.fx-glitch-instant {
+  color: #a855f7;
+  font-weight: 800;
+  text-shadow: -3px -2px 0px #06b6d4, 3px 2px 0px #ec4899;
+}
+
+/* 2. หมวดขั้นสูง (ADVANCED EFFECTS) */
+.fx-scifi {
+  font-family: 'Orbitron', 'Kanit', sans-serif;
+  color: #86efac;
+  font-weight: 900;
+  letter-spacing: 2px;
+  text-shadow: 
+    0 0 5px #4ade80,
+    0 0 12px #22c55e,
+    0 0 24px rgba(34, 197, 94, 0.7);
+}
+.fx-tv-glitch {
+  font-family: 'Kanit', sans-serif;
+  font-weight: 900;
+  color: #38bdf8;
+  position: relative;
+  text-shadow: 
+    -3px 0 0 #ef4444,
+    3px 0 0 #a855f7,
+    0 0 6px rgba(56, 189, 248, 0.7);
+}
+.fx-retro70s {
+  font-family: 'Kanit', sans-serif;
+  font-weight: 900;
+  color: #f59e0b;
+  text-shadow: 
+    1px 1px 0px #d97706,
+    2px 2px 0px #b45309,
+    3px 3px 0px #92400e,
+    4px 4px 0px #78350f,
+    5px 5px 0px #b91c1c;
+}
+.fx-screen-print {
+  font-family: 'Kanit', sans-serif;
+  font-weight: 900;
+  color: transparent;
+  -webkit-text-stroke: 1.5px #db2777;
+  text-shadow: 
+    3px 3px 0px #f472b6,
+    6px 6px 0px rgba(244, 114, 182, 0.4);
+}
+.fx-western {
+  font-family: 'Pacifico', cursive;
+  color: #e06d53;
+  font-weight: normal;
+  text-shadow: 
+    2px 2px 0px #fff,
+    3px 3px 0px #7c2d12,
+    4px 4px 1px #431407;
+}
+.fx-graffiti {
+  font-family: 'Bungee', cursive;
+  color: #10b981;
+  -webkit-text-stroke: 2px #064e3b;
+  text-shadow: 
+    4px 4px 0px #022c22,
+    6px 6px 0px rgba(0,0,0,0.25);
+}
+.fx-bubble {
+  font-family: 'Kanit', sans-serif;
+  font-weight: 900;
+  color: #38bdf8;
+  -webkit-text-stroke: 2px #0369a1;
+  text-shadow: 
+    inset 0 2px 4px rgba(255, 255, 255, 0.8),
+    3px 3px 0px #0284c7,
+    5px 5px 0px #075985;
+  filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15));
+}
+.fx-aerobic {
+  font-family: 'Pacifico', cursive;
+  color: #f43f5e;
+  font-style: italic;
+  text-shadow: 
+    0 0 5px #fda4af,
+    0 0 15px #fb7185,
+    0 0 25px #e11d48;
+}
+.fx-arcade {
+  font-family: 'Press Start 2P', monospace;
+  color: #22c55e;
+  text-shadow: 
+    3px 3px 0px #15803d,
+    5px 5px 0px #14532d;
+  letter-spacing: 2px;
+}
+.fx-cosmic {
+  font-family: 'Pacifico', cursive;
+  color: #e0e7ff;
+  text-shadow: 
+    0 0 8px #a5b4fc,
+    0 0 18px #6366f1,
+    0 0 30px #4338ca,
+    0 0 45px rgba(67, 56, 202, 0.6);
+}
+.fx-pixel {
+  font-family: 'Silkscreen', monospace;
+  font-weight: 700;
+  color: #ec4899;
+  text-shadow: 
+    3px 3px 0px #38bdf8,
+    5px 5px 0px #1e293b;
+  letter-spacing: 3px;
+}
+
+/* Card Effects */
+.card-effect {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.card-effect:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 20px -5px rgba(0,0,0,0.08);
+}
+.card-effect.active {
+  border-color: #8b5cf6 !important;
+  background-color: #faf5ff !important;
+  box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.4) !important;
+}
+html.dark .card-effect.active {
+  background-color: #2a1e38 !important;
+  border-color: #a855f7 !important;
+}
+
+/* ============================================================
+   CANVA TEXT ANIMATIONS STUDIO (28 ANIMATIONS)
+   ============================================================ */
+
+/* การ์ดแอนิเมชัน */
+.anim-card {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.anim-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px -4px rgba(139, 92, 246, 0.15);
+  border-color: #c4b5fd;
+}
+.anim-card.active {
+  border-color: #8c52ff !important;
+  background-color: #f5f3ff !important;
+  box-shadow: 0 0 0 2px rgba(140, 82, 255, 0.35) !important;
+}
+html.dark .anim-card.active {
+  border-color: #a855f7 !important;
+  background-color: #2e1065 !important;
+  box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.35) !important;
+}
+
+/* 1. หมวดแนะนำ (Text-Specific Animations) */
+@keyframes anim-typewriter {
+  0% { width: 0; border-right: 3px solid currentColor; }
+  80% { width: 100%; border-right: 3px solid currentColor; }
+  90%, 100% { width: 100%; border-right: 3px solid transparent; }
+}
+.anim-typewriter {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  animation: anim-typewriter 2.2s steps(20, end) infinite;
+}
+
+@keyframes anim-ascend {
+  0% { opacity: 0; transform: translateY(60px) scale(0.9); }
+  40% { opacity: 1; transform: translateY(-6px) scale(1.02); }
+  60%, 100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+.anim-ascend {
+  display: inline-block;
+  animation: anim-ascend 1.8s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+@keyframes anim-shift {
+  0% { opacity: 0; transform: translateX(-35px) skewX(-15deg); }
+  40% { opacity: 1; transform: translateX(4px) skewX(4deg); }
+  60%, 100% { opacity: 1; transform: translateX(0) skewX(0); }
+}
+.anim-shift {
+  display: inline-block;
+  animation: anim-shift 1.8s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
+}
+
+@keyframes anim-merge {
+  0% { letter-spacing: 28px; opacity: 0; filter: blur(6px); }
+  50% { letter-spacing: 2px; opacity: 1; filter: blur(0); }
+  75%, 100% { letter-spacing: normal; opacity: 1; filter: blur(0); }
+}
+.anim-merge {
+  display: inline-block;
+  animation: anim-merge 2s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+}
+
+@keyframes anim-block {
+  0% { clip-path: inset(0 100% 0 0); transform: translateX(-10px); }
+  45%, 85% { clip-path: inset(0 0 0 0); transform: translateX(0); }
+  100% { clip-path: inset(0 0 0 100%); transform: translateX(10px); }
+}
+.anim-block {
+  display: inline-block;
+  animation: anim-block 2.2s cubic-bezier(0.77, 0, 0.175, 1) infinite;
+}
+
+@keyframes anim-burst {
+  0% { transform: scale(0.2); opacity: 0; filter: brightness(2); }
+  45% { transform: scale(1.18); opacity: 1; filter: brightness(1.2); }
+  65%, 100% { transform: scale(1); opacity: 1; filter: brightness(1); }
+}
+.anim-burst {
+  display: inline-block;
+  animation: anim-burst 1.6s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
+}
+
+@keyframes anim-bounce-in {
+  0% { opacity: 0; transform: translateY(-70px) scaleY(1.3); }
+  45% { opacity: 1; transform: translateY(0) scaleY(0.75) scaleX(1.2); }
+  60% { transform: translateY(-16px) scaleY(1.08); }
+  75% { transform: translateY(0) scaleY(0.95); }
+  90%, 100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+.anim-bounce-in {
+  display: inline-block;
+  animation: anim-bounce-in 2s cubic-bezier(0.28, 0.84, 0.42, 1) infinite;
+}
+
+@keyframes anim-roll {
+  0% { transform: rotate(-180deg) scale(0.3); opacity: 0; }
+  50% { transform: rotate(10deg) scale(1.05); opacity: 1; }
+  70%, 100% { transform: rotate(0deg) scale(1); opacity: 1; }
+}
+.anim-roll {
+  display: inline-block;
+  animation: anim-roll 1.9s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
+}
+
+@keyframes anim-skate {
+  0% { transform: translateX(-80px) rotate(-8deg); opacity: 0; }
+  40% { transform: translateX(8px) rotate(2deg); opacity: 1; }
+  60%, 100% { transform: translateX(0) rotate(0); opacity: 1; }
+}
+.anim-skate {
+  display: inline-block;
+  animation: anim-skate 1.8s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+}
+
+@keyframes anim-spread {
+  0% { letter-spacing: -8px; opacity: 0; filter: blur(4px); }
+  45% { letter-spacing: 12px; opacity: 1; filter: blur(0); }
+  70%, 100% { letter-spacing: 4px; opacity: 1; filter: blur(0); }
+}
+.anim-spread {
+  display: inline-block;
+  animation: anim-spread 2s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+@keyframes anim-reveal {
+  0% { clip-path: inset(0 0 100% 0); transform: translateY(20px); opacity: 0; }
+  50%, 100% { clip-path: inset(0 0 0 0); transform: translateY(0); opacity: 1; }
+}
+.anim-reveal {
+  display: inline-block;
+  animation: anim-reveal 1.8s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+/* 2. หมวดทั่วไป (General Entrance Animations) */
+@keyframes anim-rise {
+  0% { transform: translateY(45px); opacity: 0; }
+  50%, 100% { transform: translateY(0); opacity: 1; }
+}
+.anim-rise {
+  display: inline-block;
+  animation: anim-rise 1.8s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+@keyframes anim-pan {
+  0% { transform: translateX(-60px); opacity: 0; }
+  50%, 100% { transform: translateX(0); opacity: 1; }
+}
+.anim-pan {
+  display: inline-block;
+  animation: anim-pan 1.8s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+@keyframes anim-fade {
+  0% { opacity: 0; }
+  50%, 100% { opacity: 1; }
+}
+.anim-fade {
+  display: inline-block;
+  animation: anim-fade 1.8s ease-in-out infinite;
+}
+
+@keyframes anim-pop {
+  0% { transform: scale(0.4); opacity: 0; }
+  55% { transform: scale(1.15); opacity: 1; }
+  70%, 100% { transform: scale(1); opacity: 1; }
+}
+.anim-pop {
+  display: inline-block;
+  animation: anim-pop 1.7s cubic-bezier(0.34, 1.56, 0.64, 1) infinite;
+}
+
+@keyframes anim-wipe {
+  0% { clip-path: polygon(0 0, 0 0, 0 100%, 0% 100%); }
+  50%, 85% { clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%); }
+  100% { clip-path: polygon(100% 0, 100% 0, 100% 100%, 100% 100%); }
+}
+.anim-wipe {
+  display: inline-block;
+  animation: anim-wipe 2.2s cubic-bezier(0.65, 0, 0.35, 1) infinite;
+}
+
+@keyframes anim-blur {
+  0% { filter: blur(20px); opacity: 0; transform: scale(1.15); }
+  50%, 100% { filter: blur(0px); opacity: 1; transform: scale(1); }
+}
+.anim-blur {
+  display: inline-block;
+  animation: anim-blur 1.8s ease-out infinite;
+}
+
+@keyframes anim-seep {
+  0% { opacity: 0; filter: blur(14px) contrast(180%); transform: scale(0.85); }
+  55% { opacity: 0.9; filter: blur(3px) contrast(120%); transform: scale(1.03); }
+  75%, 100% { opacity: 1; filter: blur(0) contrast(100%); transform: scale(1); }
+}
+.anim-seep {
+  display: inline-block;
+  animation: anim-seep 2s cubic-bezier(0.2, 0.8, 0.2, 1) infinite;
+}
+
+@keyframes anim-unfold {
+  0% { transform: scaleY(0) scaleX(0.2); opacity: 0; filter: brightness(1.5); }
+  45% { transform: scaleY(1.15) scaleX(0.9); opacity: 1; }
+  65%, 100% { transform: scale(1); opacity: 1; filter: brightness(1); }
+}
+.anim-unfold {
+  display: inline-block;
+  animation: anim-unfold 1.8s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+@keyframes anim-drift {
+  0% { transform: translate(-30px, 15px) rotate(-4deg); opacity: 0; }
+  50%, 100% { transform: translate(0, 0) rotate(0deg); opacity: 1; }
+}
+.anim-drift {
+  display: inline-block;
+  animation: anim-drift 1.9s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+}
+
+@keyframes anim-converge {
+  0% { transform: scale(1.4) translateY(-20px); opacity: 0; letter-spacing: 12px; }
+  50%, 100% { transform: scale(1) translateY(0); opacity: 1; letter-spacing: normal; }
+}
+.anim-converge {
+  display: inline-block;
+  animation: anim-converge 1.9s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+@keyframes anim-neon-flicker {
+  0%, 100% { opacity: 1; filter: drop-shadow(0 0 12px currentColor); }
+  15% { opacity: 0.2; filter: none; }
+  20% { opacity: 0.9; filter: drop-shadow(0 0 8px currentColor); }
+  35% { opacity: 0.4; filter: none; }
+  40% { opacity: 1; filter: drop-shadow(0 0 16px currentColor); }
+  70% { opacity: 0.85; filter: drop-shadow(0 0 10px currentColor); }
+}
+.anim-neon {
+  display: inline-block;
+  animation: anim-neon-flicker 1.8s infinite;
+}
+
+@keyframes anim-drop {
+  0% { transform: translateY(-100px); opacity: 0; }
+  50% { transform: translateY(0); opacity: 1; }
+  65% { transform: translateY(-12px); }
+  80%, 100% { transform: translateY(0); opacity: 1; }
+}
+.anim-drop {
+  display: inline-block;
+  animation: anim-drop 1.8s cubic-bezier(0.25, 1, 0.5, 1) infinite;
+}
+
+/* 3. หมวดเอฟเฟกต์เสริม (Continuous Motion Loops) */
+@keyframes anim-spin-loop {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+.anim-spin {
+  display: inline-block;
+  animation: anim-spin-loop 3s linear infinite;
+}
+
+@keyframes anim-blink-loop {
+  0%, 48%, 100% { opacity: 1; }
+  50%, 96% { opacity: 0.15; }
+}
+.anim-blink {
+  display: inline-block;
+  animation: anim-blink-loop 1.4s ease-in-out infinite;
+}
+
+@keyframes anim-pulse-loop {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.18); filter: drop-shadow(0 0 14px currentColor); }
+}
+.anim-pulse {
+  display: inline-block;
+  animation: anim-pulse-loop 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+@keyframes anim-swing-loop {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(14deg); }
+  75% { transform: rotate(-14deg); }
+}
+.anim-swing {
+  display: inline-block;
+  transform-origin: top center;
+  animation: anim-swing-loop 2s ease-in-out infinite;
+}
+
+/* Minimalist Luxury Light Studio Color Picker */
+.luxury-card {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.04);
+}
+.dark .luxury-card {
+  background: #18181b;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+}
+
+.spectrum-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 24px;
+  background: #1a1a1a;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  border-radius: 2px;
+  transition: transform 0.1s ease;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+}
+.dark .spectrum-slider::-webkit-slider-thumb {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.4);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+}
+.spectrum-slider::-webkit-slider-thumb:hover {
+  transform: scaleX(1.15);
+}
+
+.spectrum-slider::-moz-range-thumb {
+  width: 14px;
+  height: 24px;
+  background: #1a1a1a;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  border-radius: 2px;
+  transition: transform 0.1s ease;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+}
+.dark .spectrum-slider::-moz-range-thumb {
+  background: #ffffff;
+  border: 1px solid rgba(0, 0, 0, 0.4);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.6);
+}
+.spectrum-slider::-moz-range-thumb:hover {
+  transform: scaleX(1.15);
+}
+
+input.hide-spinners::-webkit-outer-spin-button,
+input.hide-spinners::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input.hide-spinners {
+  -moz-appearance: textfield;
+}
+
+
+

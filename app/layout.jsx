@@ -25,11 +25,11 @@ export default function RootLayout({ children }) {
           rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
         />
-        {/* Google Fonts: EB Garamond, Inter, Itim, Noto Serif Thai, Prompt, Fredoka, Kanit, Sarabun, Mitr, Chonburi */}
+        {/* Google Fonts: EB Garamond, Inter, Itim, Noto Serif Thai, Prompt, Fredoka, Kanit, Sarabun, Mitr, Chonburi + Canva Effects Special Fonts */}
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=Chonburi&family=EB+Garamond:wght@300;400;500&family=Fredoka:wght@500;600&family=Inter:wght@300;400;500;600;700&family=Itim&family=Kanit:wght@300;400;500;600&family=Mitr:wght@400;500&family=Noto+Serif+Thai:wght@400;500;600;700&family=Prompt:wght@400;500;600;700&family=Sarabun:wght@300;400;500;600&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Chonburi&family=EB+Garamond:wght@300;400;500&family=Fredoka:wght@500;600&family=Inter:wght@300;400;500;600;700&family=Itim&family=Kanit:ital,wght@0,300;0,400;0,600;0,700;0,800;0,900;1,700&family=Mitr:wght@400;500&family=Noto+Serif+Thai:wght@400;500;600;700&family=Prompt:wght@400;500;600;700&family=Sarabun:wght@300;400;500;600&family=Press+Start+2P&family=Rubik+Glitch&family=Pacifico&family=Monoton&family=Orbitron:wght@700;900&family=Bungee&family=Silkscreen:wght@700&display=swap"
           rel="stylesheet"
         />
       </head>

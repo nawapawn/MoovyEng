@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- * moovying(En) / movyEng — UI Helpers, Animations, Modals & Toast
+ * MoovyEng — UI Helpers, Animations, Modals & Toast
  * ============================================================================
  */
 

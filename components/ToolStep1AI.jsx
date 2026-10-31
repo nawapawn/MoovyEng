@@ -54,6 +54,7 @@ export default function ToolStep1AI() {
     if (key.startsWith('AIza') || key.startsWith('AQ.')) detected = 'gemini';
     else if (key.startsWith('gsk_')) detected = 'groq';
     else if (key.startsWith('sk-ant-')) detected = 'anthropic';
+    else if (key.startsWith('sk-')) detected = 'openai';
     else if (key.startsWith('xai-')) detected = 'xai';
 
     if (detected && detected !== aiVendor) {
@@ -211,7 +212,7 @@ export default function ToolStep1AI() {
     <section
       id="tool-sec-ai"
       data-tool-keywords="1 ai model provider api key gemini openai groq deepseek claude ค่าย โมเดล คีย์"
-      className={`tool-section-card bg-white dark:bg-[#1c1917] border border-[#e7e5e4] dark:border-[#292524] rounded-2xl p-4 shadow-[0_4px_16px_rgba(0,0,0,0.04)] ${
+      className={`tool-section-card relative z-30 bg-white dark:bg-[#1c1917] border border-[#e7e5e4] dark:border-[#292524] rounded-2xl p-4 shadow-[0_4px_16px_rgba(0,0,0,0.04)] ${
         isCollapsed ? 'is-collapsed' : ''
       }`}
     >
@@ -223,7 +224,7 @@ export default function ToolStep1AI() {
           <span className="w-5 h-5 rounded-full bg-[#0c0a09] dark:bg-white text-white dark:text-[#0c0a09] flex items-center justify-center text-[10px] font-mono">
             1
           </span>
-          <span>AI Model</span>
+          <span>{lang === 'th' ? '1. โมเดล AI & API Key' : '1. AI Model & API Key'}</span>
         </div>
         <div className="flex items-center gap-2">
           <span
@@ -235,7 +236,7 @@ export default function ToolStep1AI() {
           <button
             type="button"
             className="w-6 h-6 rounded-full hover:bg-[#f0efed] dark:hover:bg-[#292524] text-[#777169] hover:text-[#0c0a09] dark:hover:text-white flex items-center justify-center transition"
-            title="Collapse / Expand"
+            title={lang === 'th' ? 'ย่อ / ขยาย' : 'Collapse / Expand'}
           >
             <i className="fa-solid fa-chevron-down text-[10px] tool-collapse-chevron" />
           </button>
@@ -249,10 +250,10 @@ export default function ToolStep1AI() {
             <label htmlFor="ai-provider" className="block text-[11px] font-semibold text-[#0c0a09] dark:text-white mb-1.5 flex items-center justify-between">
               <span id="model-selector-label" className="flex items-center gap-1.5">
                 <i className="fa-solid fa-sparkles text-amber-500 text-[10px]" />
-                <span>AI Model Selection</span>
+                <span>{lang === 'th' ? 'เลือกโมเดล AI' : 'AI Model Selection'}</span>
               </span>
               <span id="model-count-badge" className="text-[10px] px-2 py-0.5 rounded-full bg-[#f0efed] dark:bg-[#292524] text-[#777169] dark:text-[#a8a29e] font-mono">
-                {modelsToDisplay.length} models available
+                {modelsToDisplay.length} {lang === 'th' ? 'โมเดลที่ใช้งานได้' : 'models available'}
               </span>
             </label>
             <ElevenLabsDropdown
@@ -265,15 +266,16 @@ export default function ToolStep1AI() {
 
           {/* Provider & API Key Row (Positioned below Model, Z-20) */}
           <div className="grid grid-cols-1 sm:grid-cols-12 gap-2.5 relative z-20 pt-1 border-t border-[#f0efed] dark:border-[#292524]">
-            <div className="sm:col-span-4 relative z-25">
+            <div className="sm:col-span-4 relative z-30">
               <label htmlFor="ai-vendor" className="block text-[11px] font-medium text-[#777169] dark:text-[#a8a29e] mb-1">
-                Provider
+                {lang === 'th' ? 'ผู้ให้บริการ (Provider)' : 'Provider'}
               </label>
               <ElevenLabsDropdown
                 id="ai-vendor"
                 value={aiVendor}
                 onChange={handleVendorChange}
                 options={VENDOR_OPTIONS}
+                menuClassName="min-w-full sm:min-w-[210px]"
               />
             </div>
 
@@ -288,7 +290,7 @@ export default function ToolStep1AI() {
                     id="api-key"
                     value={apiKey}
                     onChange={(e) => handleApiKeyInput(e.target.value)}
-                    placeholder="Paste API Key..."
+                    placeholder={lang === 'th' ? 'วางรหัส API Key ที่นี่...' : 'Paste API Key...'}
                     className="w-full bg-white dark:bg-[#292524] border border-[#d6d3d1] dark:border-[#44403c] rounded-lg px-3 py-1.5 pr-8 text-xs text-[#0c0a09] dark:text-white focus:border-[#0c0a09] dark:focus:border-white focus:outline-none font-mono transition"
                   />
                   <button
@@ -305,7 +307,7 @@ export default function ToolStep1AI() {
                   onClick={verifyKeyAndFetchModels}
                   disabled={isVerifying}
                   className="w-8 h-8 bg-[#292524] dark:bg-white hover:bg-[#0c0a09] text-white dark:text-[#0c0a09] rounded-lg shadow-xs transition flex items-center justify-center flex-shrink-0 disabled:opacity-50"
-                  title="Verify API Key"
+                  title={lang === 'th' ? 'ตรวจสอบ API Key' : 'Verify API Key'}
                   aria-label="Verify API Key"
                 >
                   <i className={`fa-solid ${isVerifying ? 'fa-circle-notch fa-spin' : 'fa-circle-check'} text-xs`} />

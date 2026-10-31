@@ -32,19 +32,43 @@ function runPythonClipEngine(args) {
 
 function pruneIntermediateCache(aggressive = false) {
   const cacheDir = path.join(__dirname, 'clips_cache');
-  if (!fs.existsSync(cacheDir)) return { filesDeleted: 0, bytesFreed: 0 };
+  const exportsDir = path.join(__dirname, 'exports');
   let filesDeleted = 0;
   let bytesFreed = 0;
-  try {
-    const files = fs.readdirSync(cacheDir);
-    for (const f of files) {
-      const full = path.join(cacheDir, f);
-      const isIntermediate = f.endsWith('_raw.mp4') ||
-                            f.startsWith('export_payload_') ||
-                            f.startsWith('slide_bg_') ||
-                            f.startsWith('clip_mask_') ||
-                            (aggressive && (f.endsWith('.tmp') || f.startsWith('thumb_raw_')));
-      if (isIntermediate) {
+
+  // 1. Clean clips_cache
+  if (fs.existsSync(cacheDir)) {
+    try {
+      const files = fs.readdirSync(cacheDir);
+      for (const f of files) {
+        const full = path.join(cacheDir, f);
+        const isIntermediate = aggressive ||
+                              f.endsWith('_raw.mp4') ||
+                              f.startsWith('export_payload_') ||
+                              f.startsWith('slide_bg_') ||
+                              f.startsWith('clip_mask_') ||
+                              f.endsWith('.tmp') ||
+                              f.startsWith('thumb_raw_');
+        if (isIntermediate) {
+          try {
+            const sz = fs.statSync(full).size;
+            fs.unlinkSync(full);
+            filesDeleted++;
+            bytesFreed += sz;
+          } catch (e) {}
+        }
+      }
+    } catch (err) {
+      console.warn('Error during cache prune:', err.message);
+    }
+  }
+
+  // 2. Clean exports folder when aggressive (user downloaded the file)
+  if (aggressive && fs.existsSync(exportsDir)) {
+    try {
+      const files = fs.readdirSync(exportsDir);
+      for (const f of files) {
+        const full = path.join(exportsDir, f);
         try {
           const sz = fs.statSync(full).size;
           fs.unlinkSync(full);
@@ -52,10 +76,11 @@ function pruneIntermediateCache(aggressive = false) {
           bytesFreed += sz;
         } catch (e) {}
       }
+    } catch (err) {
+      console.warn('Error during exports prune:', err.message);
     }
-  } catch (err) {
-    console.warn('Error during cache prune:', err.message);
   }
+
   return { filesDeleted, bytesFreed };
 }
 
@@ -393,57 +418,20 @@ const server = http.createServer(async (req, res) => {
       res.end();
       return;
     }
-    const cacheDir = path.join(__dirname, 'clips_cache');
-    if (!fs.existsSync(cacheDir)) fs.mkdirSync(cacheDir, { recursive: true });
-    const cachedImg = path.join(cacheDir, `thumb_crop16x9_${slug}.jpg`);
-    const rawImg = path.join(cacheDir, `thumb_raw_${slug}.jpg`);
-    if (fs.existsSync(cachedImg) && fs.statSync(cachedImg).size > 500) {
-      res.writeHead(200, { 'Content-Type': 'image/jpeg', 'Cache-Control': 'public, max-age=86400' });
-      fs.createReadStream(cachedImg).pipe(res);
-      return;
-    }
     try {
+      // Directly stream thumbnail in-memory without saving image files to local disk
       const imgResp = await fetch(`https://clip.cafe/img800/${slug}.jpg`, {
         headers: { ...HEADERS, 'Referer': 'https://clip.cafe/' },
         signal: AbortSignal.timeout(7000)
       });
       if (!imgResp.ok) throw new Error(`HTTP ${imgResp.status}`);
       const buf = Buffer.from(await imgResp.arrayBuffer());
-      if (buf.length > 500) {
-        fs.writeFileSync(rawImg, buf);
-        // Auto-crop any letterbox/pillarbox black bars and normalize to uniform 16:9 (800x450)
-        await new Promise((resolve) => {
-          const proc = spawn('ffmpeg', [
-            '-y', '-loop', '1', '-i', rawImg,
-            '-frames:v', '3',
-            '-vf', 'cropdetect=24:2:0',
-            '-f', 'null', '-'
-          ], { windowsHide: true });
-          let errOut = '';
-          proc.stderr.on('data', d => { errOut += d.toString(); });
-          proc.on('close', () => {
-            const m = errOut.match(/crop=(\d+:\d+:\d+:\d+)/g);
-            const lastCrop = m && m.length ? m[m.length - 1].replace('crop=', '') : '';
-            let debar = '';
-            if (lastCrop) {
-              const parts = lastCrop.split(':').map(Number);
-              if (parts[0] >= 120 && parts[1] >= 80) debar = `crop=${lastCrop},`;
-            }
-            const ff2 = spawn('ffmpeg', [
-              '-y', '-i', rawImg,
-              '-vf', `${debar}scale=800:450:force_original_aspect_ratio=increase,crop=800:450`,
-              '-q:v', '2',
-              cachedImg
-            ], { windowsHide: true });
-            ff2.on('close', () => resolve());
-            ff2.on('error', () => resolve());
-          });
-          proc.on('error', () => resolve());
-        });
-      }
-      const finalFile = (fs.existsSync(cachedImg) && fs.statSync(cachedImg).size > 500) ? cachedImg : rawImg;
-      res.writeHead(200, { 'Content-Type': 'image/jpeg', 'Cache-Control': 'public, max-age=86400' });
-      fs.createReadStream(finalFile).pipe(res);
+      res.writeHead(200, {
+        'Content-Type': 'image/jpeg',
+        'Access-Control-Allow-Origin': '*',
+        'Cache-Control': 'public, max-age=86400'
+      });
+      res.end(buf);
     } catch (e) {
       res.writeHead(404);
       res.end();

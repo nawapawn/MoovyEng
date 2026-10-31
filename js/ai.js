@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- * moovying(En) / movyEng — AI Provider Detect, Model Fetch & Context Prompt Engine
+ * MoovyEng — AI Provider Detect, Model Fetch & Context Prompt Engine
  * ============================================================================
  */
 
@@ -201,7 +201,7 @@ async function detectProviderAndFetchModels(rawKey, preferredModel = '') {
 
     detectedProviderType = vendor;
     if (badge) {
-      badge.textContent = `✓ ${vendorName}`;
+      badge.textContent = `${vendorName}`;
       badge.className = 'text-[10px] px-2.5 py-0.5 rounded-full bg-[#0c0a09] text-white font-semibold uppercase tracking-wider';
     }
     if (statusEl) {
@@ -312,40 +312,54 @@ async function invokeSelectedAiModel(prompt, statusEl) {
 function buildMovieContextualPrompt(word, primaryClip, otherClips = []) {
   const hasClip = primaryClip && primaryClip.title;
   const clipSection = hasClip
-    ? `
-REAL SCRAPED ENGLISH MOVIE CLIP FROM CLIP.CAFE:
-- Movie Title: ${primaryClip.title}
-- Genres: ${primaryClip.genres || 'English Feature Film'}
-- Spoken Dialogue in Clip (Transcript): ${primaryClip.quote || primaryClip.fullTranscript || word}
-- Movie Summary / Plot Description: ${primaryClip.movieSummary || 'An English movie scene where the character uses this expression.'}
-
-CRITICAL RULES:
-1. Provide EXACTLY 2 example sentences ("ex1En" and "ex2En"). DO NOT provide a 3rd sentence!
-2. Each English example sentence MUST be VERY SHORT (4 to 7 words maximum), super punchy, simple, and unforgettable (ขอประโยคที่ง่ายและสั้น 2 ประโยค เน้นจำฝังหัว)!
-3. Grammar formula ("grammar"): Write a concise 1-line formula using "s" for Subject (e.g. s + Verb to be + ${word} → แปลว่า...). NEVER use the words "Subject", "[Subject]", "โครงสร้าง", or "ตัวอย่าง". No emojis!
-4. Thai translations ("ex1Th", "ex2Th") MUST be short, direct, and natural (no parentheses needed).
-5. "socialCaption": Short Thai caption teaching ${word} with relevant English learning hashtags (no movie spoilers).`
-    : `
-CRITICAL RULES:
-1. Provide EXACTLY 2 example sentences ("ex1En" and "ex2En"). DO NOT provide a 3rd sentence!
-2. Each English example sentence MUST be VERY SHORT (4 to 7 words maximum), super punchy, simple, and unforgettable (ขอประโยคที่ง่ายและสั้น 2 ประโยค เน้นจำฝังหัว)!
-3. Grammar formula ("grammar"): Write a concise 1-line formula using "s" for Subject (e.g. s + ... → ...). NEVER use the words "Subject", "[Subject]", "โครงสร้าง", or "ตัวอย่าง". No emojis!
-4. Thai translations ("ex1Th", "ex2Th") MUST be short, direct, and natural.
-5. "socialCaption": Short Thai caption teaching ${word} with relevant hashtags.`;
+    ? `Real movie context: "${primaryClip.title}" quote: "${primaryClip.quote || primaryClip.fullTranscript || word}"`
+    : '';
 
   return `You are an elite English tutor creating viral educational flashcards for Thai students.
 Analyze this English word/phrase: "${word}".
 ${clipSection}
 
-Respond with ONLY valid JSON with no markdown formatting and NO emojis in grammar or examples:
+CRITICAL RULES:
+1. Provide EXACTLY 2 example sentences ("ex1En" and "ex2En"). DO NOT provide a 3rd sentence!
+2. Each English example sentence MUST be VERY SHORT (4 to 7 words maximum), super punchy, simple, and unforgettable (ขอประโยคที่ง่ายและสั้น 2 ประโยค เน้นจำฝังหัว)!
+3. Grammar formula / Usage rule ("grammar"):
+CRITICAL GOAL: Teach the grammatical structure, part of speech, or sentence syntax for "${word}".
+[FORBIDDEN] STRICTLY PROHIBITED:
+- NEVER output just the word itself (e.g. "${word}")!
+- NEVER output just the word with its Thai translation in parentheses (e.g. "${word} (คำแปลไทย)")! That is 100% duplicate and forbidden!
+
+[REQUIRED] MUST PROVIDE REAL GRAMMATICAL VALUE:
+A) If it is used in a sentence (Verb, Phrasal Verb, Adjective, Noun, Idiom Clause):
+- Provide the real sentence construction structure with simple standard placeholders: S, Someone, Something, V.1, V.ing, be + ..., etc.
+- If it's an idiom used as a clause or exclamation (e.g. "speak of the devil"): show where it goes in a sentence!
+  • Example: Speak of the devil, + S + V  (สำนวนอุทาน: ใช้วางหน้าประโยคเมื่อคนที่เพิ่งพูดถึงเดินเข้ามาพอดี)
+  • Example: S + tell Someone to + break a leg  (ใช้อวยพรขอให้โชคดีก่อนขึ้นแสดง/สอบแข่งขัน)
+  • Example: Something + is a piece of cake  (ใช้บอกว่าเรื่องนั้นง่ายมากเหมือนปอกกล้วย)
+  • Example: S + call off + Something  (Phrasal Verb: ยกเลิกนัดหมายหรือกิจกรรม)
+  • Example: be + proud of + Someone/Something  (Adj: ต้องใช้คู่กับ preposition 'of' เสมอ)
+  • Example: S + look forward to + V.ing / Something  (กริยาสำนวน: หลัง to ต้องเป็น V.ing เสมอ)
+
+B) If it is a Standalone Expression, Conversational Response, or Slang (where no S+V formula fits):
+- Provide the exact usage context in Thai explaining WHEN and HOW to say it:
+  • Example for "My bad": [คำอุทานกันเอง] ใช้พูดขอโทษทันทีเมื่อทำผิดพลาดเล็กน้อย (แทน My mistake)
+  • Example for "No way": [คำอุทาน] ใช้แสดงความตกใจ ประหลาดใจ หรือปฏิเสธอย่างสิ้นเชิง (ไม่มีทาง/เป็นไปไม่ได้)
+  • Example for "Tell me about it": [สำนวนตอบรับ] ใช้เห็นพ้องอย่างแรงกล้าเพราะเคยเจอเรื่องเดียวกัน (นั่นน่ะสิ)
+  • Example for "Touché": [คำอุทาน] ใช้ยอมรับเมื่ออีกฝ่ายพูดจี้ใจดำหรือโต้กลับได้อย่างเจ็บแสบ
+
+- ALWAYS keep it to 1 concise line.
+- NEVER use emojis.
+4. Thai translations ("ex1Th", "ex2Th") MUST be short, direct, and natural.
+5. "socialCaption": Short Thai caption teaching ${word} with relevant hashtags (#MoovyEng).
+
+Respond with ONLY valid JSON with no markdown formatting:
 {
-  "phonetic": "/.../ (IPA phonetic format)",
-  "thaiRead": "(คำอ่านออกเสียงภาษาไทย)",
-  "meaning": "คำแปลความหมายภาษาไทยสั้นๆ กระชับ จำง่าย",
-  "grammar": "s + [verb/phrase] → คำอธิบายสั้นๆ 1 บรรทัด",
-  "ex1En": "Very short memorable sentence 1 (4-7 words)",
+  "phonetic": "/.../ (IPA format)",
+  "thaiRead": "คำอ่านออกเสียงภาษาไทย (ไม่มีวงเล็บ)",
+  "meaning": "คำแปลความหมายภาษาไทยสั้นกระชับ",
+  "grammar": "โครงสร้างไวยากรณ์ หรือ บริบทการใช้งาน (ตามกฎข้อ 3)",
+  "ex1En": "Very short sentence 1 (4-7 words)",
   "ex1Th": "คำแปลไทยสั้นกระชับ",
-  "ex2En": "Very short memorable sentence 2 (4-7 words)",
+  "ex2En": "Very short sentence 2 (4-7 words)",
   "ex2Th": "คำแปลไทยสั้นกระชับ",
   "socialCaption": "แคปชั่นสอนคำศัพท์ ${word} สั้นกระชับ พร้อมแฮชแท็ก"
 }`;

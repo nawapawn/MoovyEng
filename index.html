@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>moovying(En) — AI Vocab & Movie Clip Studio</title>
+    <title>MoovyEng — AI Vocab & Movie Clip Studio</title>
     <link rel="icon" type="image/png" href="icon.png">
     <link rel="apple-touch-icon" href="icon.png">
     <!-- Tailwind CSS with Dark Mode support -->
@@ -152,9 +152,9 @@
             <img src="icon.png" alt="Logo" class="w-11 h-11 object-contain drop-shadow-sm flex-shrink-0">
             <div>
               <h2 class="editorial-display text-2xl text-[#0c0a09] dark:text-white leading-none">
-                movyEng
+                MoovyEng
               </h2>
-              <p class="text-[10px] text-[#777169] dark:text-[#a8a29e] mt-0.5" id="brand-tagline">AI Vocab & Movie Studio • moovying(En)</p>
+              <p class="text-[10px] text-[#777169] dark:text-[#a8a29e] mt-0.5" id="brand-tagline">AI Vocab & Movie Studio • MoovyEng</p>
             </div>
             <!-- Quick Jump Tool Pills + Expand/Collapse All (Icon-Only with Tooltip) -->
             <div class="flex items-center gap-1 pl-2 border-l border-[#e7e5e4] dark:border-[#292524]">
@@ -590,38 +590,10 @@
             <i class="fa-solid fa-download text-[#a8a29e] group-hover:text-[#0c0a09] text-xs transition"></i>
           </button>
 
-          <!-- Option 2: Python Merge & Export FULL PREVIEW Video Sequence (16:9 Movie Clip Fill inside Full Slide) -->
-          <button type="button" onclick="exportClipVideo('crop')" class="w-full p-3 rounded-xl border border-[#e7e5e4] hover:border-[#0c0a09] hover:bg-[#fafafa] transition flex items-center justify-between group text-left">
+          <!-- Option 2: Copy Social Caption & Hashtags (Vocab Only, No Movie Mention) -->
+          <button type="button" onclick="copyTikTokCaption()" class="w-full p-3.5 rounded-xl border border-[#e7e5e4] hover:border-[#0c0a09] hover:bg-[#fafafa] transition flex items-center justify-between group text-left">
             <div class="flex items-center space-x-3">
-              <div class="w-9 h-9 rounded-lg bg-[#f0efed] text-[#0c0a09] flex items-center justify-center text-sm flex-shrink-0">
-                <i class="fa-solid fa-crop-simple"></i>
-              </div>
-              <div>
-                <div class="text-xs font-semibold text-[#0c0a09]">บันทึกวิดีโอทั้งหน้าพรีวิว + คลิปหนังเต็มกรอบ 16:9 (MP4 Fill)</div>
-                <div class="text-[10px] text-[#777169]">ได้วิดีโอทั้งหน้าพรีวิวขนาด <span class="export-ratio-label font-semibold text-[#0c0a09]">9:16</span> พร้อมซูมคลิปเต็มกรอบ 16:9</div>
-              </div>
-            </div>
-            <i class="fa-solid fa-download text-[#a8a29e] group-hover:text-[#0c0a09] text-xs transition"></i>
-          </button>
-
-          <!-- Option 3: Download High-Res PNG Slide of Entire Preview -->
-          <button type="button" onclick="exportPhoneAsImage()" id="btn-export-img" class="w-full p-3 rounded-xl border border-[#e7e5e4] hover:border-[#0c0a09] hover:bg-[#fafafa] transition flex items-center justify-between group text-left">
-            <div class="flex items-center space-x-3">
-              <div class="w-9 h-9 rounded-lg bg-[#f0efed] text-[#0c0a09] flex items-center justify-center text-sm flex-shrink-0">
-                <i class="fa-solid fa-image"></i>
-              </div>
-              <div>
-                <div class="text-xs font-semibold text-[#0c0a09]">บันทึกรูปภาพทั้งหน้าพรีวิวความละเอียดสูง (PNG <span class="export-ratio-label">9:16</span>)</div>
-                <div class="text-[10px] text-[#777169]">ได้ภาพสไลด์คำศัพท์ + ไวยากรณ์ + เฟรมหนัง 16:9 ตามขนาด <span class="export-ratio-label font-semibold text-[#0c0a09]">9:16</span></div>
-              </div>
-            </div>
-            <i class="fa-solid fa-download text-[#a8a29e] group-hover:text-[#0c0a09] text-xs transition"></i>
-          </button>
-
-          <!-- Option 4: Copy Social Caption & Hashtags (Vocab Only, No Movie Mention) -->
-          <button type="button" onclick="copyTikTokCaption()" class="w-full p-3 rounded-xl border border-[#e7e5e4] hover:border-[#0c0a09] hover:bg-[#fafafa] transition flex items-center justify-between group text-left">
-            <div class="flex items-center space-x-3">
-              <div class="w-9 h-9 rounded-lg bg-[#f0efed] text-[#0c0a09] flex items-center justify-center text-sm flex-shrink-0">
+              <div class="w-10 h-10 rounded-lg bg-[#f0efed] text-[#0c0a09] flex items-center justify-center text-sm flex-shrink-0">
                 <i class="fa-solid fa-hashtag"></i>
               </div>
               <div>

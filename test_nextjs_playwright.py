@@ -26,7 +26,7 @@ def run():
 
         title = page.title()
         print("Page Title:", title)
-        assert "moovying(En)" in title or "movyEng" in title
+        assert "MoovyEng" in title or "moovying(En)" in title or "movyEng" in title
 
         # Verify Phone Preview content
         word = page.locator("#preview-word").inner_text()

@@ -62,7 +62,7 @@ export default function ElevenLabsDropdown({
   };
 
   return (
-    <div ref={containerRef} className={`relative w-full text-left select-none ${className}`}>
+    <div ref={containerRef} className={`relative w-full text-left select-none ${isOpen ? 'z-50' : ''} ${className}`}>
       {/* ElevenLabs Style Trigger Button */}
       <button
         type="button"
@@ -90,7 +90,7 @@ export default function ElevenLabsDropdown({
         <div
           role="listbox"
           tabIndex={-1}
-          className={`absolute left-0 right-0 top-full mt-1.5 z-50 bg-white/95 dark:bg-[#1c1917]/95 backdrop-blur-md border border-[#e7e5e4] dark:border-[#38332e] rounded-xl shadow-lg shadow-black/8 ring-1 ring-black/5 p-1 space-y-0.5 max-h-64 overflow-y-auto animate-in fade-in-0 zoom-in-95 duration-100 ${menuClassName}`}
+          className={`absolute left-0 right-0 top-full mt-1.5 z-50 bg-white/95 dark:bg-[#1c1917]/95 backdrop-blur-md border border-[#e7e5e4] dark:border-[#38332e] rounded-xl shadow-lg shadow-black/8 ring-1 ring-black/5 p-1 space-y-0.5 max-h-64 overflow-y-auto no-scrollbar animate-in fade-in-0 zoom-in-95 duration-100 ${menuClassName}`}
         >
           {options.length === 0 ? (
             <div className="py-2.5 px-3 text-xs text-[#a8a29e] text-center">

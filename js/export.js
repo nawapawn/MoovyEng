@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- * moovying(En) / movyEng — Export Canvas, High-Res PNG & Python Video Engine
+ * MoovyEng — Export Canvas, High-Res PNG & Python Video Engine
  * ============================================================================
  */
 
@@ -80,7 +80,28 @@ async function captureFullPreviewSlideAndRect(forVideoExport = false) {
   };
 }
 
-function triggerBlobDownload(blob, filename) {
+async function triggerBlobDownload(blob, filename, mimeType = 'image/png') {
+  if (typeof window !== 'undefined' && 'showSaveFilePicker' in window) {
+    try {
+      const ext = mimeType === 'video/mp4' ? '.mp4' : '.png';
+      const fileHandle = await window.showSaveFilePicker({
+        suggestedName: filename,
+        types: [
+          {
+            description: mimeType === 'video/mp4' ? 'MP4 Video' : 'PNG Image',
+            accept: { [mimeType]: [ext] }
+          }
+        ]
+      });
+      const writable = await fileHandle.createWritable();
+      await writable.write(blob);
+      await writable.close();
+      return true;
+    } catch (err) {
+      if (err.name === 'AbortError') return false;
+    }
+  }
+
   const blobUrl = URL.createObjectURL(blob);
   const link = document.createElement('a');
   link.style.display = 'none';
@@ -91,7 +112,8 @@ function triggerBlobDownload(blob, filename) {
   setTimeout(() => {
     link.remove();
     URL.revokeObjectURL(blobUrl);
-  }, 4000);
+  }, 5000);
+  return true;
 }
 
 async function exportPhoneAsImage() {
@@ -107,7 +129,7 @@ async function exportPhoneAsImage() {
   try {
     const captured = await captureFullPreviewSlideAndRect(false);
     const word = (document.getElementById('preview-word')?.textContent.trim() || 'vocab').replace(/[^a-zA-Z0-9]/g, '_');
-    const filename = `movyEng_${word}_slide_${ratio.replace(':', 'x')}.png`;
+    const filename = `MoovyEng_${word}_slide_${ratio.replace(':', 'x')}.png`;
 
     await new Promise((resolve, reject) => {
       captured.canvas.toBlob((blob) => {
@@ -129,12 +151,13 @@ async function exportPhoneAsImage() {
 
 async function exportClipVideo(fitMode = 'pad') {
   if (isExportingNow) return;
+  // Always restrict to exactly 1 single clip
   let clipsToExport = activeClipSequence && activeClipSequence.length > 0
-    ? activeClipSequence
+    ? [activeClipSequence[0]]
     : (cafeClipPool.length > 0 ? [cafeClipPool[0]] : []);
 
   if (clipsToExport.length === 0) {
-    showToast('ยังไม่มีคลิปวิดีโอที่เลือกในคิว กรุณาค้นหาและเลือกคลิปก่อน');
+    showToast('ยังไม่มีคลิปวิดีโอที่เลือก กรุณาค้นหาและเลือกคลิปก่อน');
     return;
   }
 
@@ -145,7 +168,7 @@ async function exportClipVideo(fitMode = 'pad') {
 
   if (status) {
     status.classList.remove('hidden');
-    status.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin mr-1.5"></i>กำลังจับภาพพื้นหลังพรีวิว (${ratio}) และรวมคลิป 16:9 ทั้ง ${clipsToExport.length} เรื่องด้วย Python...`;
+    status.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin mr-1.5"></i>กำลังเรนเดอร์จากพรีวิวสด (${ratio}) สำหรับ 1 คลิปด้วย Python...`;
   }
 
   try {
@@ -170,17 +193,17 @@ async function exportClipVideo(fitMode = 'pad') {
     }
 
     const downloadUrl = `${baseOrigin}${data.publicUrl}?download=1`;
-    const outFilename = data.filename || `movyEng_${word}_${ratio.replace(':', 'x')}.mp4`;
+    const outFilename = data.filename || `MoovyEng_${word}_${ratio.replace(':', 'x')}.mp4`;
 
     if (status) {
-      status.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin mr-1.5"></i>เรนเดอร์สำเร็จ! กำลังบันทึกลงเครื่อง (${outFilename})...`;
+      status.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin mr-1.5"></i>เรนเดอร์สำเร็จ! กำลังเปิดหน้าต่างบันทึกไฟล์ (${outFilename})...`;
     }
 
     try {
       const fileResp = await fetch(downloadUrl);
       if (!fileResp.ok) throw new Error(`HTTP ${fileResp.status}`);
       const videoBlob = await fileResp.blob();
-      triggerBlobDownload(videoBlob, outFilename);
+      await triggerBlobDownload(videoBlob, outFilename, 'video/mp4');
     } catch (dlErr) {
       const link = document.createElement('a');
       link.href = downloadUrl;
@@ -193,14 +216,21 @@ async function exportClipVideo(fitMode = 'pad') {
     if (status) {
       status.innerHTML = `
         <div class="flex flex-col items-center gap-1.5">
-          <div><i class="fa-solid fa-circle-check text-emerald-600 mr-1.5"></i>บันทึกวิดีโอขนาด ${ratio} (รวม ${data.clipCount} คลิป) สำเร็จ!</div>
-          <a href="${downloadUrl}" download="${outFilename}" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#0c0a09] text-white text-[10px] font-semibold hover:bg-[#292524] transition">
+          <div><i class="fa-solid fa-circle-check text-emerald-600 mr-1.5"></i>บันทึกวิดีโอขนาด ${ratio} สำเร็จ!</div>
+          <a href="${downloadUrl}" download="${outFilename}" onclick="setTimeout(() => { fetch('${baseOrigin}/api/cafe/clean-cache?all=1', { method: 'POST', mode: 'no-cors' }).catch(()=>{}); }, 1200);" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#0c0a09] text-white text-[10px] font-semibold hover:bg-[#292524] transition">
             <i class="fa-solid fa-download text-[9px]"></i> ดาวน์โหลดซ้ำ (${outFilename})
           </a>
         </div>
       `;
     }
     showToast(`Export วิดีโอ MP4 (${ratio}) สำเร็จ!`);
+
+    // Clean clips_cache and exports on disk automatically once downloaded
+    setTimeout(async () => {
+      try {
+        await fetch(`${baseOrigin}/api/cafe/clean-cache?all=1`, { method: 'POST', mode: 'no-cors' }).catch(() => {});
+      } catch (e) {}
+    }, 1000);
   } catch (err) {
     console.error('Python export error:', err);
     if (status) status.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-rose-600 mr-1.5"></i>เกิดข้อผิดพลาดในการบันทึกวิดีโอ: ${err.message}`;

@@ -15,6 +15,10 @@ export default function StudioHeader() {
     toggleAllToolSections,
     resetToInitialState,
     setIsExportModalOpen,
+    undo,
+    redo,
+    canUndo,
+    canRedo,
     t
   } = useVocab();
 
@@ -28,19 +32,19 @@ export default function StudioHeader() {
             MoovyEng
           </h2>
           <p className="text-[10px] text-[#777169] dark:text-[#a8a29e] mt-0.5" id="brand-tagline">
-            AI Vocab & Movie Studio • MoovyEng
+            {lang === 'th' ? 'สตูดิโอคำศัพท์ AI & คลิปหนัง • MoovyEng' : 'AI Vocab & Movie Studio • MoovyEng'}
           </p>
         </div>
       </div>
 
-      <div className="flex items-center gap-2 flex-1 max-w-sm justify-end">
+      <div className="flex items-center gap-2 flex-1 min-w-0 justify-end">
         {/* Language Switcher (EN / TH) */}
         <button
           type="button"
           onClick={toggleLanguage}
           id="btn-lang-toggle"
-          className="px-2.5 py-1 rounded-full bg-[#f0efed] dark:bg-[#292524] text-[#0c0a09] dark:text-[#f5f5f4] text-xs font-semibold border border-[#d6d3d1] dark:border-[#44403c] transition t-btn-press"
-          title="Switch Language"
+          className="px-2.5 py-1 rounded-full bg-[#f0efed] dark:bg-[#292524] text-[#0c0a09] dark:text-[#f5f5f4] text-xs font-semibold border border-[#d6d3d1] dark:border-[#44403c] transition t-btn-press flex-shrink-0"
+          title={lang === 'th' ? 'สลับเป็นภาษาอังกฤษ (Switch to English)' : 'สลับเป็นภาษาไทย (Switch to Thai)'}
         >
           <span id="lang-badge-text">{lang.toUpperCase()}</span>
         </button>
@@ -50,8 +54,8 @@ export default function StudioHeader() {
           type="button"
           onClick={toggleTheme}
           id="btn-theme-toggle"
-          className="w-9 h-9 rounded-full bg-[#f0efed] dark:bg-[#292524] text-[#0c0a09] dark:text-amber-300 border border-[#d6d3d1] dark:border-[#44403c] transition flex items-center justify-center t-btn-press"
-          title="Toggle Theme"
+          className="w-9 h-9 rounded-full bg-[#f0efed] dark:bg-[#292524] text-[#0c0a09] dark:text-amber-300 border border-[#d6d3d1] dark:border-[#44403c] transition flex items-center justify-center t-btn-press flex-shrink-0"
+          title={lang === 'th' ? (theme === 'dark' ? 'เปิดโหมดสว่าง' : 'เปิดโหมดมืด') : (theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode')}
         >
           <i
             id="theme-toggle-icon"
@@ -60,7 +64,7 @@ export default function StudioHeader() {
         </button>
 
         {/* Search Bar */}
-        <div className="relative flex-1 min-w-[120px]">
+        <div className="relative flex-1 max-w-[240px] min-w-[110px]">
           <i className="fa-solid fa-magnifying-glass text-[11px] text-[#777169] absolute left-3 top-1/2 -translate-y-1/2" />
           <input
             type="text"
@@ -71,6 +75,50 @@ export default function StudioHeader() {
             className="w-full bg-[#fafafa] dark:bg-[#292524] border border-[#d6d3d1] dark:border-[#44403c] rounded-full pl-8 pr-4 py-1.5 text-xs text-[#0c0a09] dark:text-white focus:outline-none transition"
           />
         </div>
+
+        {/* Link to Personal Website / About Page */}
+        <a
+          href="/about"
+          className="w-9 h-9 rounded-full bg-[#f0efed] dark:bg-[#292524] hover:bg-[#e7e5e4] dark:hover:bg-[#3f3b38] text-[#0c0a09] dark:text-white border border-[#d6d3d1] dark:border-[#44403c] transition flex items-center justify-center flex-shrink-0 t-btn-press"
+          title={lang === 'th' ? 'เกี่ยวกับ MoovyEng (Personal Showcase)' : 'About MoovyEng'}
+          aria-label="About"
+        >
+          <i className="fa-solid fa-sparkles text-xs" />
+        </a>
+
+        {/* Undo Button */}
+        <button
+          type="button"
+          onClick={undo}
+          disabled={!canUndo}
+          id="btn-desktop-undo"
+          className={`w-9 h-9 rounded-full border transition flex items-center justify-center flex-shrink-0 ${
+            canUndo
+              ? 'bg-[#f0efed] dark:bg-[#292524] text-[#0c0a09] dark:text-white border-[#d6d3d1] dark:border-[#44403c] hover:bg-[#e7e5e4] t-btn-press'
+              : 'bg-[#f5f4f0] dark:bg-[#1f1c19] text-[#a8a29e] dark:text-[#57534e] border-transparent opacity-40 cursor-not-allowed'
+          }`}
+          title={t.undoBtn || 'Undo (Ctrl+Z)'}
+          aria-label="Undo"
+        >
+          <i className="fa-solid fa-rotate-left text-xs" />
+        </button>
+
+        {/* Redo Button */}
+        <button
+          type="button"
+          onClick={redo}
+          disabled={!canRedo}
+          id="btn-desktop-redo"
+          className={`w-9 h-9 rounded-full border transition flex items-center justify-center flex-shrink-0 ${
+            canRedo
+              ? 'bg-[#f0efed] dark:bg-[#292524] text-[#0c0a09] dark:text-white border-[#d6d3d1] dark:border-[#44403c] hover:bg-[#e7e5e4] t-btn-press'
+              : 'bg-[#f5f4f0] dark:bg-[#1f1c19] text-[#a8a29e] dark:text-[#57534e] border-transparent opacity-40 cursor-not-allowed'
+          }`}
+          title={t.redoBtn || 'Redo (Ctrl+Y)'}
+          aria-label="Redo"
+        >
+          <i className="fa-solid fa-rotate-right text-xs" />
+        </button>
 
         {/* Reset / Clear All Data (Trash Can) */}
         <button
@@ -90,7 +138,7 @@ export default function StudioHeader() {
           id="btn-export-studio"
           onClick={() => setIsExportModalOpen(true)}
           className="w-9 h-9 bg-[#292524] dark:bg-[#f5f5f4] hover:bg-[#0c0a09] text-white dark:text-[#0c0a09] rounded-full shadow-xs transition flex items-center justify-center flex-shrink-0 t-btn-press"
-          title="Export Video / PNG"
+          title={lang === 'th' ? 'ส่งออกวิดีโอ (Export MP4)' : 'Export Video (MP4)'}
           aria-label="Export"
         >
           <i className="fa-solid fa-cloud-arrow-down text-xs" />

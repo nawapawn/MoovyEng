@@ -3,16 +3,14 @@
 import React, { useState } from 'react';
 import { useVocab } from '../context/VocabContext';
 import { RATIO_META, normalizeThumbUrl } from '../lib/utils';
-import TextFormattingSuite from './TextFormattingSuite';
+import CanvaColorPicker from './CanvaColorPicker';
 
 export default function ToolStep3Ratio() {
   const {
     clipAspectRatio,
     setClipAspectRatio,
-    bgColor1,
-    setBgColor1,
-    bgColor2,
-    setBgColor2,
+    bgColor,
+    setBgColor,
     activeClipSequence,
     reorderClip,
     removeClip,
@@ -20,23 +18,14 @@ export default function ToolStep3Ratio() {
     collapsedSections,
     toggleToolCard,
     lang,
-    showHighlight,
-    toggleHighlight,
-    useMovieBackdrop,
-    setUseMovieBackdrop,
-    bgBlur,
-    setBgBlur,
-    bgOverlayOpacity,
-    setBgOverlayOpacity,
-    textFormat,
-    setTextFormat,
-    resetTextFormat,
+    resetElementPositions,
     cleanCache,
     showCustomDialog,
     t
   } = useVocab();
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [showBgColorPicker, setShowBgColorPicker] = useState(false);
   const isCollapsed = Boolean(collapsedSections['tool-sec-ratio']);
   const meta = RATIO_META[clipAspectRatio] || RATIO_META['9:16'];
 
@@ -45,21 +34,15 @@ export default function ToolStep3Ratio() {
     setIsDropdownOpen(false);
   };
 
-  const handleResetGradient = () => {
-    setBgColor1('#fafafa');
-    setBgColor2('#fafafa');
-  };
-
-  const setGradientPreset = (c1, c2) => {
-    setBgColor1(c1);
-    setBgColor2(c2);
+  const handleResetBgColor = () => {
+    setBgColor('#ffffff');
   };
 
   return (
     <section
       id="tool-sec-ratio"
       data-tool-keywords="3 aspect ratio queue size tiktok reels shorts youtube สัดส่วน ขนาด คิวคลิป"
-      className={`tool-section-card w-full max-w-full min-w-0 overflow-hidden bg-white dark:bg-[#1c1917] border border-[#e7e5e4] dark:border-[#292524] rounded-2xl p-4 shadow-[0_4px_16px_rgba(0,0,0,0.04)] ${
+      className={`tool-section-card relative z-20 w-full max-w-full min-w-0 bg-white dark:bg-[#1c1917] border border-[#e7e5e4] dark:border-[#292524] rounded-2xl p-4 shadow-[0_4px_16px_rgba(0,0,0,0.04)] ${
         isCollapsed ? 'is-collapsed' : ''
       }`}
     >
@@ -71,19 +54,19 @@ export default function ToolStep3Ratio() {
           <span className="w-5 h-5 rounded-full bg-[#0c0a09] dark:bg-white text-white dark:text-[#0c0a09] flex items-center justify-center text-[10px] font-mono">
             3
           </span>
-          <span>Aspect Ratio & Queue</span>
+          <span>{lang === 'th' ? 'สัดส่วนภาพ & คิวคลิป' : 'Aspect Ratio & Queue'}</span>
         </div>
         <div className="flex items-center gap-2">
           <span
             id="selected-badge"
             className="text-[10px] px-2 py-0.5 rounded-full bg-[#f0efed] dark:bg-[#292524] text-[#0c0a09] dark:text-white font-medium"
           >
-            {activeClipSequence.length} {lang === 'th' ? 'clips' : 'clips'}
+            {activeClipSequence.length} {lang === 'th' ? 'คลิป' : 'clips'}
           </span>
           <button
             type="button"
             className="w-6 h-6 rounded-full hover:bg-[#f0efed] dark:hover:bg-[#292524] text-[#777169] hover:text-[#0c0a09] dark:hover:text-white flex items-center justify-center transition"
-            title="Collapse / Expand"
+            title={lang === 'th' ? 'ย่อ / ขยาย' : 'Collapse / Expand'}
           >
             <i className="fa-solid fa-chevron-down text-[10px] tool-collapse-chevron" />
           </button>
@@ -123,82 +106,40 @@ export default function ToolStep3Ratio() {
                 />
               </button>
 
-              {/* Dropdown Menu with ONLY Proportional Brown Rectangles */}
+              {/* Dropdown Menu with ONLY 9:16 and 16:9 */}
               {isDropdownOpen && (
                 <div
                   id="aspect-ratio-dropdown-menu"
-                  className="absolute left-0 right-0 mt-1.5 p-2.5 bg-white dark:bg-[#1c1917] rounded-xl border border-[#e7e5e4] dark:border-[#292524] shadow-[0_10px_28px_rgba(0,0,0,0.12)] z-40 grid grid-cols-3 gap-2 place-items-center"
+                  className="absolute left-0 right-0 mt-1.5 p-2 bg-white dark:bg-[#1c1917] rounded-xl border border-[#e7e5e4] dark:border-[#292524] shadow-[0_10px_28px_rgba(0,0,0,0.12)] z-40 grid grid-cols-2 gap-2 place-items-center"
                 >
                   <button
                     type="button"
                     onClick={() => handleRatioSelect('9:16')}
                     data-ratio="9:16"
-                    className="ratio-opt-btn flex items-center justify-center transition transform hover:scale-105"
+                    className="w-full ratio-opt-btn flex items-center justify-center p-2 rounded-lg hover:bg-[#f0efed] dark:hover:bg-[#292524] transition transform hover:scale-[1.02]"
                   >
-                    <div className={`ratio-brown-shape w-6 h-10 rounded-[5px] bg-[#78716c] text-white flex items-center justify-center text-[10px] font-bold shadow-2xs ${
-                      clipAspectRatio === '9:16' ? 'ring-2 ring-[#0c0a09] dark:ring-white ring-offset-2 dark:ring-offset-black' : ''
-                    }`}>
-                      9:16
-                    </div>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleRatioSelect('2:3')}
-                    data-ratio="2:3"
-                    className="ratio-opt-btn flex items-center justify-center transition transform hover:scale-105"
-                  >
-                    <div className={`ratio-brown-shape w-7 h-10 rounded-[5px] bg-[#78716c] text-white flex items-center justify-center text-[10px] font-bold shadow-2xs ${
-                      clipAspectRatio === '2:3' ? 'ring-2 ring-[#0c0a09] dark:ring-white ring-offset-2 dark:ring-offset-black' : ''
-                    }`}>
-                      2:3
-                    </div>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleRatioSelect('4:5')}
-                    data-ratio="4:5"
-                    className="ratio-opt-btn flex items-center justify-center transition transform hover:scale-105"
-                  >
-                    <div className={`ratio-brown-shape w-8 h-10 rounded-[5px] bg-[#78716c] text-white flex items-center justify-center text-[10px] font-bold shadow-2xs ${
-                      clipAspectRatio === '4:5' ? 'ring-2 ring-[#0c0a09] dark:ring-white ring-offset-2 dark:ring-offset-black' : ''
-                    }`}>
-                      4:5
-                    </div>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleRatioSelect('1:1')}
-                    data-ratio="1:1"
-                    className="ratio-opt-btn flex items-center justify-center transition transform hover:scale-105"
-                  >
-                    <div className={`ratio-brown-shape w-8 h-8 rounded-[5px] bg-[#78716c] text-white flex items-center justify-center text-[10px] font-bold shadow-2xs ${
-                      clipAspectRatio === '1:1' ? 'ring-2 ring-[#0c0a09] dark:ring-white ring-offset-2 dark:ring-offset-black' : ''
-                    }`}>
-                      1:1
-                    </div>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => handleRatioSelect('3:2')}
-                    data-ratio="3:2"
-                    className="ratio-opt-btn flex items-center justify-center transition transform hover:scale-105"
-                  >
-                    <div className={`ratio-brown-shape w-11 h-7 rounded-[5px] bg-[#78716c] text-white flex items-center justify-center text-[10px] font-bold shadow-2xs ${
-                      clipAspectRatio === '3:2' ? 'ring-2 ring-[#0c0a09] dark:ring-white ring-offset-2 dark:ring-offset-black' : ''
-                    }`}>
-                      3:2
+                    <div className="flex items-center gap-2">
+                      <div className={`ratio-brown-shape w-6 h-10 rounded-[5px] bg-[#78716c] text-white flex items-center justify-center text-[10px] font-bold shadow-2xs ${
+                        clipAspectRatio === '9:16' ? 'ring-2 ring-[#0c0a09] dark:ring-white ring-offset-2 dark:ring-offset-black' : ''
+                      }`}>
+                        9:16
+                      </div>
+                      <span className="text-xs font-semibold text-[#0c0a09] dark:text-white">TikTok / Reels</span>
                     </div>
                   </button>
                   <button
                     type="button"
                     onClick={() => handleRatioSelect('16:9')}
                     data-ratio="16:9"
-                    className="ratio-opt-btn flex items-center justify-center transition transform hover:scale-105"
+                    className="w-full ratio-opt-btn flex items-center justify-center p-2 rounded-lg hover:bg-[#f0efed] dark:hover:bg-[#292524] transition transform hover:scale-[1.02]"
                   >
-                    <div className={`ratio-brown-shape w-12 h-7 rounded-[5px] bg-[#78716c] text-white flex items-center justify-center text-[10px] font-bold shadow-2xs ${
-                      clipAspectRatio === '16:9' ? 'ring-2 ring-[#0c0a09] dark:ring-white ring-offset-2 dark:ring-offset-black' : ''
-                    }`}>
-                      16:9
+                    <div className="flex items-center gap-2">
+                      <div className={`ratio-brown-shape w-12 h-7 rounded-[5px] bg-[#78716c] text-white flex items-center justify-center text-[10px] font-bold shadow-2xs ${
+                        clipAspectRatio === '16:9' ? 'ring-2 ring-[#0c0a09] dark:ring-white ring-offset-2 dark:ring-offset-black' : ''
+                      }`}>
+                        16:9
+                      </div>
+                      <span className="text-xs font-semibold text-[#0c0a09] dark:text-white">YouTube / X</span>
                     </div>
                   </button>
                 </div>
@@ -206,164 +147,108 @@ export default function ToolStep3Ratio() {
             </div>
           </div>
 
-          {/* Color & Gradient Customizer (Spectrum Hex Picker & Presets) */}
+          {/* Studio Color Laboratory Background Selector */}
           <div className="pt-2 border-t border-[#f0efed] dark:border-[#292524] space-y-2">
             <div className="flex items-center justify-between">
               <span className="text-[11px] font-semibold text-[#0c0a09] dark:text-white" id="bg-color-heading">
-                Background Color / Gradient
+                {lang === 'th' ? 'สีพื้นหลัง (Background Color)' : 'Background Color'}
               </span>
               <button
                 type="button"
-                onClick={handleResetGradient}
+                onClick={handleResetBgColor}
                 className="text-[10px] text-[#777169] hover:text-[#0c0a09] dark:text-[#a8a29e] dark:hover:text-white transition"
               >
-                Reset
+                {lang === 'th' ? 'รีเซ็ตเป็นสีขาว' : 'Reset White'}
               </button>
             </div>
-            <div className="grid grid-cols-2 gap-2 w-full min-w-0">
-              <div className="flex items-center gap-1.5 p-1.5 bg-[#fafafa] dark:bg-[#292524] rounded-lg border border-[#e7e5e4] dark:border-[#44403c] min-w-0">
-                <input
-                  type="color"
-                  id="bg-color-1"
-                  value={bgColor1}
-                  onChange={(e) => setBgColor1(e.target.value)}
-                  className="w-6 h-6 rounded cursor-pointer border-0 bg-transparent p-0 flex-shrink-0"
-                />
-                <span className="text-[10px] font-mono text-[#777169] dark:text-[#a8a29e] truncate" id="bg-color-1-hex">
-                  {bgColor1}
-                </span>
-              </div>
-              <div className="flex items-center gap-1.5 p-1.5 bg-[#fafafa] dark:bg-[#292524] rounded-lg border border-[#e7e5e4] dark:border-[#44403c] min-w-0">
-                <input
-                  type="color"
-                  id="bg-color-2"
-                  value={bgColor2}
-                  onChange={(e) => setBgColor2(e.target.value)}
-                  className="w-6 h-6 rounded cursor-pointer border-0 bg-transparent p-0 flex-shrink-0"
-                />
-                <span className="text-[10px] font-mono text-[#777169] dark:text-[#a8a29e] truncate" id="bg-color-2-hex">
-                  {bgColor2}
-                </span>
-              </div>
-            </div>
 
-            {/* Quick Gradient Presets */}
-            <div className="flex items-center gap-1.5 pt-0.5 overflow-x-auto pb-0.5">
+            {/* Studio Color Box Trigger */}
+            <div className="w-full">
               <button
                 type="button"
-                onClick={() => setGradientPreset('#fafafa', '#fafafa')}
-                className="w-6 h-6 rounded-full border border-[#d6d3d1] bg-[#fafafa] flex-shrink-0 t-btn-press"
-                title="Default Light"
-              />
-              <button
-                type="button"
-                onClick={() => setGradientPreset('#18181b', '#09090b')}
-                className="w-6 h-6 rounded-full border border-black/40 bg-gradient-to-br from-zinc-900 to-black flex-shrink-0 t-btn-press"
-                title="Dark Slate"
-              />
-              <button
-                type="button"
-                onClick={() => setGradientPreset('#fef3c7', '#fed7aa')}
-                className="w-6 h-6 rounded-full border border-amber-200 bg-gradient-to-br from-amber-100 to-orange-200 flex-shrink-0 t-btn-press"
-                title="Warm Sunset"
-              />
-              <button
-                type="button"
-                onClick={() => setGradientPreset('#e0e7ff', '#fae8ff')}
-                className="w-6 h-6 rounded-full border border-indigo-200 bg-gradient-to-br from-indigo-100 to-fuchsia-100 flex-shrink-0 t-btn-press"
-                title="Soft Pastel"
-              />
-              <button
-                type="button"
-                onClick={() => setGradientPreset('#dcfce7', '#e0f2fe')}
-                className="w-6 h-6 rounded-full border border-emerald-200 bg-gradient-to-br from-emerald-100 to-sky-100 flex-shrink-0 t-btn-press"
-                title="Mint Sky"
-              />
-              <button
-                type="button"
-                onClick={() => setGradientPreset('#312e81', '#4c1d95')}
-                className="w-6 h-6 rounded-full border border-indigo-900 bg-gradient-to-br from-indigo-950 to-purple-900 flex-shrink-0 t-btn-press"
-                title="Deep Indigo"
-              />
-            </div>
-          </div>
-
-          {/* Movie Backdrop & Blur Control */}
-          <div className="pt-2 border-t border-[#f0efed] dark:border-[#292524] space-y-2">
-            <div className="flex items-center justify-between">
-              <span className="text-[11px] font-semibold text-[#0c0a09] dark:text-white flex items-center gap-1.5">
-                <i className="fa-solid fa-image text-indigo-500 text-[10px]" />
-                <span>{t.movieBackdropLabel || 'Movie Backdrop & Blur'}</span>
-              </span>
-              <button
-                type="button"
-                onClick={() => setUseMovieBackdrop(!useMovieBackdrop)}
-                className={`px-2 py-0.5 rounded-full text-[10px] font-semibold transition flex items-center gap-1 t-btn-press ${
-                  useMovieBackdrop
-                    ? 'bg-indigo-600 text-white shadow-2xs'
-                    : 'bg-[#f0efed] dark:bg-[#292524] text-[#777169] dark:text-[#a8a29e]'
-                }`}
+                id="btn-bg-color-picker-trigger"
+                onClick={() => setShowBgColorPicker(!showBgColorPicker)}
+                className="w-full flex items-center justify-between p-2.5 bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 rounded-none hover:border-neutral-300 dark:hover:border-neutral-700 transition-colors shadow-2xs group text-left cursor-pointer"
+                aria-label={lang === 'th' ? 'เลือกสีพื้นหลัง' : 'Background Color Picker'}
               >
-                <i className={`fa-solid ${useMovieBackdrop ? 'fa-toggle-on' : 'fa-toggle-off'}`} />
-                <span>{useMovieBackdrop ? 'ON' : 'OFF'}</span>
+                <div className="flex items-center gap-3">
+                  <div
+                    className="w-7 h-7 rounded-none border border-neutral-200 dark:border-neutral-800 flex-shrink-0 transition-colors duration-200"
+                    style={{ backgroundColor: bgColor || '#FFFFFF' }}
+                  />
+                  <div className="flex flex-col">
+                    <span className="text-[9px] font-mono text-neutral-400 dark:text-neutral-500 uppercase tracking-widest leading-none mb-1">
+                      HEX CODE
+                    </span>
+                    <span
+                      id="bg-color-hex"
+                      className="text-xs font-mono font-semibold text-neutral-800 dark:text-neutral-100 uppercase tracking-wider"
+                    >
+                      {bgColor}
+                    </span>
+                  </div>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-mono tracking-wider uppercase text-neutral-400 group-hover:text-neutral-700 dark:group-hover:text-neutral-200 transition">
+                    {showBgColorPicker ? (lang === 'th' ? 'ปิดถาดสี' : 'CLOSE') : (lang === 'th' ? 'เลือกสี' : 'PICK COLOR')}
+                  </span>
+                  <i className={`fa-solid ${showBgColorPicker ? 'fa-chevron-up' : 'fa-chevron-down'} text-[10px] text-neutral-400`} />
+                </div>
               </button>
+
+              {/* Studio Color Laboratory Embedded Picker */}
+              {showBgColorPicker && (
+                <div className="mt-3 p-1 animate-in fade-in-50 zoom-in-98 duration-150">
+                  <CanvaColorPicker
+                    activeColor={bgColor}
+                    onColorChange={(newColor) => setBgColor(newColor || '#ffffff')}
+                    activeTargetLabel={lang === 'th' ? 'พื้นหลัง' : 'BACKGROUND'}
+                    onClose={() => setShowBgColorPicker(false)}
+                    lang={lang}
+                  />
+                </div>
+              )}
             </div>
-            {useMovieBackdrop && (
-              <div className="space-y-2 p-2.5 bg-[#fafafa] dark:bg-[#201d1a] rounded-xl border border-[#e7e5e4] dark:border-[#38332e] text-xs">
-                <div>
-                  <div className="flex justify-between text-[10px] text-[#777169] dark:text-[#a8a29e] mb-1">
-                    <span>{t.blurSliderLabel || 'Blur'}</span>
-                    <span className="font-mono">{bgBlur}px</span>
-                  </div>
-                  <input
-                    type="range"
-                    min="0"
-                    max="40"
-                    value={bgBlur}
-                    onChange={(e) => setBgBlur(Number(e.target.value))}
-                    className="w-full accent-indigo-600 cursor-pointer h-1.5 bg-[#e7e5e4] dark:bg-[#38332e] rounded-lg"
-                  />
-                </div>
-                <div>
-                  <div className="flex justify-between text-[10px] text-[#777169] dark:text-[#a8a29e] mb-1">
-                    <span>{t.dimmingLabel || 'Dimming'}</span>
-                    <span className="font-mono">{bgOverlayOpacity}%</span>
-                  </div>
-                  <input
-                    type="range"
-                    min="10"
-                    max="90"
-                    value={bgOverlayOpacity}
-                    onChange={(e) => setBgOverlayOpacity(Number(e.target.value))}
-                    className="w-full accent-indigo-600 cursor-pointer h-1.5 bg-[#e7e5e4] dark:bg-[#38332e] rounded-lg"
-                  />
-                </div>
-              </div>
-            )}
           </div>
 
-          {/* Text Formatting & Typography System for All Vocabulary Elements */}
-          <div className="pt-2 border-t border-[#f0efed] dark:border-[#292524]">
-            <TextFormattingSuite />
+          {/* Interactive Free Drag Layout & Guides Control */}
+          <div className="pt-2 border-t border-[#f0efed] dark:border-[#292524] flex items-center justify-between">
+            <div className="flex items-center gap-1.5 text-[11px] font-semibold text-[#0c0a09] dark:text-white">
+              <i className="fa-solid fa-arrows-up-down-left-right text-indigo-500 text-[10px]" />
+              <span>{lang === 'th' ? 'เลื่อนขยับอิสระในพรีวิว' : 'Free Drag & Guides'}</span>
+            </div>
+            <button
+              type="button"
+              onClick={resetElementPositions}
+              className="text-[10px] px-2 py-0.5 rounded-md bg-[#fafafa] dark:bg-[#201d1a] border border-[#e7e5e4] dark:border-[#38332e] text-[#777169] dark:text-[#a8a29e] hover:text-[#0c0a09] dark:hover:text-white transition flex items-center gap-1 t-btn-press"
+              title={lang === 'th' ? 'รีเซ็ตตำแหน่งทั้งหมดเป็นค่าเริ่มต้น' : 'Reset all element positions to default'}
+            >
+              <i className="fa-solid fa-rotate-left text-[9px]" />
+              <span>{lang === 'th' ? 'รีเซ็ตตำแหน่ง' : 'Reset Positions'}</span>
+            </button>
           </div>
 
           {/* Selected Clips Sequence & Python Play Queue Controls */}
           <div className="pt-2 border-t border-[#f0efed] dark:border-[#292524]">
             <div className="flex items-center justify-between mb-1.5">
-              <span className="text-[11px] font-medium text-[#777169] dark:text-[#a8a29e]">Play Queue</span>
+              <span className="text-[11px] font-medium text-[#777169] dark:text-[#a8a29e]">
+                {lang === 'th' ? 'คิวคลิปเล่นต่อเนื่อง' : 'Play Queue'}
+              </span>
               <button
                 type="button"
                 onClick={playAllClipsWithPython}
                 className="w-7 h-7 bg-[#0c0a09] dark:bg-white hover:bg-[#292524] text-white dark:text-[#0c0a09] rounded-full transition flex items-center justify-center shadow-2xs"
-                title="Play Queue"
-                aria-label="Play Queue"
+                title={lang === 'th' ? 'เล่นคิวคลิปทั้งหมด' : 'Play Queue'}
+                aria-label={lang === 'th' ? 'เล่นคิวคลิปทั้งหมด' : 'Play Queue'}
               >
                 <i className="fa-solid fa-play text-[9px] ml-0.5" />
               </button>
             </div>
             <div id="sequence-list" className="space-y-1.5 w-full min-w-0">
               {activeClipSequence.length === 0 ? (
-                <div className="text-center py-2 text-xs text-[#777169] dark:text-[#a8a29e]">No clips in queue</div>
+                <div className="text-center py-2 text-xs text-[#777169] dark:text-[#a8a29e]">
+                  {lang === 'th' ? 'ยังไม่มีคลิปในคิว' : 'No clips in queue'}
+                </div>
               ) : (
                 activeClipSequence.map((clip, index) => {
                   const thumb = normalizeThumbUrl(clip.thumb, clip.slug);
@@ -401,8 +286,8 @@ export default function ToolStep3Ratio() {
                           type="button"
                           onClick={() => reorderClip(index, -1)}
                           disabled={index === 0}
-                          className="w-6 h-6 rounded-full hover:bg-[#f0efed] dark:hover:bg-zinc-700 flex items-center justify-center text-[#777169] dark:text-zinc-300 disabled:opacity-20 flex-shrink-0"
-                          title="Move Up"
+                          className="w-6 h-6 rounded-full hover:bg-[#f0efed] dark:hover:zinc-700 flex items-center justify-center text-[#777169] dark:text-zinc-300 disabled:opacity-20 flex-shrink-0"
+                          title={lang === 'th' ? 'เลื่อนขึ้น' : 'Move Up'}
                         >
                           <i className="fa-solid fa-arrow-up text-[10px]" />
                         </button>
@@ -410,8 +295,8 @@ export default function ToolStep3Ratio() {
                           type="button"
                           onClick={() => reorderClip(index, 1)}
                           disabled={index === activeClipSequence.length - 1}
-                          className="w-6 h-6 rounded-full hover:bg-[#f0efed] dark:hover:bg-zinc-700 flex items-center justify-center text-[#777169] dark:text-zinc-300 disabled:opacity-20 flex-shrink-0"
-                          title="Move Down"
+                          className="w-6 h-6 rounded-full hover:bg-[#f0efed] dark:hover:zinc-700 flex items-center justify-center text-[#777169] dark:text-zinc-300 disabled:opacity-20 flex-shrink-0"
+                          title={lang === 'th' ? 'เลื่อนลง' : 'Move Down'}
                         >
                           <i className="fa-solid fa-arrow-down text-[10px]" />
                         </button>
@@ -419,7 +304,7 @@ export default function ToolStep3Ratio() {
                           type="button"
                           onClick={() => removeClip(index)}
                           className="w-6 h-6 rounded-full hover:bg-rose-50 text-rose-600 flex items-center justify-center flex-shrink-0"
-                          title="Remove"
+                          title={lang === 'th' ? 'ลบออกจากคิว' : 'Remove'}
                         >
                           <i className="fa-solid fa-trash-can text-[10px]" />
                         </button>
@@ -435,7 +320,7 @@ export default function ToolStep3Ratio() {
           <div className="pt-2 border-t border-[#f0efed] dark:border-[#292524] flex items-center justify-between">
             <span className="text-[10px] text-[#777169] dark:text-[#a8a29e] flex items-center gap-1.5 font-medium">
               <i className="fa-solid fa-hard-drive text-[9px]" />
-              <span>Storage & Intermediate Cache</span>
+              <span>{lang === 'th' ? 'พื้นที่จัดเก็บและแคชชั่วคราว' : 'Storage & Intermediate Cache'}</span>
             </span>
             <button
               type="button"
@@ -448,10 +333,10 @@ export default function ToolStep3Ratio() {
                 });
               }}
               className="px-2.5 py-1 rounded-lg bg-[#fafafa] dark:bg-[#201d1a] hover:bg-rose-50 dark:hover:bg-rose-950/30 text-rose-600 dark:text-rose-400 border border-[#e7e5e4] dark:border-[#38332e] text-[10px] font-semibold transition flex items-center gap-1.5 t-btn-press shadow-2xs"
-              title="Clean Temporary Intermediate Cache"
+              title={lang === 'th' ? 'ล้างไฟล์แคชชั่วคราวเพื่อคืนพื้นที่' : 'Clean Temporary Intermediate Cache'}
             >
               <i className="fa-solid fa-broom text-[9px]" />
-              <span>{t.cleanCacheBtn || 'Clean Cache'}</span>
+              <span>{t.cleanCacheBtn || (lang === 'th' ? 'ล้างแคช' : 'Clean Cache')}</span>
             </button>
           </div>
         </div>

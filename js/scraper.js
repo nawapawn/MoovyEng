@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- * moovying(En) / movyEng — Clip.cafe English Movie Scraper & Sequential Player
+ * MoovyEng — Clip.cafe English Movie Scraper & Sequential Player
  * ============================================================================
  */
 

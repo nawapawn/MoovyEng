@@ -1,20 +1,17 @@
 /**
  * ============================================================================
- * moovying(En) / movyEng — Phone Live Canvas Preview & Card Formatter
+ * MoovyEng — Phone Live Canvas Preview & Card Formatter
  * ============================================================================
  */
 
-function highlightKeyword(text, keyword) {
-  if (!text || !keyword) return text || '';
-  const escaped = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  return text.replace(new RegExp(`(${escaped})`, 'gi'), '<span class="highlight-yellow">$1</span>');
+function highlightKeyword(text) {
+  return text || '';
 }
 
-function formatGrammarHtml(text, keyword) {
+function formatGrammarHtml(text) {
   if (!text) return '';
   let formatted = text.replace(/\[Subject\]|\bSubject\b/gi, 's');
   formatted = formatted.replace(/^(โครงสร้าง|structure|formula)\s*[:：\-]\s*/i, '');
-  formatted = highlightKeyword(formatted, keyword);
   formatted = formatted.replace(/-&gt;|->/g, '→');
   formatted = formatted.replace(/(\bVerb to be\b|\bIdiom\b|\bPhrasal Verb\b|\bSlang\b|\bNoun\b|\bVerb\b|\bAdjective\b|\bAdverb\b|\bObject\b|\bV\.ing\b|\bV\.1\b|\bV\.2\b|\bV\.3\b|\bs\b|\[[^\]]+\])/gi, '<strong class="text-[#2563eb] font-bold">$1</strong>');
   formatted = formatted.replace(/(\+|→)/g, '<strong class="text-[#d97706] font-bold mx-0.5">$1</strong>');
@@ -229,12 +226,12 @@ function applyDataToPreview(data) {
 
   if (ex1El) {
     ex1El.innerHTML = (d.ex1En || d.ex1Th)
-      ? `<div class="font-bold text-[#0c0a09] preview-example-en text-[12px] leading-snug">${highlightKeyword(d.ex1En || '', wordKeyword)}</div>${d.ex1Th ? `<div class="text-[#57534e] preview-example-th text-[11px] preview-thai-font pt-0.5">→ ${cleanTh(d.ex1Th)}</div>` : ''}`
+      ? `<div class="font-bold text-[#0c0a09] preview-example-en text-[12px] leading-snug">${d.ex1En || ''}</div>${d.ex1Th ? `<div class="text-[#57534e] preview-example-th text-[11px] preview-thai-font pt-0.5">→ ${cleanTh(d.ex1Th)}</div>` : ''}`
       : '';
   }
   if (ex2El) {
     ex2El.innerHTML = (d.ex2En || d.ex2Th)
-      ? `<div class="font-bold text-[#0c0a09] preview-example-en text-[12px] leading-snug">${highlightKeyword(d.ex2En || '', wordKeyword)}</div>${d.ex2Th ? `<div class="text-[#57534e] preview-example-th text-[11px] preview-thai-font pt-0.5">→ ${cleanTh(d.ex2Th)}</div>` : ''}`
+      ? `<div class="font-bold text-[#0c0a09] preview-example-en text-[12px] leading-snug">${d.ex2En || ''}</div>${d.ex2Th ? `<div class="text-[#57534e] preview-example-th text-[11px] preview-thai-font pt-0.5">→ ${cleanTh(d.ex2Th)}</div>` : ''}`
       : '';
   }
 
@@ -330,15 +327,15 @@ function updateLiveCardPreview() {
 
   const cleanTh = (str) => (str || '').replace(/^\s*\((.*)\)\s*$/, '$1').trim();
 
-  if (previewGrammar) previewGrammar.innerHTML = formatGrammarHtml(grammarVal, targetWord);
+  if (previewGrammar) previewGrammar.innerHTML = formatGrammarHtml(grammarVal);
   if (previewEx1) {
     previewEx1.innerHTML = (ex1En || ex1Th)
-      ? `<div class="font-bold text-[#0c0a09] dark:text-zinc-100 text-[12px] leading-snug">${highlightKeyword(ex1En, targetWord)}</div>${ex1Th ? `<div class="text-[#57534e] dark:text-zinc-400 text-[11px] preview-thai-font pt-0.5">→ ${cleanTh(ex1Th)}</div>` : ''}`
+      ? `<div class="font-bold text-[#0c0a09] dark:text-zinc-100 text-[12px] leading-snug">${ex1En}</div>${ex1Th ? `<div class="text-[#57534e] dark:text-zinc-400 text-[11px] preview-thai-font pt-0.5">→ ${cleanTh(ex1Th)}</div>` : ''}`
       : '';
   }
   if (previewEx2) {
     previewEx2.innerHTML = (ex2En || ex2Th)
-      ? `<div class="font-bold text-[#0c0a09] dark:text-zinc-100 text-[12px] leading-snug">${highlightKeyword(ex2En, targetWord)}</div>${ex2Th ? `<div class="text-[#57534e] dark:text-zinc-400 text-[11px] preview-thai-font pt-0.5">→ ${cleanTh(ex2Th)}</div>` : ''}`
+      ? `<div class="font-bold text-[#0c0a09] dark:text-zinc-100 text-[12px] leading-snug">${ex2En}</div>${ex2Th ? `<div class="text-[#57534e] dark:text-zinc-400 text-[11px] preview-thai-font pt-0.5">→ ${cleanTh(ex2Th)}</div>` : ''}`
       : '';
   }
 }

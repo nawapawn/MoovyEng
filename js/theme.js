@@ -1,6 +1,6 @@
 /**
  * ============================================================================
- * moovying(En) / movyEng — Theme & Language Manager (Dark/Light & TH/EN)
+ * MoovyEng — Theme & Language Manager (Dark/Light & TH/EN)
  * ============================================================================
  */
 

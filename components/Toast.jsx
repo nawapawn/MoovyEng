@@ -4,7 +4,7 @@ import React from 'react';
 import { useVocab } from '../context/VocabContext';
 
 export default function Toast() {
-  const { isToastVisible, toastMessage } = useVocab();
+  const { isToastVisible, toastMessage, lang } = useVocab();
 
   return (
     <div
@@ -14,7 +14,7 @@ export default function Toast() {
       }`}
     >
       <i className="fa-solid fa-circle-check text-xs" />
-      <span id="toast-msg">{toastMessage || 'บันทึกเรียบร้อย!'}</span>
+      <span id="toast-msg">{toastMessage || (lang === 'th' ? 'บันทึกเรียบร้อย!' : 'Saved successfully!')}</span>
     </div>
   );
 }

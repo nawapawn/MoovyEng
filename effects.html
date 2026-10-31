@@ -1,0 +1,1206 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Canva Text Effects Studio & Preview</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: ครอบคลุมทั้งฟอนต์ไทยและฟอนต์สไตล์พิเศษ Retro, Glitch, Sci-Fi, Script, Pixel -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Kanit:ital,wght@0,300;0,400;0,600;0,700;0,800;0,900;1,700&family=Press+Start+2P&family=Rubik+Glitch&family=Pacifico&family=Monoton&family=Orbitron:wght@700;900&family=Bungee&family=Silkscreen:wght@700&display=swap" rel="stylesheet">
+  <!-- FontAwesome Icons สำหรับไอคอนดูดสีและเครื่องมือ -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    body {
+      font-family: 'Kanit', sans-serif;
+    }
+
+    /* ============================================================
+       1. หมวดลักษณะพิเศษ (BASIC / STANDARD EFFECTS)
+       ============================================================ */
+    
+    /* ไม่มี (None) */
+    .fx-none {
+      color: #8b5cf6;
+      font-weight: 700;
+    }
+
+    /* เงา (Shadow) */
+    .fx-shadow {
+      color: #8b5cf6;
+      font-weight: 700;
+      text-shadow: 4px 4px 6px rgba(139, 92, 246, 0.45);
+    }
+
+    /* เรืองแสง (Lift / Soft Blur Glow) */
+    .fx-lift {
+      color: #8b5cf6;
+      font-weight: 700;
+      text-shadow: 0 0 16px rgba(139, 92, 246, 0.65), 0 0 30px rgba(139, 92, 246, 0.4);
+    }
+
+    /* เงาสะท้อน (Offset Shadow / Drop Shadow) */
+    .fx-reflection {
+      color: #8b5cf6;
+      font-weight: 700;
+      text-shadow: 5px 6px 0px rgba(139, 92, 246, 0.35);
+    }
+
+    /* เค้าร่าง (Outline / Stroke) */
+    .fx-outline {
+      color: transparent;
+      -webkit-text-stroke: 2.5px #8b5cf6;
+      font-weight: 700;
+    }
+
+    /* แบ็กกราวน์ (Background Badge) */
+    .fx-background-box {
+      color: #8b5cf6;
+      font-weight: 700;
+      background: #ede9fe;
+      padding: 0.15em 0.35em;
+      border-radius: 0.3em;
+      display: inline-block;
+      line-height: 1.1;
+    }
+
+    /* อักษรประกบ (Splice / Hollow with offset) */
+    .fx-splice {
+      color: transparent;
+      -webkit-text-stroke: 2px #8b5cf6;
+      font-weight: 700;
+      filter: drop-shadow(4px 4px 0px rgba(167, 139, 250, 0.9));
+    }
+
+    /* กลวง (Hollow) */
+    .fx-hollow {
+      color: transparent;
+      -webkit-text-stroke: 2px #7c3aed;
+      font-weight: 700;
+    }
+
+    /* นีออน (Neon) */
+    .fx-neon {
+      color: #ffffff;
+      font-weight: 700;
+      text-shadow: 
+        0 0 4px #ffffff,
+        0 0 10px #c084fc,
+        0 0 20px #a855f7,
+        0 0 40px #9333ea,
+        0 0 60px #7e22ce;
+    }
+
+    /* ทันทีทันใด (Glitch / Chromatic Aberration 1) */
+    .fx-glitch-instant {
+      color: #a855f7;
+      font-weight: 800;
+      text-shadow: -3px -2px 0px #06b6d4, 3px 2px 0px #ec4899;
+    }
+
+    /* ============================================================
+       2. หมวดขั้นสูง (ADVANCED EFFECTS)
+       ============================================================ */
+
+    /* Sci-fi (Grid glow futuristic) */
+    .fx-scifi {
+      font-family: 'Orbitron', 'Kanit', sans-serif;
+      color: #86efac;
+      font-weight: 900;
+      letter-spacing: 2px;
+      text-shadow: 
+        0 0 5px #4ade80,
+        0 0 12px #22c55e,
+        0 0 24px rgba(34, 197, 94, 0.7);
+    }
+
+    /* ทีวีเสีย (TV Glitch RGB Shift) */
+    .fx-tv-glitch {
+      font-family: 'Kanit', sans-serif;
+      font-weight: 900;
+      color: #38bdf8;
+      position: relative;
+      text-shadow: 
+        -3px 0 0 #ef4444,
+        3px 0 0 #a855f7,
+        0 0 6px rgba(56, 189, 248, 0.7);
+    }
+
+    /* ยุค 70 (70s Retro 3D Extrusion) */
+    .fx-retro70s {
+      font-family: 'Kanit', sans-serif;
+      font-weight: 900;
+      color: #f59e0b;
+      text-shadow: 
+        1px 1px 0px #d97706,
+        2px 2px 0px #b45309,
+        3px 3px 0px #92400e,
+        4px 4px 0px #78350f,
+        5px 5px 0px #b91c1c;
+    }
+
+    /* การพิมพ์สกรีน (Screen Print Halftone / Multiple Offset) */
+    .fx-screen-print {
+      font-family: 'Kanit', sans-serif;
+      font-weight: 900;
+      color: transparent;
+      -webkit-text-stroke: 1.5px #db2777;
+      text-shadow: 
+        3px 3px 0px #f472b6,
+        6px 6px 0px rgba(244, 114, 182, 0.4);
+    }
+
+    /* หนังตะวันตก (Western Vintage Script) */
+    .fx-western {
+      font-family: 'Pacifico', cursive;
+      color: #e06d53;
+      font-weight: normal;
+      text-shadow: 
+        2px 2px 0px #fff,
+        3px 3px 0px #7c2d12,
+        4px 4px 1px #431407;
+    }
+
+    /* กราฟิตี้ (Graffiti Bubble/Street Style) */
+    .fx-graffiti {
+      font-family: 'Bungee', cursive;
+      color: #10b981;
+      -webkit-text-stroke: 2px #064e3b;
+      text-shadow: 
+        4px 4px 0px #022c22,
+        6px 6px 0px rgba(0,0,0,0.25);
+    }
+
+    /* ฟอง (Bubble 3D Shaded) */
+    .fx-bubble {
+      font-family: 'Kanit', sans-serif;
+      font-weight: 900;
+      color: #38bdf8;
+      -webkit-text-stroke: 2px #0369a1;
+      text-shadow: 
+        inset 0 2px 4px rgba(255, 255, 255, 0.8),
+        3px 3px 0px #0284c7,
+        5px 5px 0px #075985;
+      filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15));
+    }
+
+    /* แอโรบิก (Aerobic 80s Neon Italic) */
+    .fx-aerobic {
+      font-family: 'Pacifico', cursive;
+      color: #f43f5e;
+      font-style: italic;
+      text-shadow: 
+        0 0 5px #fda4af,
+        0 0 15px #fb7185,
+        0 0 25px #e11d48;
+    }
+
+    /* อาร์เคด (Arcade Pixel 8-Bit) */
+    .fx-arcade {
+      font-family: 'Press Start 2P', monospace;
+      color: #22c55e;
+      text-shadow: 
+        3px 3px 0px #15803d,
+        5px 5px 0px #14532d;
+      letter-spacing: 2px;
+    }
+
+    /* คอสซิก (Cosmic ethereal haze) */
+    .fx-cosmic {
+      font-family: 'Pacifico', cursive;
+      color: #e0e7ff;
+      text-shadow: 
+        0 0 8px #a5b4fc,
+        0 0 18px #6366f1,
+        0 0 30px #4338ca,
+        0 0 45px rgba(67, 56, 202, 0.6);
+    }
+
+    /* พิกเซล (Pixel Dual Tone) */
+    .fx-pixel {
+      font-family: 'Silkscreen', monospace;
+      font-weight: 700;
+      color: #ec4899;
+      text-shadow: 
+        3px 3px 0px #38bdf8,
+        5px 5px 0px #1e293b;
+      letter-spacing: 3px;
+    }
+
+    /* คลาสกล่อง Card การ์ดตัวอย่าง */
+    .card-effect {
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .card-effect:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px -5px rgba(0,0,0,0.08);
+    }
+    .card-effect.active {
+      border-color: #8b5cf6;
+      background-color: #faf5ff;
+      box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.4);
+    }
+
+    /* การซ่อน scrollbar แต่เลื่อนได้ */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-40 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex flex-wrap items-center justify-between gap-3">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-violet-600 to-indigo-500 flex items-center justify-center text-white font-bold shadow-md shadow-violet-200 text-lg">
+          Ag
+        </div>
+        <div>
+          <h1 class="text-lg font-bold text-slate-900 leading-tight">Canva Text Effects Studio</h1>
+          <p class="text-xs text-slate-500">แสดงและปรับแต่งทุกเอฟเฟกต์ตัวอักษรแบบสมจริง 100%</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button id="copyCssBtn" class="flex items-center gap-1.5 px-3.5 py-1.5 bg-violet-50 text-violet-700 hover:bg-violet-100 border border-violet-200 rounded-lg text-sm font-medium transition active:scale-95">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+          คัดลอกโค้ด CSS
+        </button>
+        <button id="resetBtn" class="px-3 py-1.5 text-slate-600 hover:bg-slate-100 rounded-lg text-sm font-medium transition">
+          รีเซ็ต
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1 w-full">
+    
+    <!-- ฝั่งซ้าย: แผงเลือกเอฟเฟกต์ (ตามรูปภาพต้นฉบับ 3 กลุ่ม) -->
+    <div class="lg:col-span-7 space-y-6 overflow-y-auto max-h-[calc(100vh-110px)] pr-1 no-scrollbar">
+
+      <!-- หมวด 1: ลักษณะพิเศษ (Special Styles) -->
+      <section class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-base font-bold text-slate-900 flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-violet-600"></span>
+            ลักษณะพิเศษ
+          </h2>
+          <span class="text-xs text-slate-400">10 เอฟเฟกต์</span>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          <!-- None -->
+          <button type="button" onclick="selectEffect('fx-none', 'ไม่มี', this)" class="card-effect group flex flex-col items-center justify-center p-4 h-28 border border-slate-200 rounded-xl bg-white hover:border-violet-300">
+            <span class="text-2xl font-bold text-slate-400 group-hover:text-slate-600 transition">None</span>
+            <span class="text-xs text-slate-600 mt-2 font-medium">ไม่มี</span>
+          </button>
+
+          <!-- เงา -->
+          <button type="button" onclick="selectEffect('fx-shadow', 'เงา', this)" class="card-effect group flex flex-col items-center justify-center p-4 h-28 border border-slate-200 rounded-xl bg-white hover:border-violet-300">
+            <span class="text-3xl font-bold fx-shadow">Ag</span>
+            <span class="text-xs text-slate-600 mt-2 font-medium">เงา</span>
+          </button>
+
+          <!-- เรืองแสง -->
+          <button type="button" onclick="selectEffect('fx-lift', 'เรืองแสง', this)" class="card-effect group flex flex-col items-center justify-center p-4 h-28 border border-slate-200 rounded-xl bg-white hover:border-violet-300">
+            <span class="text-3xl font-bold fx-lift">Ag</span>
+            <span class="text-xs text-slate-600 mt-2 font-medium">เรืองแสง</span>
+          </button>
+
+          <!-- เงาสะท้อน -->
+          <button type="button" onclick="selectEffect('fx-reflection', 'เงาสะท้อน', this)" class="card-effect group flex flex-col items-center justify-center p-4 h-28 border border-slate-200 rounded-xl bg-white hover:border-violet-300">
+            <span class="text-3xl font-bold fx-reflection">Ag</span>
+            <span class="text-xs text-slate-600 mt-2 font-medium">เงาสะท้อน</span>
+          </button>
+
+          <!-- เค้าร่าง -->
+          <button type="button" onclick="selectEffect('fx-outline', 'เค้าร่าง', this)" class="card-effect group flex flex-col items-center justify-center p-4 h-28 border border-slate-200 rounded-xl bg-white hover:border-violet-300">
+            <span class="text-3xl font-bold fx-outline">Ag</span>
+            <span class="text-xs text-slate-600 mt-2 font-medium">เค้าร่าง</span>
+          </button>
+
+          <!-- แบ็กกราวน์ -->
+          <button type="button" onclick="selectEffect('fx-background-box', 'แบ็กกราวน์', this)" class="card-effect active group flex flex-col items-center justify-center p-4 h-28 border border-violet-500 rounded-xl bg-purple-50 hover:border-violet-400" id="defaultSelectedCard">
+            <span class="text-3xl font-bold fx-background-box">Ag</span>
+            <span class="text-xs text-slate-700 mt-2 font-medium">แบ็กกราวน์</span>
+          </button>
+
+          <!-- อักษรประกบ -->
+          <button type="button" onclick="selectEffect('fx-splice', 'อักษรประกบ', this)" class="card-effect group flex flex-col items-center justify-center p-4 h-28 border border-slate-200 rounded-xl bg-white hover:border-violet-300">
+            <span class="text-3xl font-bold fx-splice">Ag</span>
+            <span class="text-xs text-slate-600 mt-2 font-medium">อักษรประกบ</span>
+          </button>
+
+          <!-- กลวง -->
+          <button type="button" onclick="selectEffect('fx-hollow', 'กลวง', this)" class="card-effect group flex flex-col items-center justify-center p-4 h-28 border border-slate-200 rounded-xl bg-white hover:border-violet-300">
+            <span class="text-3xl font-bold fx-hollow">Ag</span>
+            <span class="text-xs text-slate-600 mt-2 font-medium">กลวง</span>
+          </button>
+
+          <!-- นีออน -->
+          <button type="button" onclick="selectEffect('fx-neon', 'นีออน', this)" class="card-effect group flex flex-col items-center justify-center p-4 h-28 border border-slate-200 rounded-xl bg-slate-900 hover:border-violet-400">
+            <span class="text-3xl font-bold fx-neon">Ag</span>
+            <span class="text-xs text-slate-300 mt-2 font-medium">นีออน</span>
+          </button>
+
+          <!-- ทันทีทันใด -->
+          <button type="button" onclick="selectEffect('fx-glitch-instant', 'ทันทีทันใด', this)" class="card-effect group flex flex-col items-center justify-center p-4 h-28 border border-slate-200 rounded-xl bg-white hover:border-violet-300">
+            <span class="text-3xl font-bold fx-glitch-instant">Ag</span>
+            <span class="text-xs text-slate-600 mt-2 font-medium">ทันทีทันใด</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- หมวด 2: ขั้นสูง (Advanced Styles) -->
+      <section class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-base font-bold text-slate-900 flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-pink-500"></span>
+            ขั้นสูง
+          </h2>
+          <span class="text-xs text-slate-400">11 สไตล์พรีเมียม</span>
+        </div>
+
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          <!-- Sci-fi -->
+          <button type="button" onclick="selectEffect('fx-scifi', 'Sci-fi', this)" class="card-effect group flex flex-col items-center justify-center p-4 h-28 border border-slate-200 rounded-xl bg-slate-950 hover:border-emerald-400">
+            <span class="text-3xl fx-scifi">AG</span>
+            <span class="text-xs text-slate-300 mt-2 font-medium">Sci-fi</span>
+          </button>
+
+          <!-- ทีวีเสีย -->
+          <button type="button" onclick="selectEffect('fx-tv-glitch', 'ทีวีเสีย', this)" class="card-effect group flex flex-col items-center justify-center p-4 h-28 border border-slate-200 rounded-xl bg-white hover:border-violet-300">
+            <span class="text-3xl fx-tv-glitch">Ag</span>
+            <span class="text-xs text-slate-600 mt-2 font-medium">ทีวีเสีย</span>
+          </button>
+
+          <!-- ยุค 70 -->
+          <button type="button" onclick="selectEffect('fx-retro70s', 'ยุค 70', this)" class="card-effect group flex flex-col items-center justify-center p-4 h-28 border border-slate-200 rounded-xl bg-amber-50/50 hover:border-amber-300">
+            <span class="text-3xl fx-retro70s">Ag</span>
+            <span class="text-xs text-slate-600 mt-2 font-medium">ยุค 70</span>
+          </button>
+
+          <!-- การพิมพ์สกรีน -->
+          <button type="button" onclick="selectEffect('fx-screen-print', 'การพิมพ์สกรีน', this)" class="card-effect group flex flex-col items-center justify-center p-4 h-28 border border-slate-200 rounded-xl bg-pink-50/30 hover:border-pink-300">
+            <span class="text-3xl fx-screen-print">AG</span>
+            <span class="text-xs text-slate-600 mt-2 font-medium">การพิมพ์สกรีน</span>
+          </button>
+
+          <!-- หนังตะวันตก -->
+          <button type="button" onclick="selectEffect('fx-western', 'หนังตะวันตก', this)" class="card-effect group flex flex-col items-center justify-center p-4 h-28 border border-slate-200 rounded-xl bg-stone-50 hover:border-amber-400">
+            <span class="text-3xl fx-western">Ag</span>
+            <span class="text-xs text-slate-600 mt-2 font-medium">หนังตะวันตก</span>
+          </button>
+
+          <!-- กราฟิตี้ -->
+          <button type="button" onclick="selectEffect('fx-graffiti', 'กราฟิตี้', this)" class="card-effect group flex flex-col items-center justify-center p-4 h-28 border border-slate-200 rounded-xl bg-emerald-50/40 hover:border-emerald-400">
+            <span class="text-2xl fx-graffiti">AG</span>
+            <span class="text-xs text-slate-600 mt-2 font-medium">กราฟิตี้</span>
+          </button>
+
+          <!-- ฟอง -->
+          <button type="button" onclick="selectEffect('fx-bubble', 'ฟอง', this)" class="card-effect group flex flex-col items-center justify-center p-4 h-28 border border-slate-200 rounded-xl bg-sky-50/40 hover:border-sky-300">
+            <span class="text-3xl fx-bubble">Ag</span>
+            <span class="text-xs text-slate-600 mt-2 font-medium">ฟอง</span>
+          </button>
+
+          <!-- แอโรบิก -->
+          <button type="button" onclick="selectEffect('fx-aerobic', 'แอโรบิก', this)" class="card-effect group flex flex-col items-center justify-center p-4 h-28 border border-slate-200 rounded-xl bg-slate-900 hover:border-rose-400">
+            <span class="text-3xl fx-aerobic">Ag</span>
+            <span class="text-xs text-slate-300 mt-2 font-medium">แอโรบิก</span>
+          </button>
+
+          <!-- อาร์เคด -->
+          <button type="button" onclick="selectEffect('fx-arcade', 'อาร์เคด', this)" class="card-effect group flex flex-col items-center justify-center p-4 h-28 border border-slate-200 rounded-xl bg-slate-950 hover:border-emerald-400">
+            <span class="text-xl fx-arcade">Ag</span>
+            <span class="text-xs text-slate-300 mt-2 font-medium">อาร์เคด</span>
+          </button>
+
+          <!-- คอสซิก -->
+          <button type="button" onclick="selectEffect('fx-cosmic', 'คอสซิก', this)" class="card-effect group flex flex-col items-center justify-center p-4 h-28 border border-slate-200 rounded-xl bg-slate-950 hover:border-indigo-400">
+            <span class="text-3xl fx-cosmic">Ag</span>
+            <span class="text-xs text-slate-300 mt-2 font-medium">คอสซิก</span>
+          </button>
+
+          <!-- พิกเซล -->
+          <button type="button" onclick="selectEffect('fx-pixel', 'พิกเซล', this)" class="card-effect group flex flex-col items-center justify-center p-4 h-28 border border-slate-200 rounded-xl bg-slate-900 hover:border-pink-400">
+            <span class="text-2xl fx-pixel">AG</span>
+            <span class="text-xs text-slate-300 mt-2 font-medium">พิกเซล</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- หมวด 3: รูปทรง (Shape: None vs Curved) -->
+      <section class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm">
+        <div class="flex items-center justify-between mb-4">
+          <h2 class="text-base font-bold text-slate-900 flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+            รูปทรง
+          </h2>
+          <span class="text-xs text-slate-400">การดัดรูปทรง</span>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <!-- None รูปทรง -->
+          <button onclick="setShape('straight')" id="shapeStraightBtn" class="shape-btn active card-effect flex flex-col items-center justify-center p-4 h-28 border border-violet-500 rounded-xl bg-purple-50">
+            <span class="text-xl font-bold text-slate-600">None</span>
+            <span class="text-xs text-slate-600 mt-2 font-medium">ไม่มี</span>
+          </button>
+
+          <!-- เส้นโค้ง -->
+          <button onclick="setShape('curved')" id="shapeCurvedBtn" class="shape-btn card-effect flex flex-col items-center justify-center p-4 h-28 border border-slate-200 rounded-xl bg-white hover:border-violet-300">
+            <!-- จำลองตัวอักษรโค้ง ABCD ด้วย SVG -->
+            <svg class="w-20 h-10 overflow-visible" viewBox="0 0 100 45">
+              <path id="curvePathMini" d="M 10,40 Q 50,5 90,40" fill="transparent" />
+              <text class="font-bold fill-violet-600 text-sm" text-anchor="middle">
+                <textPath href="#curvePathMini" startOffset="50%">ABCD</textPath>
+              </text>
+            </svg>
+            <span class="text-xs text-slate-600 mt-2 font-medium">เส้นโค้ง</span>
+          </button>
+        </div>
+      </section>
+    </div>
+
+    <!-- ฝั่งขวา: พรีวิวสด & ตัวควบคุมปรับแต่งค่า (Interactive Canvas Playground) -->
+    <div class="lg:col-span-5 flex flex-col gap-5">
+      
+      <!-- Preview Screen Card -->
+      <div class="bg-white rounded-2xl border border-slate-200/90 shadow-sm overflow-hidden flex flex-col">
+        <div class="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/60">
+          <div class="flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-red-400"></span>
+            <span class="w-3 h-3 rounded-full bg-amber-400"></span>
+            <span class="w-3 h-3 rounded-full bg-emerald-400"></span>
+            <span class="text-xs font-semibold text-slate-500 ml-2">กระดานพรีวิวสด</span>
+          </div>
+          <span id="currentEffectBadge" class="text-xs px-2.5 py-1 bg-violet-100 text-violet-700 font-semibold rounded-full">
+            แบ็กกราวน์
+          </span>
+        </div>
+
+        <!-- กล่องแสดงผลตัวอักษร (สามารถปรับพื้นหลังพรีวิว มืด/สว่างได้) -->
+        <div id="previewCanvasArea" class="relative min-h-[300px] flex items-center justify-center p-8 bg-slate-50 transition-colors duration-300 overflow-hidden">
+          
+          <!-- เส้น Grid Guide บางๆ ให้ฟีลลิ่ง Canva Workspace -->
+          <div class="absolute inset-0 bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] [background-size:16px_16px] pointer-events-none opacity-70"></div>
+
+          <!-- ตัวแสดงผลแบบปกติ (Straight) -->
+          <div id="straightContainer" class="relative z-10 text-center select-none">
+            <span id="previewTextElement" class="fx-background-box text-5xl transition-all duration-150 inline-block">
+              Ag
+            </span>
+          </div>
+
+          <!-- ตัวแสดงผลแบบโค้ง (Curved SVG Canvas) -->
+          <div id="curvedContainer" class="relative z-10 w-full flex items-center justify-center hidden">
+            <svg id="curvedSvg" class="w-full max-w-[420px] h-[220px] overflow-visible" viewBox="0 0 400 200">
+              <path id="previewCurvePath" d="M 40,160 Q 200,10 360,160" fill="transparent" stroke="rgba(148,163,184,0.2)" stroke-dasharray="4,4" />
+              <text class="select-none" text-anchor="middle">
+                <textPath id="curvedTextPath" href="#previewCurvePath" startOffset="50%" class="fx-background-box text-4xl">
+                  Ag
+                </textPath>
+              </text>
+            </svg>
+          </div>
+        </div>
+
+        <!-- ควบคุมสีพื้นหลังของ Canvas พรีวิว (เพื่อทดสอบเอฟเฟกต์มืด/สว่าง) -->
+        <div class="px-5 py-2.5 bg-slate-100/70 border-t border-slate-200/70 flex items-center justify-between text-xs">
+          <span class="text-slate-500">พื้นหลังพรีวิว:</span>
+          <div class="flex items-center gap-1.5">
+            <button onclick="setPreviewBg('bg-slate-50')" class="w-5 h-5 rounded-full bg-slate-50 border border-slate-300 shadow-sm"></button>
+            <button onclick="setPreviewBg('bg-white')" class="w-5 h-5 rounded-full bg-white border border-slate-300 shadow-sm"></button>
+            <button onclick="setPreviewBg('bg-slate-900')" class="w-5 h-5 rounded-full bg-slate-900 border border-slate-700 shadow-sm"></button>
+            <button onclick="setPreviewBg('bg-purple-900')" class="w-5 h-5 rounded-full bg-purple-900 border border-purple-700 shadow-sm"></button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Settings & Controls Panel -->
+      <div class="bg-white p-5 rounded-2xl border border-slate-200/90 shadow-sm space-y-4">
+        <h3 class="text-sm font-bold text-slate-800 uppercase tracking-wide">ตั้งค่าข้อความ</h3>
+        
+        <!-- แก้ไขข้อความ -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1">พิมพ์ข้อความทดสอบ</label>
+          <input type="text" id="textInput" value="Ag" placeholder="พิมพ์ข้อความที่ต้องการ..." 
+                 class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-slate-800 text-sm focus:ring-2 focus:ring-violet-500 focus:outline-none transition">
+        </div>
+
+        <!-- ขนาดตัวอักษร Slider -->
+        <div>
+          <div class="flex justify-between text-xs font-semibold text-slate-600 mb-1">
+            <span>ขนาดตัวอักษร</span>
+            <span id="fontSizeDisplay">48px</span>
+          </div>
+          <input type="range" id="fontSizeSlider" min="24" max="84" value="48" 
+                 class="w-full accent-violet-600 cursor-pointer">
+        </div>
+
+        <!-- ความโค้งของเส้น (เปิดเมื่อเลือกรูปทรงโค้ง) -->
+        <div id="curveControlGroup" class="hidden">
+          <div class="flex justify-between text-xs font-semibold text-slate-600 mb-1">
+            <span>ระดับความโค้ง (Curvature)</span>
+            <span id="curveDisplay">ปานกลาง</span>
+          </div>
+          <input type="range" id="curveSlider" min="0" max="150" value="80" 
+                 class="w-full accent-violet-600 cursor-pointer">
+        </div>
+
+        <!-- ส่วนควบคุมสี (Color Controls) ตามข้อกำหนด แสดงไว้ด้านล่างเหมือนเครื่องมืออื่นๆ -->
+        <div class="pt-2 border-t border-slate-100">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-semibold text-slate-700 flex items-center gap-1.5">
+              <i class="fa-solid fa-palette text-violet-600"></i> ปรับสีเอฟเฟกต์
+            </span>
+            <button type="button" id="resetThemeColorBtn" class="text-xs text-violet-600 hover:text-violet-800 font-semibold hover:underline flex items-center gap-1 transition">
+              <i class="fa-solid fa-rotate-left text-[10px]"></i> รีเซ็ตสีตามธีม
+            </button>
+          </div>
+
+          <!-- Canva Spectrum Card Structure ตามข้อกำหนด 100% -->
+          <div id="canva-spectrum-card" class="mt-3 p-3.5 bg-white dark:bg-[#201d1a] border border-[#e7e5e4] dark:border-[#38332e] rounded-2xl shadow-xl space-y-3 animate-in zoom-in-95 duration-150">
+            <div class="flex border-b border-[#f0efed] dark:border-[#2e2a26] pb-1.5">
+              <button type="button" id="tabSolidColor" class="flex-1 pb-1.5 text-xs font-semibold text-center transition text-[#8c52ff] border-b-2 border-[#8c52ff]">สีเดียว</button>
+              <button type="button" id="tabGradientColor" class="flex-1 pb-1.5 text-xs font-semibold text-center transition text-[#777169] dark:text-[#a8a29e] hover:text-[#0c0a09] dark:hover:text-white">กราเดียนต์</button>
+            </div>
+            
+            <!-- Spectrum Area (Saturation / Value 2D Box) -->
+            <div id="spectrumBox" class="relative w-full h-32 rounded-xl overflow-hidden cursor-crosshair select-none touch-none shadow-inner" style="background-color: rgb(255, 0, 0); background-image: linear-gradient(to right, rgb(255, 255, 255), transparent), linear-gradient(to top, rgb(0, 0, 0), transparent);">
+              <div id="spectrumHandle" class="absolute w-4 h-4 rounded-full border-2 border-white shadow-md pointer-events-none -translate-x-1/2 -translate-y-1/2" style="left: 65%; top: 15%; background-color: rgb(217, 76, 76);"></div>
+            </div>
+
+            <!-- Hue Bar Slider -->
+            <div id="hueBar" class="relative w-full h-3 rounded-full cursor-pointer select-none touch-none shadow-inner" style="background: linear-gradient(to right, rgb(255, 0, 0) 0%, rgb(255, 255, 0) 17%, rgb(0, 255, 0) 33%, rgb(0, 255, 255) 50%, rgb(0, 0, 255) 67%, rgb(255, 0, 255) 83%, rgb(255, 0, 0) 100%);">
+              <div id="hueHandle" class="absolute w-5 h-5 rounded-full border-2 border-white shadow-md top-1/2 -translate-y-1/2 -translate-x-1/2 pointer-events-none" style="left: 0%; background-color: rgb(255, 0, 0);"></div>
+            </div>
+
+            <!-- Controls: Hex Input, Color Preview, Native Color Picker & Eyedropper -->
+            <div class="flex items-center gap-2 pt-1">
+              <div class="flex-1 flex items-center bg-[#fafafa] dark:bg-[#181615] border border-[#e7e5e4] dark:border-[#38332e] rounded-xl px-2.5 py-1.5 gap-2 relative">
+                <!-- Color preview circle & native picker input trigger -->
+                <div id="colorSwatchPreview" class="w-5 h-5 rounded-full border border-black/10 dark:border-white/20 shadow-xs flex-shrink-0 cursor-pointer overflow-hidden relative" style="background-color: rgb(216, 102, 102);" title="คลิกเพื่อเปิด Color Picker">
+                  <input type="color" id="nativeColorPicker" class="absolute inset-0 opacity-0 cursor-pointer w-full h-full" value="#D86666">
+                </div>
+                <input id="hexColorInput" maxlength="7" class="w-full bg-transparent text-xs font-mono font-bold text-[#0c0a09] dark:text-white uppercase outline-none" placeholder="#000000" type="text" value="#D86666">
+              </div>
+              <button type="button" id="eyedropperBtn" class="w-9 h-9 rounded-xl border border-[#e7e5e4] dark:border-[#38332e] bg-[#fafafa] dark:bg-[#181615] flex items-center justify-center text-[#777169] hover:text-[#0c0a09] dark:text-[#a8a29e] dark:hover:text-white transition flex-shrink-0 active:scale-95" title="ดูดสี (Eyedropper)"><i class="fa-solid fa-eye-dropper text-xs"></i></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- กล่องแสดงโค้ด CSS สำหรับคัดลอกทันที -->
+        <div class="pt-2">
+          <div class="flex items-center justify-between text-xs font-semibold text-slate-600 mb-1.5">
+            <span>โค้ด CSS ของเอฟเฟกต์นี้</span>
+          </div>
+          <pre id="cssOutputBox" class="bg-slate-900 text-emerald-400 p-3 rounded-xl text-xs font-mono overflow-x-auto max-h-32 leading-relaxed selection:bg-emerald-800 selection:text-white">
+/* CSS code */
+          </pre>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Notification Toast -->
+  <div id="toast" class="fixed bottom-6 right-6 bg-slate-900 text-white px-4 py-2.5 rounded-xl shadow-xl text-sm flex items-center gap-2 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none z-50">
+    <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+    <span id="toastMessage">คัดลอกสำเร็จ!</span>
+  </div>
+
+  <script>
+    // แม่แบบสไตล์สำหรับแต่ละเอฟเฟกต์ โดยรองรับฟังก์ชันสร้าง CSS ไดนามิกตามสีที่ผู้ใช้เลือก
+    const defaultThemeColors = {
+      'fx-none': '#8b5cf6',
+      'fx-shadow': '#8b5cf6',
+      'fx-lift': '#8b5cf6',
+      'fx-reflection': '#8b5cf6',
+      'fx-outline': '#8b5cf6',
+      'fx-background-box': '#8b5cf6',
+      'fx-splice': '#8b5cf6',
+      'fx-hollow': '#7c3aed',
+      'fx-neon': '#c084fc',
+      'fx-glitch-instant': '#a855f7',
+      'fx-scifi': '#86efac',
+      'fx-tv-glitch': '#38bdf8',
+      'fx-retro70s': '#f59e0b',
+      'fx-screen-print': '#db2777',
+      'fx-western': '#e06d53',
+      'fx-graffiti': '#10b981',
+      'fx-bubble': '#38bdf8',
+      'fx-aerobic': '#f43f5e',
+      'fx-arcade': '#22c55e',
+      'fx-cosmic': '#a5b4fc',
+      'fx-pixel': '#ec4899'
+    };
+
+    // State เริ่มต้น
+    let currentClass = 'fx-background-box';
+    let currentEffectName = 'แบ็กกราวน์';
+    let currentShape = 'straight'; // 'straight' หรือ 'curved'
+    let currentColorMode = 'solid'; // 'solid' หรือ 'gradient'
+
+    // ตัวแปรสี HSV
+    let currentHue = 0; // 0 - 360
+    let currentSat = 0.53; // 0 - 1
+    let currentVal = 0.85; // 0 - 1
+    let currentHex = '#D86666';
+
+    // DOM Elements
+    const previewTextElement = document.getElementById('previewTextElement');
+    const curvedTextPath = document.getElementById('curvedTextPath');
+    const straightContainer = document.getElementById('straightContainer');
+    const curvedContainer = document.getElementById('curvedContainer');
+    const textInput = document.getElementById('textInput');
+    const fontSizeSlider = document.getElementById('fontSizeSlider');
+    const fontSizeDisplay = document.getElementById('fontSizeDisplay');
+    const currentEffectBadge = document.getElementById('currentEffectBadge');
+    const cssOutputBox = document.getElementById('cssOutputBox');
+    const previewCanvasArea = document.getElementById('previewCanvasArea');
+    const curveControlGroup = document.getElementById('curveControlGroup');
+    const curveSlider = document.getElementById('curveSlider');
+    const previewCurvePath = document.getElementById('previewCurvePath');
+
+    // Color Controls DOM Elements
+    const spectrumBox = document.getElementById('spectrumBox');
+    const spectrumHandle = document.getElementById('spectrumHandle');
+    const hueBar = document.getElementById('hueBar');
+    const hueHandle = document.getElementById('hueHandle');
+    const colorSwatchPreview = document.getElementById('colorSwatchPreview');
+    const hexColorInput = document.getElementById('hexColorInput');
+    const nativeColorPicker = document.getElementById('nativeColorPicker');
+    const eyedropperBtn = document.getElementById('eyedropperBtn');
+    const resetThemeColorBtn = document.getElementById('resetThemeColorBtn');
+    const tabSolidColor = document.getElementById('tabSolidColor');
+    const tabGradientColor = document.getElementById('tabGradientColor');
+
+    // ฟังก์ชันแปลง HSV เป็น HEX
+    function hsvToHex(h, s, v) {
+      let r, g, b;
+      let i = Math.floor(h / 60);
+      let f = h / 60 - i;
+      let p = v * (1 - s);
+      let q = v * (1 - f * s);
+      let t = v * (1 - (1 - f) * s);
+      switch (i % 6) {
+        case 0: r = v; g = t; b = p; break;
+        case 1: r = q; g = v; b = p; break;
+        case 2: r = p; g = v; b = t; break;
+        case 3: r = p; g = q; b = v; break;
+        case 4: r = t; g = p; b = v; break;
+        case 5: r = v; g = p; b = q; break;
+      }
+      const toHex = x => Math.round(x * 255).toString(16).padStart(2, '0');
+      return `#${toHex(r)}${toHex(g)}${toHex(b)}`.toUpperCase();
+    }
+
+    // ฟังก์ชันแปลง HEX เป็น HSV
+    function hexToHsv(hex) {
+      hex = hex.replace('#', '');
+      if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+      let r = parseInt(hex.substring(0, 2), 16) / 255;
+      let g = parseInt(hex.substring(2, 4), 16) / 255;
+      let b = parseInt(hex.substring(4, 6), 16) / 255;
+      if (isNaN(r) || isNaN(g) || isNaN(b)) return { h: 0, s: 1, v: 1 };
+
+      let max = Math.max(r, g, b), min = Math.min(r, g, b);
+      let h, s, v = max;
+      let d = max - min;
+      s = max === 0 ? 0 : d / max;
+      if (max === min) {
+        h = 0;
+      } else {
+        switch (max) {
+          case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+          case g: h = (b - r) / d + 2; break;
+          case b: h = (r - g) / d + 4; break;
+        }
+        h /= 6;
+      }
+      return { h: Math.round(h * 360), s, v };
+    }
+
+    // ฟังก์ชันปรับความสว่าง/เฉดสีสำหรับเงาและเรืองแสง
+    function adjustHex(hex, percent) {
+      let num = parseInt(hex.replace('#', ''), 16),
+          amt = Math.round(2.55 * percent),
+          R = (num >> 16) + amt,
+          G = (num >> 8 & 0x00FF) + amt,
+          B = (num & 0x0000FF) + amt;
+      return '#' + (0x1000000 + (R<255?R<1?0:R:255)*0x10000 + (G<255?G<1?0:G:255)*0x100 + (B<255?B<1?0:B:255)).toString(16).slice(1);
+    }
+
+    // สร้าง CSS Rules ไดนามิกตามสีที่ผู้ใช้เลือก
+    function generateEffectCss(cls, hex, isGradient = false) {
+      const darker = adjustHex(hex, -25);
+      const muchDarker = adjustHex(hex, -50);
+      const lighter = adjustHex(hex, 35);
+      const bgLight = adjustHex(hex, 75);
+
+      if (isGradient) {
+        return `background: linear-gradient(135deg, ${hex}, ${lighter});
+-webkit-background-clip: text;
+-webkit-text-fill-color: transparent;
+font-weight: 700;
+filter: drop-shadow(3px 3px 5px rgba(0,0,0,0.25));`;
+      }
+
+      switch (cls) {
+        case 'fx-none':
+          return `color: ${hex};
+font-weight: 700;`;
+        case 'fx-shadow':
+          return `color: ${hex};
+font-weight: 700;
+text-shadow: 4px 4px 6px ${darker}80;`;
+        case 'fx-lift':
+          return `color: ${hex};
+font-weight: 700;
+text-shadow: 0 0 16px ${hex}a6, 0 0 30px ${hex}66;`;
+        case 'fx-reflection':
+          return `color: ${hex};
+font-weight: 700;
+text-shadow: 5px 6px 0px ${darker}70;`;
+        case 'fx-outline':
+          return `color: transparent;
+-webkit-text-stroke: 2.5px ${hex};
+font-weight: 700;`;
+        case 'fx-background-box':
+          return `color: ${hex};
+font-weight: 700;
+background: ${bgLight}55;
+padding: 0.15em 0.35em;
+border-radius: 0.3em;
+display: inline-block;`;
+        case 'fx-splice':
+          return `color: transparent;
+-webkit-text-stroke: 2px ${hex};
+font-weight: 700;
+filter: drop-shadow(4px 4px 0px ${darker});`;
+        case 'fx-hollow':
+          return `color: transparent;
+-webkit-text-stroke: 2px ${hex};
+font-weight: 700;`;
+        case 'fx-neon':
+          return `color: #ffffff;
+font-weight: 700;
+text-shadow: 
+  0 0 4px #ffffff,
+  0 0 10px ${lighter},
+  0 0 20px ${hex},
+  0 0 40px ${darker};`;
+        case 'fx-glitch-instant':
+          return `color: ${hex};
+font-weight: 800;
+text-shadow: -3px -2px 0px #06b6d4, 3px 2px 0px #ec4899;`;
+        case 'fx-scifi':
+          return `font-family: 'Orbitron', sans-serif;
+color: ${hex};
+font-weight: 900;
+letter-spacing: 2px;
+text-shadow: 
+  0 0 5px ${lighter},
+  0 0 12px ${hex},
+  0 0 24px ${hex}99;`;
+        case 'fx-tv-glitch':
+          return `font-weight: 900;
+color: ${hex};
+text-shadow: 
+  -3px 0 0 #ef4444,
+  3px 0 0 ${darker},
+  0 0 6px ${hex}b3;`;
+        case 'fx-retro70s':
+          return `font-weight: 900;
+color: ${hex};
+text-shadow: 
+  1px 1px 0px ${adjustHex(hex, -15)},
+  2px 2px 0px ${adjustHex(hex, -30)},
+  3px 3px 0px ${adjustHex(hex, -45)},
+  4px 4px 0px ${adjustHex(hex, -60)},
+  5px 5px 0px #7f1d1d;`;
+        case 'fx-screen-print':
+          return `font-weight: 900;
+color: transparent;
+-webkit-text-stroke: 1.5px ${hex};
+text-shadow: 
+  3px 3px 0px ${lighter},
+  6px 6px 0px ${lighter}66;`;
+        case 'fx-western':
+          return `font-family: 'Pacifico', cursive;
+color: ${hex};
+text-shadow: 
+  2px 2px 0px #fff,
+  3px 3px 0px ${darker},
+  4px 4px 1px ${muchDarker};`;
+        case 'fx-graffiti':
+          return `font-family: 'Bungee', cursive;
+color: ${hex};
+-webkit-text-stroke: 2px ${muchDarker};
+text-shadow: 
+  4px 4px 0px ${muchDarker},
+  6px 6px 0px rgba(0,0,0,0.3);`;
+        case 'fx-bubble':
+          return `font-weight: 900;
+color: ${hex};
+-webkit-text-stroke: 2px ${darker};
+text-shadow: 
+  inset 0 2px 4px rgba(255, 255, 255, 0.8),
+  3px 3px 0px ${darker},
+  5px 5px 0px ${muchDarker};
+filter: drop-shadow(0 4px 6px rgba(0,0,0,0.15));`;
+        case 'fx-aerobic':
+          return `font-family: 'Pacifico', cursive;
+color: ${hex};
+font-style: italic;
+text-shadow: 
+  0 0 5px ${lighter},
+  0 0 15px ${hex},
+  0 0 25px ${darker};`;
+        case 'fx-arcade':
+          return `font-family: 'Press Start 2P', monospace;
+color: ${hex};
+text-shadow: 
+  3px 3px 0px ${darker},
+  5px 5px 0px ${muchDarker};
+letter-spacing: 2px;`;
+        case 'fx-cosmic':
+          return `font-family: 'Pacifico', cursive;
+color: #e0e7ff;
+text-shadow: 
+  0 0 8px ${lighter},
+  0 0 18px ${hex},
+  0 0 30px ${darker},
+  0 0 45px ${muchDarker}99;`;
+        case 'fx-pixel':
+          return `font-family: 'Silkscreen', monospace;
+font-weight: 700;
+color: ${hex};
+text-shadow: 
+  3px 3px 0px #38bdf8,
+  5px 5px 0px ${muchDarker};
+letter-spacing: 3px;`;
+        default:
+          return `color: ${hex}; font-weight: 700;`;
+      }
+    }
+
+    // ฟังก์ชันอัปเดตสีและสไตล์ทั้งหมดแบบ Realtime
+    function applyColor(hex, updateSpectrum = true) {
+      currentHex = hex.toUpperCase();
+      hexColorInput.value = currentHex;
+      nativeColorPicker.value = currentHex;
+      colorSwatchPreview.style.backgroundColor = currentHex;
+
+      if (updateSpectrum) {
+        const hsv = hexToHsv(currentHex);
+        currentHue = hsv.h;
+        currentSat = hsv.s;
+        currentVal = hsv.v;
+
+        // ปรับตำแหน่งตัวชี้ใน Hue Bar
+        const huePercent = (currentHue / 360) * 100;
+        hueHandle.style.left = `${huePercent}%`;
+        const hueColor = hsvToHex(currentHue, 1, 1);
+        hueHandle.style.backgroundColor = hueColor;
+        spectrumBox.style.backgroundColor = hueColor;
+
+        // ปรับตำแหน่งตัวชี้ใน Spectrum Box
+        const satPercent = currentSat * 100;
+        const valPercent = (1 - currentVal) * 100;
+        spectrumHandle.style.left = `${satPercent}%`;
+        spectrumHandle.style.top = `${valPercent}%`;
+        spectrumHandle.style.backgroundColor = currentHex;
+      }
+
+      // นำ CSS ที่สร้างขึ้นมาใหม่ใส่ใน preview
+      const activeCss = generateEffectCss(currentClass, currentHex, currentColorMode === 'gradient');
+      
+      // ปรับแต่ง style ให้ element โดยตรง
+      previewTextElement.style.cssText = `font-size: ${fontSizeSlider.value}px; ${activeCss}`;
+      curvedTextPath.style.cssText = `font-size: ${fontSizeSlider.value}px; ${activeCss}`;
+
+      // อัปเดตช่อง Code Box
+      cssOutputBox.textContent = `.${currentClass} {\n${activeCss.split('\n').map(l => '  ' + l).join('\n')}\n}`;
+    }
+
+    // ฟังก์ชันเลือก Effect
+    function selectEffect(className, displayName, targetEl) {
+      currentClass = className;
+      currentEffectName = displayName;
+      currentEffectBadge.textContent = displayName;
+
+      // ลบคลาส effect เก่าออกทั้งหมด
+      Object.keys(defaultThemeColors).forEach(cls => {
+        previewTextElement.classList.remove(cls);
+        curvedTextPath.classList.remove(cls);
+      });
+
+      // ดึงสีตามธีมของเอฟเฟกต์นั้นๆ มาอัปเดตพาเนลสี
+      const themeHex = defaultThemeColors[className] || '#8b5cf6';
+      applyColor(themeHex, true);
+
+      // ถ้าเป็นเอฟเฟกต์แนวมืด ปรับพื้นหลังให้อัตโนมัติ
+      if (['fx-neon', 'fx-scifi', 'fx-arcade', 'fx-cosmic', 'fx-aerobic'].includes(className)) {
+        setPreviewBg('bg-slate-900');
+      }
+
+      // อัปเดตกรอบ Active ในการ์ดปุ่มอย่างปลอดภัย
+      document.querySelectorAll('.card-effect').forEach(card => {
+        card.classList.remove('active', 'border-violet-500', 'bg-purple-50');
+      });
+      if (targetEl) {
+        targetEl.classList.add('active', 'border-violet-500', 'bg-purple-50');
+      }
+    }
+
+    // ฟังก์ชันเลือกรูปทรง (Straight vs Curved)
+    function setShape(shape) {
+      currentShape = shape;
+      const straightBtn = document.getElementById('shapeStraightBtn');
+      const curvedBtn = document.getElementById('shapeCurvedBtn');
+
+      if (shape === 'curved') {
+        straightContainer.classList.add('hidden');
+        curvedContainer.classList.remove('hidden');
+        curveControlGroup.classList.remove('hidden');
+
+        curvedBtn.classList.add('active', 'border-violet-500', 'bg-purple-50');
+        straightBtn.classList.remove('active', 'border-violet-500', 'bg-purple-50');
+      } else {
+        curvedContainer.classList.add('hidden');
+        straightContainer.classList.remove('hidden');
+        curveControlGroup.classList.add('hidden');
+
+        straightBtn.classList.add('active', 'border-violet-500', 'bg-purple-50');
+        curvedBtn.classList.remove('active', 'border-violet-500', 'bg-purple-50');
+      }
+    }
+
+    // ฟังก์ชันเปลี่ยนสี Canvas พรีวิว
+    function setPreviewBg(bgClass) {
+      previewCanvasArea.className = `relative min-h-[300px] flex items-center justify-center p-8 transition-colors duration-300 overflow-hidden ${bgClass}`;
+    }
+
+    // ==========================================
+    // Interaction Handlers สำหรับ Spectrum Card
+    // ==========================================
+    let isDraggingSpectrum = false;
+    let isDraggingHue = false;
+
+    function handleSpectrumMove(e) {
+      if (e.cancelable) e.preventDefault();
+      const rect = spectrumBox.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+      let x = Math.max(0, Math.min(rect.width, clientX - rect.left));
+      let y = Math.max(0, Math.min(rect.height, clientY - rect.top));
+
+      currentSat = x / rect.width;
+      currentVal = 1 - (y / rect.height);
+
+      spectrumHandle.style.left = `${(x / rect.width) * 100}%`;
+      spectrumHandle.style.top = `${(y / rect.height) * 100}%`;
+
+      const hex = hsvToHex(currentHue, currentSat, currentVal);
+      spectrumHandle.style.backgroundColor = hex;
+      applyColor(hex, false);
+    }
+
+    spectrumBox.addEventListener('mousedown', (e) => {
+      isDraggingSpectrum = true;
+      handleSpectrumMove(e);
+    });
+
+    spectrumBox.addEventListener('touchstart', (e) => {
+      isDraggingSpectrum = true;
+      handleSpectrumMove(e);
+    }, { passive: false });
+
+    function handleHueMove(e) {
+      if (e.cancelable) e.preventDefault();
+      const rect = hueBar.getBoundingClientRect();
+      const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+      let x = Math.max(0, Math.min(rect.width, clientX - rect.left));
+      let percent = x / rect.width;
+
+      currentHue = Math.round(percent * 360);
+      hueHandle.style.left = `${percent * 100}%`;
+
+      const pureHueHex = hsvToHex(currentHue, 1, 1);
+      hueHandle.style.backgroundColor = pureHueHex;
+      spectrumBox.style.backgroundColor = pureHueHex;
+
+      const newHex = hsvToHex(currentHue, currentSat, currentVal);
+      spectrumHandle.style.backgroundColor = newHex;
+      applyColor(newHex, false);
+    }
+
+    hueBar.addEventListener('mousedown', (e) => {
+      isDraggingHue = true;
+      handleHueMove(e);
+    });
+
+    hueBar.addEventListener('touchstart', (e) => {
+      isDraggingHue = true;
+      handleHueMove(e);
+    }, { passive: false });
+
+    window.addEventListener('mousemove', (e) => {
+      if (isDraggingSpectrum) handleSpectrumMove(e);
+      if (isDraggingHue) handleHueMove(e);
+    });
+
+    window.addEventListener('touchmove', (e) => {
+      if (isDraggingSpectrum) handleSpectrumMove(e);
+      if (isDraggingHue) handleHueMove(e);
+    }, { passive: false });
+
+    window.addEventListener('mouseup', () => {
+      isDraggingSpectrum = false;
+      isDraggingHue = false;
+    });
+
+    window.addEventListener('touchend', () => {
+      isDraggingSpectrum = false;
+      isDraggingHue = false;
+    });
+
+    // Native Color Picker Change
+    nativeColorPicker.addEventListener('input', (e) => {
+      applyColor(e.target.value, true);
+    });
+
+    // Hex Text Input
+    hexColorInput.addEventListener('input', (e) => {
+      let val = e.target.value;
+      if (!val.startsWith('#')) val = '#' + val;
+      if (/^#[0-9A-Fa-f]{6}$/.test(val)) {
+        applyColor(val, true);
+      }
+    });
+
+    // Eyedropper API (รองรับ Chrome, Edge, Opera)
+    eyedropperBtn.addEventListener('click', async () => {
+      if ('EyeDropper' in window) {
+        try {
+          const eyeDropper = new EyeDropper();
+          const result = await eyeDropper.open();
+          if (result && result.sRGBHex) {
+            applyColor(result.sRGBHex, true);
+            showToast('ดูดสีสำเร็จ: ' + result.sRGBHex);
+          }
+        } catch (e) {
+          // ผู้ใช้กดยกเลิก
+        }
+      } else {
+        // Fallback เปิด native color picker
+        nativeColorPicker.click();
+      }
+    });
+
+    // ปุ่มรีเซ็ตสีเป็นสีตามธีมอัตโนมัติ (Default Effect Theme Color)
+    resetThemeColorBtn.addEventListener('click', () => {
+      const themeColor = defaultThemeColors[currentClass] || '#8b5cf6';
+      applyColor(themeColor, true);
+      showToast('รีเซ็ตสีตามธีมของ ' + currentEffectName + ' แล้ว');
+    });
+
+    // แท็บสีเดียว / กราเดียนต์
+    tabSolidColor.addEventListener('click', () => {
+      currentColorMode = 'solid';
+      tabSolidColor.className = "flex-1 pb-1.5 text-xs font-semibold text-center transition text-[#8c52ff] border-b-2 border-[#8c52ff]";
+      tabGradientColor.className = "flex-1 pb-1.5 text-xs font-semibold text-center transition text-[#777169] dark:text-[#a8a29e] hover:text-[#0c0a09] dark:hover:text-white";
+      applyColor(currentHex, false);
+    });
+
+    tabGradientColor.addEventListener('click', () => {
+      currentColorMode = 'gradient';
+      tabGradientColor.className = "flex-1 pb-1.5 text-xs font-semibold text-center transition text-[#8c52ff] border-b-2 border-[#8c52ff]";
+      tabSolidColor.className = "flex-1 pb-1.5 text-xs font-semibold text-center transition text-[#777169] dark:text-[#a8a29e] hover:text-[#0c0a09] dark:hover:text-white";
+      applyColor(currentHex, false);
+    });
+
+    // Input ข้อความ
+    textInput.addEventListener('input', (e) => {
+      const val = e.target.value || 'Ag';
+      previewTextElement.textContent = val;
+      curvedTextPath.textContent = val;
+    });
+
+    // Slider ปรับขนาดตัวอักษร
+    fontSizeSlider.addEventListener('input', (e) => {
+      const size = e.target.value + 'px';
+      previewTextElement.style.fontSize = size;
+      curvedTextPath.style.fontSize = size;
+      fontSizeDisplay.textContent = size;
+    });
+
+    // Slider ปรับความโค้ง SVG Curve
+    curveSlider.addEventListener('input', (e) => {
+      const depth = parseInt(e.target.value);
+      const yPoint = 170 - depth;
+      previewCurvePath.setAttribute('d', `M 40,165 Q 200,${yPoint} 360,165`);
+    });
+
+    // คัดลอก CSS ลงคลิปบอร์ด
+    document.getElementById('copyCssBtn').addEventListener('click', () => {
+      const cssText = cssOutputBox.textContent;
+      
+      const textarea = document.createElement('textarea');
+      textarea.value = cssText;
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand('copy');
+        showToast('คัดลอก CSS ของเอฟเฟกต์ ' + currentEffectName + ' แล้ว!');
+      } catch (err) {
+        showToast('ไม่สามารถคัดลอกได้');
+      }
+      document.body.removeChild(textarea);
+    });
+
+    // แจ้งเตือน Toast
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      const toastMessage = document.getElementById('toastMessage');
+      toastMessage.textContent = msg;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      setTimeout(() => {
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 2500);
+    }
+
+    // ปุ่มรีเซ็ตค่าทั้งหมด
+    document.getElementById('resetBtn').addEventListener('click', () => {
+      textInput.value = 'Ag';
+      previewTextElement.textContent = 'Ag';
+      curvedTextPath.textContent = 'Ag';
+      fontSizeSlider.value = 48;
+      previewTextElement.style.fontSize = '48px';
+      curvedTextPath.style.fontSize = '48px';
+      fontSizeDisplay.textContent = '48px';
+      setShape('straight');
+      setPreviewBg('bg-slate-50');
+      document.getElementById('defaultSelectedCard').click();
+      showToast('รีเซ็ตค่าเริ่มต้นเรียบร้อย');
+    });
+
+    // เริ่มต้นแสดงผล
+    window.onload = function() {
+      applyColor('#8B5CF6', true);
+    };
+  </script>
+</body>
+</html>
