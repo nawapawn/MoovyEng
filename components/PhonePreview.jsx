@@ -183,8 +183,11 @@ export default function PhonePreview({ isMobile = false }) {
       }
     }
 
-    if (!streamSrc && clip.videoUrl) {
-      streamSrc = `/api/cafe/stream?url=${encodeURIComponent(clip.videoUrl)}`;
+    if (!streamSrc) {
+      const fallbackTarget = clip.videoUrl || (clip.slug ? `https://clip.cafe/videos/${clip.slug.replace(/[^a-zA-Z0-9_\-]/g, '_')}.mp4` : null);
+      if (fallbackTarget) {
+        streamSrc = `/api/cafe/stream?url=${encodeURIComponent(fallbackTarget)}`;
+      }
     }
 
     if (streamSrc) {
