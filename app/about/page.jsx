@@ -1,11 +1,19 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import gsap from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+// Register ScrollTrigger plugin with GSAP core
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 export default function PersonalShowcasePage() {
   const [lang, setLang] = useState('th');
   const [activeTab, setActiveTab] = useState('desktop');
+  const mainContainerRef = useRef(null);
 
   // Load language preference from localStorage
   useEffect(() => {
@@ -22,6 +30,106 @@ export default function PersonalShowcasePage() {
       localStorage.setItem('movy_lang', nextLang);
     } catch (e) {}
   };
+
+  /**
+   * GSAP ScrollTrigger & Entrance Animations
+   * Uses gsap.context() for clean lifecycle scoping and automatic garbage collection
+   */
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      // 1. Hero Entrance Timeline: Smooth fade, upward translate & subtle scale expansion
+      const heroTl = gsap.timeline({ defaults: { ease: 'power4.out', duration: 1.2 } });
+
+      heroTl
+        .from('.hero-badge', {
+          y: 20,
+          opacity: 0,
+          scale: 0.95,
+          duration: 0.8
+        })
+        .from('.hero-title', {
+          y: 45,
+          opacity: 0,
+          scale: 0.98,
+          duration: 1.2
+        }, '-=0.5')
+        .from('.hero-desc', {
+          y: 25,
+          opacity: 0,
+          duration: 1.0
+        }, '-=0.8')
+        .from('.hero-cta-btn', {
+          y: 20,
+          opacity: 0,
+          scale: 0.96,
+          stagger: 0.1,
+          duration: 0.8
+        }, '-=0.7');
+
+      // 2. Interactive Showcase Section: ScrollTrigger entrance at 80% viewport
+      gsap.from('.showcase-panel', {
+        scrollTrigger: {
+          trigger: '.showcase-panel',
+          start: 'top 80%',
+          toggleActions: 'play none none none'
+        },
+        y: 50,
+        opacity: 0,
+        scale: 0.98,
+        duration: 1.2,
+        ease: 'power4.out'
+      });
+
+      // 3. Step-by-Step 4 Cards: ScrollTrigger staggered reveal
+      gsap.from('.guide-step-card', {
+        scrollTrigger: {
+          trigger: '.guide-steps-grid',
+          start: 'top 80%',
+          toggleActions: 'play none none none'
+        },
+        y: 40,
+        opacity: 0,
+        scale: 0.95,
+        duration: 1.0,
+        stagger: 0.1, // Stagger 0.1s for natural ripple motion
+        ease: 'power2.out'
+      });
+
+      // 4. Feature Pillars: ScrollTrigger staggered reveal
+      gsap.from('.feature-pillar-card', {
+        scrollTrigger: {
+          trigger: '.feature-pillars-grid',
+          start: 'top 80%',
+          toggleActions: 'play none none none'
+        },
+        y: 35,
+        opacity: 0,
+        duration: 1.0,
+        stagger: 0.12,
+        ease: 'power2.out'
+      });
+
+      // 5. Creator Showcase & Official Social Channels
+      gsap.from('.creator-card', {
+        scrollTrigger: {
+          trigger: '.creator-container',
+          start: 'top 85%',
+          toggleActions: 'play none none none'
+        },
+        y: 30,
+        opacity: 0,
+        stagger: 0.15,
+        duration: 1.0,
+        ease: 'power2.out'
+      });
+    }, mainContainerRef);
+
+    // Refresh ScrollTrigger calculations after initial render
+    ScrollTrigger.refresh();
+
+    // Clean up animation instances and trigger listeners on unmount
+    return () => ctx.revert();
+  }, [lang]);
 
   const t = {
     th: {
@@ -200,7 +308,10 @@ export default function PersonalShowcasePage() {
   const currentShot = galleryData[activeTab] || galleryData.desktop;
 
   return (
-    <div className="min-h-screen bg-[#f5f5f5] dark:bg-[#0c0a09] text-[#292524] dark:text-[#f5f5f4] selection:bg-[#f4c5a8]/40 transition-colors duration-300 relative overflow-x-hidden font-sans">
+    <div
+      ref={mainContainerRef}
+      className="min-h-screen bg-[#f5f5f5] dark:bg-[#0c0a09] text-[#292524] dark:text-[#f5f5f4] selection:bg-[#f4c5a8]/40 transition-colors duration-300 relative overflow-x-hidden font-sans"
+    >
       {/* ElevenLabs Atmospheric Pastel Ambient Glows */}
       <div className="pointer-events-none fixed -top-40 -left-40 w-[42rem] h-[42rem] rounded-full opacity-40 dark:opacity-15 blur-3xl z-0" style={{ background: 'radial-gradient(circle, #a7e5d3 0%, transparent 70%)' }} />
       <div className="pointer-events-none fixed top-1/3 -right-40 w-[44rem] h-[44rem] rounded-full opacity-40 dark:opacity-15 blur-3xl z-0" style={{ background: 'radial-gradient(circle, #f4c5a8 0%, transparent 70%)' }} />
@@ -245,36 +356,39 @@ export default function PersonalShowcasePage() {
         </div>
       </nav>
 
-      {/* Hero Header */}
+      {/* Hero Header with GSAP Entrance Classes */}
       <header className="relative z-10 max-w-4xl mx-auto px-6 pt-16 pb-12 text-center">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/80 dark:bg-white/10 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] text-xs font-medium text-[#777169] dark:text-[#d6d3d1] mb-6 shadow-2xs">
+        {/* Animated Badge */}
+        <div className="hero-badge inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/80 dark:bg-white/10 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] text-xs font-medium text-[#777169] dark:text-[#d6d3d1] mb-6 shadow-2xs">
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
           <span>{t.badge}</span>
         </div>
 
-        <h1 className="editorial-display text-4xl sm:text-6xl font-light text-[#0c0a09] dark:text-white leading-[1.15] mb-6 tracking-tight">
+        {/* Animated Hero Title: Slid up & Scaled gently */}
+        <h1 className="hero-title editorial-display text-4xl sm:text-6xl font-light text-[#0c0a09] dark:text-white leading-[1.15] mb-6 tracking-tight">
           {t.heroTitleLine1} <br />
           <span className="font-normal text-[#292524] dark:text-[#f5f5f4] underline decoration-[#f4c5a8] decoration-wavy decoration-2 underline-offset-8">
             {t.heroTitleLine2}
           </span>
         </h1>
 
-        <p className="text-sm sm:text-base text-[#777169] dark:text-[#a8a29e] max-w-2xl mx-auto leading-relaxed mb-8">
+        {/* Animated Hero Description */}
+        <p className="hero-desc text-sm sm:text-base text-[#777169] dark:text-[#a8a29e] max-w-2xl mx-auto leading-relaxed mb-8">
           {t.heroDesc}
         </p>
 
-        {/* Action Buttons */}
+        {/* Action Buttons with Staggered Entrance */}
         <div className="flex flex-wrap items-center justify-center gap-3.5">
           <Link
             href="/"
-            className="px-6 py-3.5 rounded-xl bg-[#0c0a09] dark:bg-white text-white dark:text-[#0c0a09] text-xs font-semibold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all flex items-center gap-2.5"
+            className="hero-cta-btn px-6 py-3.5 rounded-xl bg-[#0c0a09] dark:bg-white text-white dark:text-[#0c0a09] text-xs font-semibold shadow-md hover:shadow-lg hover:-translate-y-0.5 transition-all flex items-center gap-2.5"
           >
             <span>{t.ctaPrimary}</span>
             <i className="fa-solid fa-arrow-right text-[10px]" />
           </Link>
           <Link
             href="/edit"
-            className="px-5 py-3.5 rounded-xl bg-white dark:bg-[#1c1917] border border-[#e7e5e4] dark:border-[#292524] text-[#0c0a09] dark:text-white text-xs font-semibold hover:bg-[#fafafa] dark:hover:bg-[#25221f] transition shadow-2xs flex items-center gap-2"
+            className="hero-cta-btn px-5 py-3.5 rounded-xl bg-white dark:bg-[#1c1917] border border-[#e7e5e4] dark:border-[#292524] text-[#0c0a09] dark:text-white text-xs font-semibold hover:bg-[#fafafa] dark:hover:bg-[#25221f] transition shadow-2xs flex items-center gap-2"
           >
             <i className="fa-solid fa-mobile-screen text-xs text-[#777169] dark:text-[#a8a29e]" />
             <span>{t.ctaSecondary}</span>
@@ -282,8 +396,8 @@ export default function PersonalShowcasePage() {
         </div>
       </header>
 
-      {/* Live Interactive UI Gallery Section */}
-      <section className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 py-6">
+      {/* Live Interactive UI Gallery Section (Animated via ScrollTrigger) */}
+      <section className="showcase-panel relative z-10 max-w-5xl mx-auto px-4 sm:px-6 py-6">
         <div className="text-center mb-6">
           <h2 className="editorial-display text-2xl sm:text-3xl font-normal text-[#0c0a09] dark:text-white mb-2">
             {t.galleryHeading}
@@ -406,7 +520,7 @@ export default function PersonalShowcasePage() {
         </div>
       </section>
 
-      {/* NEW: Step-by-Step Interactive Guide (เข้าใจง่ายใน 4 ขั้นตอน) */}
+      {/* Step-by-Step Interactive Guide (ScrollTrigger Ripple with Stagger 0.1s) */}
       <section className="relative z-10 max-w-5xl mx-auto px-6 py-12">
         <div className="text-center mb-10">
           <h2 className="editorial-display text-2xl sm:text-3xl font-normal text-[#0c0a09] dark:text-white mb-2">
@@ -417,8 +531,8 @@ export default function PersonalShowcasePage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="p-5 rounded-2xl bg-white/85 dark:bg-[#1c1917]/85 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] shadow-2xs hover:border-[#0c0a09] dark:hover:border-white transition-all space-y-2.5">
+        <div className="guide-steps-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="guide-step-card p-5 rounded-2xl bg-white/85 dark:bg-[#1c1917]/85 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] shadow-2xs hover:border-[#0c0a09] dark:hover:border-white transition-all space-y-2.5">
             <div className="w-8 h-8 rounded-lg bg-[#0c0a09] dark:bg-white text-white dark:text-[#0c0a09] text-xs font-mono font-bold flex items-center justify-center">
               {t.step1Num}
             </div>
@@ -430,7 +544,7 @@ export default function PersonalShowcasePage() {
             </p>
           </div>
 
-          <div className="p-5 rounded-2xl bg-white/85 dark:bg-[#1c1917]/85 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] shadow-2xs hover:border-[#0c0a09] dark:hover:border-white transition-all space-y-2.5">
+          <div className="guide-step-card p-5 rounded-2xl bg-white/85 dark:bg-[#1c1917]/85 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] shadow-2xs hover:border-[#0c0a09] dark:hover:border-white transition-all space-y-2.5">
             <div className="w-8 h-8 rounded-lg bg-[#0c0a09] dark:bg-white text-white dark:text-[#0c0a09] text-xs font-mono font-bold flex items-center justify-center">
               {t.step2Num}
             </div>
@@ -442,7 +556,7 @@ export default function PersonalShowcasePage() {
             </p>
           </div>
 
-          <div className="p-5 rounded-2xl bg-white/85 dark:bg-[#1c1917]/85 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] shadow-2xs hover:border-[#0c0a09] dark:hover:border-white transition-all space-y-2.5">
+          <div className="guide-step-card p-5 rounded-2xl bg-white/85 dark:bg-[#1c1917]/85 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] shadow-2xs hover:border-[#0c0a09] dark:hover:border-white transition-all space-y-2.5">
             <div className="w-8 h-8 rounded-lg bg-[#0c0a09] dark:bg-white text-white dark:text-[#0c0a09] text-xs font-mono font-bold flex items-center justify-center">
               {t.step3Num}
             </div>
@@ -454,7 +568,7 @@ export default function PersonalShowcasePage() {
             </p>
           </div>
 
-          <div className="p-5 rounded-2xl bg-white/85 dark:bg-[#1c1917]/85 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] shadow-2xs hover:border-[#0c0a09] dark:hover:border-white transition-all space-y-2.5">
+          <div className="guide-step-card p-5 rounded-2xl bg-white/85 dark:bg-[#1c1917]/85 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] shadow-2xs hover:border-[#0c0a09] dark:hover:border-white transition-all space-y-2.5">
             <div className="w-8 h-8 rounded-lg bg-[#0c0a09] dark:bg-white text-white dark:text-[#0c0a09] text-xs font-mono font-bold flex items-center justify-center">
               {t.step4Num}
             </div>
@@ -468,7 +582,7 @@ export default function PersonalShowcasePage() {
         </div>
       </section>
 
-      {/* Feature Pillars: Horizontal Modern Row Layout (3 คอลัมน์ ไม่เป็น 3 กล่องเรียงยาวแบบเดิม) */}
+      {/* Feature Pillars: Horizontal Modern Row Layout with Staggered Entrance */}
       <section className="relative z-10 max-w-5xl mx-auto px-6 py-6">
         <div className="text-center mb-8">
           <h2 className="editorial-display text-2xl sm:text-3xl font-normal text-[#0c0a09] dark:text-white mb-2">
@@ -479,8 +593,8 @@ export default function PersonalShowcasePage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="p-5 rounded-2xl bg-white/90 dark:bg-[#1c1917]/90 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] shadow-2xs hover:border-[#0c0a09] dark:hover:border-white transition-all flex flex-col justify-between">
+        <div className="feature-pillars-grid grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div className="feature-pillar-card p-5 rounded-2xl bg-white/90 dark:bg-[#1c1917]/90 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] shadow-2xs hover:border-[#0c0a09] dark:hover:border-white transition-all flex flex-col justify-between">
             <div>
               <div className="w-9 h-9 rounded-xl bg-[#f0efed] dark:bg-[#292524] text-[#0c0a09] dark:text-white flex items-center justify-center text-xs mb-3">
                 <i className="fa-solid fa-microchip" />
@@ -494,7 +608,7 @@ export default function PersonalShowcasePage() {
             </div>
           </div>
 
-          <div className="p-5 rounded-2xl bg-white/90 dark:bg-[#1c1917]/90 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] shadow-2xs hover:border-[#0c0a09] dark:hover:border-white transition-all flex flex-col justify-between">
+          <div className="feature-pillar-card p-5 rounded-2xl bg-white/90 dark:bg-[#1c1917]/90 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] shadow-2xs hover:border-[#0c0a09] dark:hover:border-white transition-all flex flex-col justify-between">
             <div>
               <div className="w-9 h-9 rounded-xl bg-[#f0efed] dark:bg-[#292524] text-[#0c0a09] dark:text-white flex items-center justify-center text-xs mb-3">
                 <i className="fa-solid fa-film" />
@@ -508,7 +622,7 @@ export default function PersonalShowcasePage() {
             </div>
           </div>
 
-          <div className="p-5 rounded-2xl bg-white/90 dark:bg-[#1c1917]/90 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] shadow-2xs hover:border-[#0c0a09] dark:hover:border-white transition-all flex flex-col justify-between">
+          <div className="feature-pillar-card p-5 rounded-2xl bg-white/90 dark:bg-[#1c1917]/90 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] shadow-2xs hover:border-[#0c0a09] dark:hover:border-white transition-all flex flex-col justify-between">
             <div>
               <div className="w-9 h-9 rounded-xl bg-[#f0efed] dark:bg-[#292524] text-[#0c0a09] dark:text-white flex items-center justify-center text-xs mb-3">
                 <i className="fa-solid fa-trash-can-arrow-up" />
@@ -546,9 +660,9 @@ export default function PersonalShowcasePage() {
       </section>
 
       {/* Creator Profile & Open Source Section with Official Social Sample Channels */}
-      <section className="relative z-10 max-w-4xl mx-auto px-6 pb-16 space-y-4">
+      <section className="creator-container relative z-10 max-w-4xl mx-auto px-6 pb-16 space-y-4">
         {/* TikTok & Instagram Official Showcase Channels */}
-        <div className="p-5 sm:p-6 rounded-2xl bg-amber-50/90 dark:bg-amber-950/30 border border-amber-200/80 dark:border-amber-900/40 backdrop-blur-md flex flex-col sm:flex-row items-center justify-between gap-4 shadow-2xs">
+        <div className="creator-card p-5 sm:p-6 rounded-2xl bg-amber-50/90 dark:bg-amber-950/30 border border-amber-200/80 dark:border-amber-900/40 backdrop-blur-md flex flex-col sm:flex-row items-center justify-between gap-4 shadow-2xs">
           <div className="flex items-center gap-3">
             <span className="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center text-base flex-shrink-0">
               <i className="fa-solid fa-play" />
@@ -588,7 +702,7 @@ export default function PersonalShowcasePage() {
         </div>
 
         {/* Creator Profile & Open Source Section */}
-        <div className="p-6 sm:p-8 rounded-2xl bg-white/80 dark:bg-[#1c1917]/80 border border-[#e7e5e4] dark:border-[#292524] backdrop-blur-md flex flex-col sm:flex-row items-center justify-between gap-6 shadow-2xs">
+        <div className="creator-card p-6 sm:p-8 rounded-2xl bg-white/80 dark:bg-[#1c1917]/80 border border-[#e7e5e4] dark:border-[#292524] backdrop-blur-md flex flex-col sm:flex-row items-center justify-between gap-6 shadow-2xs">
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 rounded-full bg-[#f0efed] dark:bg-[#292524] border border-[#e7e5e4] dark:border-[#44403c] flex items-center justify-center text-xl text-[#0c0a09] dark:text-white flex-shrink-0">
               <i className="fa-brands fa-github" />
