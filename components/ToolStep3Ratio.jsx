@@ -42,7 +42,7 @@ export default function ToolStep3Ratio() {
     <section
       id="tool-sec-ratio"
       data-tool-keywords="3 aspect ratio queue size tiktok reels shorts youtube สัดส่วน ขนาด คิวคลิป"
-      className={`tool-section-card relative z-20 w-full max-w-full min-w-0 bg-white dark:bg-[#1c1917] border border-[#e7e5e4] dark:border-[#292524] rounded-2xl p-4 shadow-[0_4px_16px_rgba(0,0,0,0.04)] ${
+      className={`tool-section-card card-magical relative z-20 w-full max-w-full min-w-0 bg-white dark:bg-[#1c1917] border border-[#e7e5e4] dark:border-[#292524] rounded-2xl p-4 shadow-[0_4px_16px_rgba(0,0,0,0.04)] ${
         isCollapsed ? 'is-collapsed' : ''
       }`}
     >

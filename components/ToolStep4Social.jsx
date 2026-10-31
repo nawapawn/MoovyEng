@@ -57,7 +57,7 @@ export default function ToolStep4Social() {
     <section
       id="tool-sec-social"
       data-tool-keywords="4 profile avatar channel handle caption hashtag โปรไฟล์ ช่อง แคปชั่น"
-      className={`tool-section-card relative z-10 bg-white dark:bg-[#1c1917] border border-[#e7e5e4] dark:border-[#292524] rounded-2xl p-4 shadow-[0_4px_16px_rgba(0,0,0,0.04)] ${
+      className={`tool-section-card card-magical relative z-10 bg-white dark:bg-[#1c1917] border border-[#e7e5e4] dark:border-[#292524] rounded-2xl p-4 shadow-[0_4px_16px_rgba(0,0,0,0.04)] ${
         isCollapsed ? 'is-collapsed' : ''
       }`}
     >

@@ -212,7 +212,7 @@ export default function ToolStep1AI() {
     <section
       id="tool-sec-ai"
       data-tool-keywords="1 ai model provider api key gemini openai groq deepseek claude ค่าย โมเดล คีย์"
-      className={`tool-section-card relative z-30 bg-white dark:bg-[#1c1917] border border-[#e7e5e4] dark:border-[#292524] rounded-2xl p-4 shadow-[0_4px_16px_rgba(0,0,0,0.04)] ${
+      className={`tool-section-card card-magical relative z-30 bg-white dark:bg-[#1c1917] border border-[#e7e5e4] dark:border-[#292524] rounded-2xl p-4 shadow-[0_4px_16px_rgba(0,0,0,0.04)] ${
         isCollapsed ? 'is-collapsed' : ''
       }`}
     >

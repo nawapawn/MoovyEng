@@ -75,11 +75,11 @@ export default function MovieClipGrid({
                   generateAiContent(word, meaning);
                 }
               }}
-              className="px-3 h-8 bg-[#0c0a09] dark:bg-white hover:bg-[#292524] text-white dark:text-[#0c0a09] rounded-full shadow-xs transition flex items-center gap-1.5 flex-shrink-0 t-btn-press text-xs font-medium"
-              title={lang === 'th' ? 'วิเคราะห์คำแปล ดึงคลิปที่ตรงความหมาย และแต่งประโยคตามโครงสร้างหนัง' : 'Analyze Meaning, Match Clips & Generate Pattern Sentences'}
+              className="btn-magical px-3.5 h-8 bg-[#0c0a09] dark:bg-white hover:bg-[#292524] text-white dark:text-[#0c0a09] rounded-full shadow-sm flex items-center gap-1.5 flex-shrink-0 text-xs font-semibold"
+              title={lang === 'th' ? 'เสกสรรคำแปล ดึงคลิปหนังแท้ และแต่งประโยคเสร็จสรรพ' : 'Analyze Meaning, Match Clips & Generate Pattern Sentences'}
               aria-label="Search Clips & Translate"
             >
-              <i className="fa-solid fa-wand-magic-sparkles text-[11px]" />
+              <i className="fa-solid fa-wand-magic-sparkles text-[11px] text-amber-300 dark:text-amber-500" />
               <span>{lang === 'th' ? 'AI วิเคราะห์ & ดึงคลิป' : 'AI Analyze & Fetch'}</span>
             </button>
 
@@ -248,12 +248,15 @@ export default function MovieClipGrid({
         <input type="hidden" id="clip-query" value={word} />
       </div>
 
-      {/* Loading Indicator */}
+      {/* Loading Indicator with Magical Shimmer */}
       {isLoading && (
-        <div id="ai-loading" className="p-2.5 bg-[#fafafa] dark:bg-[#292524] border border-[#e7e5e4] dark:border-[#44403c] rounded-xl text-center">
-          <div className="flex items-center justify-center space-x-2 text-[#292524] dark:text-[#f5f5f4] text-xs font-medium">
-            <i className="fa-solid fa-circle-notch fa-spin" />
-            <span id="ai-loading-text">{loadingText || (lang === 'th' ? 'กำลังดึงคลิปและแปลคำศัพท์...' : 'Searching clips & translating...')}</span>
+        <div id="ai-loading" className="relative overflow-hidden p-3 bg-gradient-to-r from-amber-500/10 via-amber-400/5 to-amber-500/10 dark:from-amber-400/10 dark:via-zinc-800 dark:to-amber-400/10 border border-amber-500/30 dark:border-amber-400/30 rounded-xl text-center shadow-xs">
+          <div className="absolute inset-0 shimmer-magic pointer-events-none" />
+          <div className="relative z-10 flex items-center justify-center space-x-2 text-[#0c0a09] dark:text-[#f5f5f4] text-xs font-semibold">
+            <i className="fa-solid fa-wand-magic-sparkles text-amber-500 animate-pulse" />
+            <span id="ai-loading-text">
+              {loadingText || (lang === 'th' ? 'กำลังร่ายมนตร์ค้นหาคลิปและจัดคำศัพท์...' : 'Summoning authentic cinema clips & nuances...')}
+            </span>
           </div>
         </div>
       )}

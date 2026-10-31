@@ -60,7 +60,7 @@ export default function ToolStep2Vocab() {
     <section
       id="tool-sec-vocab"
       data-tool-keywords="2 vocabulary clips word translate phonetic meaning grammar examples formatting คำศัพท์ คลิปหนัง แปล ประโยค รูปแบบอักษร"
-      className={`tool-section-card relative z-20 bg-white dark:bg-[#1c1917] border border-[#e7e5e4] dark:border-[#292524] rounded-2xl p-4 shadow-[0_4px_16px_rgba(0,0,0,0.04)] ${
+      className={`tool-section-card card-magical relative z-20 bg-white dark:bg-[#1c1917] border border-[#e7e5e4] dark:border-[#292524] rounded-2xl p-4 shadow-[0_4px_16px_rgba(0,0,0,0.04)] ${
         isCollapsed ? 'is-collapsed' : ''
       }`}
     >
