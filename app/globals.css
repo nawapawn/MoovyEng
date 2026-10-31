@@ -84,6 +84,39 @@
   font-display: swap;
 }
 
+/* MN Rodjana (รจนา) - Luxury Classic Thai Serif from f0nt.com tag หรูหรา */
+@font-face {
+  font-family: 'MN Rodjana';
+  src: url('/fonts/MNRodjana-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'MN Rodjana';
+  src: url('/fonts/MNRodjana-Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'MN Rodjana';
+  src: url('/fonts/MNRodjana-RegularItalic.ttf') format('truetype');
+  font-weight: normal;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'MN Rodjana';
+  src: url('/fonts/MNRodjana-BoldItalic.ttf') format('truetype');
+  font-weight: bold;
+  font-style: italic;
+  font-display: swap;
+}
+
 /* transitions.dev inspiration: Production-ready CSS curves, spring micro-interactions & smooth state transitions */
 :root {
   --t-ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
@@ -121,7 +154,7 @@ html.dark body {
 }
 
 .editorial-display {
-  font-family: 'EB Garamond', 'Times New Roman', serif;
+  font-family: 'MN Rodjana', 'EB Garamond', 'Times New Roman', serif;
   font-weight: 300;
   letter-spacing: -0.96px;
 }
