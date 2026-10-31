@@ -5,17 +5,16 @@ import Link from 'next/link';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-// Register ScrollTrigger plugin with GSAP core
 if (typeof window !== 'undefined') {
   gsap.registerPlugin(ScrollTrigger);
 }
 
-export default function PersonalShowcasePage() {
+export default function LuxuryAboutPage() {
   const [lang, setLang] = useState('th');
-  const [activeTab, setActiveTab] = useState('desktop');
+  const [carouselIndex, setCarouselIndex] = useState(0);
   const mainContainerRef = useRef(null);
 
-  // Load language preference from localStorage
+  // Sync language with localStorage
   useEffect(() => {
     try {
       const savedLang = localStorage.getItem('movy_lang') || 'th';
@@ -32,659 +31,462 @@ export default function PersonalShowcasePage() {
   };
 
   /**
-   * GSAP ScrollTrigger & Entrance Animations
-   * Uses gsap.context() for clean lifecycle scoping and automatic garbage collection
+   * GSAP ScrollTrigger Animations
    */
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // 1. Hero Entrance Timeline: Smooth fade, upward translate & subtle scale expansion
+      // 1. Hero Entrance
       const heroTl = gsap.timeline({ defaults: { ease: 'power4.out', duration: 1.2 } });
-
       heroTl
-        .from('.hero-badge', {
-          y: 20,
-          opacity: 0,
-          scale: 0.95,
-          duration: 0.8
-        })
-        .from('.hero-title', {
-          y: 45,
-          opacity: 0,
-          scale: 0.98,
-          duration: 1.2
-        }, '-=0.5')
-        .from('.hero-desc', {
-          y: 25,
-          opacity: 0,
-          duration: 1.0
-        }, '-=0.8')
-        .from('.hero-cta-btn', {
-          y: 20,
-          opacity: 0,
-          scale: 0.96,
-          stagger: 0.1,
-          duration: 0.8
-        }, '-=0.7');
+        .from('.hero-badge', { y: 20, opacity: 0, scale: 0.95, duration: 0.8 })
+        .from('.hero-title', { y: 40, opacity: 0, scale: 0.98, duration: 1.2 }, '-=0.5')
+        .from('.hero-desc', { y: 25, opacity: 0, duration: 1.0 }, '-=0.8')
+        .from('.hero-cta-btn', { y: 20, opacity: 0, scale: 0.96, stagger: 0.1, duration: 0.8 }, '-=0.7');
 
-      // 2. Interactive Showcase Section: ScrollTrigger entrance at 80% viewport
-      gsap.from('.showcase-panel', {
+      // 2. Carousel Section Reveal
+      gsap.from('.carousel-section', {
         scrollTrigger: {
-          trigger: '.showcase-panel',
-          start: 'top 80%',
-          toggleActions: 'play none none none'
-        },
-        y: 50,
-        opacity: 0,
-        scale: 0.98,
-        duration: 1.2,
-        ease: 'power4.out'
-      });
-
-      // 3. Step-by-Step 4 Cards: ScrollTrigger staggered reveal
-      gsap.from('.guide-step-card', {
-        scrollTrigger: {
-          trigger: '.guide-steps-grid',
+          trigger: '.carousel-section',
           start: 'top 80%',
           toggleActions: 'play none none none'
         },
         y: 40,
         opacity: 0,
-        scale: 0.95,
-        duration: 1.0,
-        stagger: 0.1, // Stagger 0.1s for natural ripple motion
-        ease: 'power2.out'
+        duration: 1.1,
+        ease: 'power3.out'
       });
 
-      // 4. Feature Pillars: ScrollTrigger staggered reveal
-      gsap.from('.feature-pillar-card', {
+      // 3. Detailed Guide Steps
+      gsap.from('.guide-card-detail', {
         scrollTrigger: {
-          trigger: '.feature-pillars-grid',
+          trigger: '.guide-cards-grid',
           start: 'top 80%',
           toggleActions: 'play none none none'
         },
         y: 35,
         opacity: 0,
-        duration: 1.0,
         stagger: 0.12,
+        duration: 1.0,
         ease: 'power2.out'
       });
 
-      // 5. Creator Showcase & Official Social Channels
-      gsap.from('.creator-card', {
+      // 4. Feature Pillars
+      gsap.from('.feature-card-luxury', {
         scrollTrigger: {
-          trigger: '.creator-container',
-          start: 'top 85%',
+          trigger: '.feature-cards-grid',
+          start: 'top 80%',
           toggleActions: 'play none none none'
         },
         y: 30,
         opacity: 0,
-        stagger: 0.15,
+        stagger: 0.12,
         duration: 1.0,
         ease: 'power2.out'
       });
     }, mainContainerRef);
 
-    // Refresh ScrollTrigger calculations after initial render
     ScrollTrigger.refresh();
-
-    // Clean up animation instances and trigger listeners on unmount
     return () => ctx.revert();
   }, [lang]);
 
-  const t = {
-    th: {
-      brandSub: 'Personal Creator Studio & Showcase',
-      openStudio: 'เข้าสู่สตูดิโอสร้างสรรค์',
-      openMobile: 'โหมดมือถือ',
-      badge: 'Production-Grade AI Vocab & Movie Studio',
-      heroTitleLine1: 'สร้างคอนเทนต์สอนภาษาอังกฤษ',
-      heroTitleLine2: 'จากซีนภาพยนตร์ฮอลลีวูดจริง',
-      heroDesc:
-        'MoovyEng คือสตูดิโอเว็บแอปพลิเคชันที่ผสานความอัจฉริยะของ Multi-AI Engine เข้ากับคลิปภาพยนตร์ภาษาอังกฤษความละเอียดสูง พร้อมระบบเรนเดอร์วิดีโอ Full Canvas สำหรับ TikTok, Reels และ Shorts',
-      ctaPrimary: 'เข้าสู่สตูดิโอ (Desktop)',
-      ctaSecondary: 'เปิดบนมือถือ (Mobile /edit)',
-      galleryHeading: 'ภาพรวมระบบและการทำงานจริง',
-      gallerySub: 'คลิกดูตัวอย่างหน้าจอของสตูดิโอในแต่ละมุมมองแบบเต็มตา',
-      featuresHeading: 'สถาปัตยกรรมและเทคโนโลยีสำคัญ',
-      featuresSub: 'ออกแบบด้วยมาตรฐาน ElevenLabs Editorial Aesthetic มินิมอล คมชัด และทำงานรวดเร็ว',
-      tabDesktop: 'Desktop Two-Column Studio',
-      tabDark: 'ElevenLabs Luxury Dark Theme',
-      tabMobile: 'Mobile Creator Interface',
-      tagDesktop: 'Desktop Layout (1440x900)',
-      titleDesktop: 'สตูดิโอแบบ 2 คอลัมน์ ออกแบบพร้อมพรีวิวแบบเรียลไทม์',
-      descDesktop:
-        'ฝั่งซ้ายเป็น Phone Canvas พรีวิวสดแบบ Sticky ตรึงตำแหน่งขณะเลื่อน และฝั่งขวาเป็นชุดเครื่องมือ 4 ขั้นตอน: AI Generator, คลังคลิปหนัง, Color Lab และข้อมูล Social Profile',
-      tagDark: 'Dark Mode Aesthetic',
-      titleDark: 'โหมดกลางคืนพรีเมียม สบายตาและเปี่ยมสมาธิ',
-      descDark:
-        'สลับโหมด Dark Theme ได้ทันที พร้อมระบบคำนวณ Contrast สีตัวหนังสืออัตโนมัติ ทำให้การอ่านและจัดสไลด์ตัวอย่างประโยคชัดเจนในทุกระดับความสว่าง',
-      tagMobile: 'Touch-Optimized Mobile View',
-      titleMobile: 'โหมดสร้างสรรค์บนมือถือ ใช้งานได้ทุกที่',
-      descMobile:
-        'อินเทอร์เฟซแยกสำหรับสมาร์ตโฟนโดยเฉพาะ เลื่อนสัมผัสง่าย พร้อมแถบเมนูลัดด้านล่าง และปุ่ม Export สไลด์และวิดีโอได้จากบนมือถือโดยตรง',
-      
-      // Guide / How to use
-      guideHeading: 'วิธีใช้งาน MoovyEng ง่ายๆ ใน 4 ขั้นตอน',
-      guideSub: 'ขั้นตอนสร้างวิดีโอสั้นพร้อมโพสต์ลงโซเชียลตั้งแต่เริ่มต้นจนจบ',
-      step1Num: '01',
-      step1Title: 'เลือกหรือค้นหาคำศัพท์ / ให้ AI ช่วยแต่ง',
-      step1Desc: 'พิมพ์คำศัพท์หรือสำนวนที่ต้องการ หรือกดสุ่มคำศัพท์ Phrasal Verbs ระบบ AI จะช่วยเติมคำอ่านไทย คำแปล และตัวอย่างประโยคจากบริบทจริงให้อัตโนมัติ',
-      step2Num: '02',
-      step2Title: 'เลือกคลิปภาพยนตร์ภาษาอังกฤษจริง',
-      step2Desc: 'ระบบจะดึงซีนภาพยนตร์จาก clip.cafe ที่มีบทพูดตรงกับคำศัพท์นั้นๆ ให้คุณสามารถกดฟังเสียง กดเลือกคลิปเข้าคิวเล่นต่อเนื่อง หรือสลับซีนที่ชอบได้ทันที',
-      step3Num: '03',
-      step3Title: 'ปรับแต่งสไตล์ สี และสัดส่วนวิดีโอ',
-      step3Desc: 'เลือกสัดส่วน 9:16 (แนวตั้งสำหรับ TikTok/Reels) หรือ 16:9 (แนวนอน) ปรับโทนสีพื้นหลัง การไล่ระดับสี และเลือกฟอนต์ลายมือหรือโมเดิร์นที่ต้องการ',
-      step4Num: '04',
-      step4Title: 'กดส่งออกวิดีโอ MP4 คมชัดพร้อมแคปชัน',
-      step4Desc: 'คลิกปุ่ม Export ด้านบนขวา ระบบจะเรนเดอร์ทั้งหน้าพรีวิวพร้อมคลิปรวมเป็นไฟล์ MP4 คุณภาพสูง และล้างไฟล์แคชในเซิร์ฟเวอร์ให้อัตโนมัติทันทีที่ดาวน์โหลดเสร็จ',
+  // Content Translations
+  const isTh = lang === 'th';
 
-      feat1Title: 'Multi-AI Prompt Engine',
-      feat1Desc:
-        'รองรับ Google Gemini 2.5, OpenAI GPT-4o, Groq LLaMA 3, Claude 3.5 และ OpenRouter ช่วยแนะนำประโยคตัวอย่าง คำอ่านไทย และแคปชันอย่างแม่นยำ',
-      feat2Title: 'Clip.cafe High-Res Cinema',
-      feat2Desc:
-        'ดึงคลิปภาพยนตร์ภาษาอังกฤษจริงที่พูดตรงกับคำศัพท์หรือสำนวน พร้อมระบบเล่นวิดีโอต่อเนื่องและพรีวิวลงบนการ์ดแบบ Real-time',
-      feat3Title: 'Automated Cache Pruning',
-      feat3Desc:
-        'ระบบส่งออกวิดีโอ MP4 คมชัดด้วย Python FFmpeg พร้อมคำสั่งล้างแคชไฟล์ชั่วคราวทั้งหมดอัตโนมัติทันทีที่ดาวน์โหลดเสร็จสิ้น ไม่กินพื้นที่เครื่อง',
-      ctaFinalTitle: 'พร้อมเริ่มสร้างสรรค์คลิปภาษาอังกฤษแล้วหรือยัง?',
-      ctaFinalDesc: 'เปิดใช้งาน MoovyEng ได้ทันทีผ่านเบราว์เซอร์ของคุณ ทั้งบนคอมพิวเตอร์และมือถือ',
-      ctaFinalBtn: 'เข้าสู่สตูดิโอ MoovyEng ตอนนี้',
-      
-      // Footer Creator & Repo
-      creatorHeading: 'เกี่ยวกับผู้พัฒนา & โอเพนซอร์สเพื่อการศึกษา',
-      creatorDesc: 'โปรเจกต์นี้สร้างขึ้นโดย Nawapawn เพื่อเป็นสื่อการเรียนรู้ ทดลองพัฒนาระบบ Full-Stack Next.js + Python Clip Processing Engine และเปิดเป็นโอเพนซอร์สสำหรับผู้ที่สนใจศึกษาต่อยอด',
-      githubBtn: 'ศึกษาโค้ดบน GitHub (Open Source)',
-      footerRights: '© 2026 MoovyEng. Created with passion by Nawapawn for educational & creative purposes.',
-      footerHome: 'หน้าสตูดิโอหลัก',
-      footerMobile: 'โหมดมือถือ',
-      footerAbout: 'เกี่ยวกับโปรเจกต์',
+  const slides = [
+    {
+      id: 'studio_overview',
+      tag: isTh ? '01 / ภาพรวมสตูดิโอ' : '01 / STUDIO OVERVIEW',
+      title: isTh ? 'สตูดิโอ 2 คอลัมน์ ออกแบบพร้อมพรีวิวสด' : 'Two-Column Realtime Creative Workspace',
+      desc: isTh
+        ? 'จัดวาง Phone Canvas ด้านซ้ายตรึงตำแหน่งตายตัว และเครื่องมือฝั่งขวา 4 สเต็ปอย่างเป็นระเบียบ ให้คุณเห็นผลลัพธ์ของวิดีโอทันทีทุกครั้งที่แก้ไข'
+        : 'Sticky vertical canvas on the left, paired with 4 synchronized workflow modules on the right for zero-latency video authoring.',
+      img: '/screenshots/studio_overview.webp',
+      fallback: '/screenshots/studio_overview.png',
+      badge: isTh ? 'อินเทอร์เฟซเดสก์ท็อปมาตรฐาน 1440x900' : 'Desktop Studio Canvas'
     },
-    en: {
-      brandSub: 'Personal Creator Studio & Showcase',
-      openStudio: 'Launch Studio',
-      openMobile: 'Mobile Mode',
-      badge: 'Production-Grade AI Vocab & Movie Studio',
-      heroTitleLine1: 'Craft Engaging English Videos',
-      heroTitleLine2: 'From Iconic Hollywood Scenes',
-      heroDesc:
-        'MoovyEng is a personal creator web studio that unites Multi-Provider AI (Gemini, GPT-4o, Groq) with authentic English movie scenes, rendering production-ready full canvas short videos for TikTok, Reels, and Shorts.',
-      ctaPrimary: 'Launch Studio (Desktop)',
-      ctaSecondary: 'Open Mobile View (/edit)',
-      galleryHeading: 'System Architecture & Live Interface',
-      gallerySub: 'Explore real system captures across desktop, dark theme, and mobile experiences.',
-      featuresHeading: 'Core Pillars & Engineering',
-      featuresSub: 'Crafted with ElevenLabs Editorial Aesthetics — minimal, precise, and highly responsive.',
-      tabDesktop: 'Desktop Two-Column Studio',
-      tabDark: 'ElevenLabs Luxury Dark Theme',
-      tabMobile: 'Mobile Creator Interface',
-      tagDesktop: 'Desktop Layout (1440x900)',
-      titleDesktop: 'Dual-Column Studio with Live Synchronized Preview',
-      descDesktop:
-        'Left pinned phone canvas stays sticky while you scroll through 4 progressive tool suites on the right: AI Generator, Clip Pool, Color Lab, and Social Captioning.',
-      tagDark: 'Dark Mode Aesthetic',
-      titleDark: 'ElevenLabs Luxury Dark Theme with Smart Contrast',
-      descDark:
-        'Instant light/dark switching with dynamic text color inversion, ensuring optimal readability and eye comfort across movie clip backdrops.',
-      tagMobile: 'Touch-Optimized Mobile View',
-      titleMobile: 'Dedicated Touch Studio for On-the-Go Creators',
-      descMobile:
-        'Seamless mobile interface with bottom quick navigation, live slide renderer, and direct export actions tailored for iOS and Android displays.',
-      
-      // Guide / How to use
-      guideHeading: 'How to Use MoovyEng in 4 Simple Steps',
-      guideSub: 'The complete workflow from discovering words to rendering short videos ready for social posting.',
-      step1Num: '01',
-      step1Title: 'Select or Search Vocabulary / Let AI Formulate',
-      step1Desc: 'Type your target word or pick curated phrasal verbs. The Multi-AI engine automatically generates authentic example sentences, Thai phonetics, and grammatical nuances.',
-      step2Num: '02',
-      step2Title: 'Browse & Queue Real Movie Dialogue Clips',
-      step2Desc: 'The system indexes high-definition movie clips from clip.cafe containing the exact line. Audition audio, queue multiple scenes, and watch them play sequentially in the preview.',
-      step3Num: '03',
-      step3Title: 'Customize Canvas Palette, Font & Aspect Ratio',
-      step3Desc: 'Choose 9:16 vertical (TikTok/Reels/Shorts) or 16:9 widescreen. Refine background gradient, adjust padding, and apply hand-drawn or editorial fonts.',
-      step4Num: '04',
-      step4Title: 'Export MP4 Video with 1-Click Server Cleanup',
-      step4Desc: 'Click Export in the top header. The Python FFmpeg engine renders the full canvas with audio, and purges intermediate server cache immediately once downloaded.',
+    {
+      id: 'preview_canvas',
+      tag: isTh ? '02 / พรีวิวแคนวาสมือถือ' : '02 / SMART PHONE CANVAS',
+      title: isTh ? 'จัดวางข้อความอิสระ พร้อมระบบไม้บรรทัดไกด์' : 'Interactive Draggable Canvas & Smart Guides',
+      desc: isTh
+        ? 'ทุกองค์ประกอบทั้งคำศัพท์, สัทอักษร, คำอ่านไทย, กล่องคลิป 16:9, ไวยากรณ์ และตัวอย่างประโยค สามารถคลิกลากย้ายตำแหน่งได้อย่างอิสระ พร้อมเส้นไกด์บอกระยะห่างแบบพิกเซล'
+        : 'Freely reposition target words, IPA phonetics, meaning, and video boxes with pixel-precise alignment distance indicators.',
+      img: '/screenshots/section_preview_canvas.webp',
+      fallback: '/screenshots/section_preview_canvas.png',
+      badge: isTh ? 'สัดส่วนแนวตั้ง 9:16 (TikTok / Reels / Shorts)' : '9:16 Vertical Video'
+    },
+    {
+      id: 'step1_ai',
+      tag: isTh ? '03 / ปัญญาประดิษฐ์ AI' : '03 / MULTI-AI PROMPT ENGINE',
+      title: isTh ? 'เชื่อมต่อโมเดล AI ชั้นนำระดับโลก' : 'Seamless Multi-Vendor AI Connectivity',
+      desc: isTh
+        ? 'รองรับ Gemini 2.5 Pro/Flash, OpenAI GPT-4o, Groq LLaMA 3.3, Claude 3.7 Sonnet และ DeepSeek R1 ตรวจสอบ API Key อัตโนมัติและดึงโมเดลใหม่ล่าสุดทันที'
+        : 'Direct integration with Google Gemini, OpenAI, Claude 3.7, Groq, and DeepSeek for instant idiom extraction and sentence creation.',
+      img: '/screenshots/section_step1_ai.webp',
+      fallback: '/screenshots/section_step1_ai.png',
+      badge: isTh ? 'โมเดล AI มากกว่า 15+ ตัวเลือก' : '15+ Top Tier LLM Models'
+    },
+    {
+      id: 'step2_vocab',
+      tag: isTh ? '04 / คลังคำศัพท์ & บทหนัง' : '04 / CINEMA DIALOGUE SCRAPER',
+      title: isTh ? 'ค้นหาและดึงคลิปหนังฮอลลีวูดจริงแบบ HD' : 'Clip.cafe Real Dialogue Matching & Extraction',
+      desc: isTh
+        ? 'เพียงพิมพ์คำศัพท์ที่ต้องการ ระบบจะค้นหาบทสนทนาจากหนังฮอลลีวูดจริงบน Clip.cafe ดึงวิดีโอเสียงต้นฉบับมาเข้าคิวเล่นแบบไร้รอยต่อ พร้อมแต่งประโยคตามบริบทหนัง'
+        : 'Instantly query authentic cinema moments matching your idiom, audition original audio, and craft paired contextual sentences.',
+      img: '/screenshots/section_step2_vocab.webp',
+      fallback: '/screenshots/section_step2_vocab.png',
+      badge: isTh ? 'คลิปหนังแท้จากฐานข้อมูล Clip.cafe' : 'Verified Cinema Archives'
+    },
+    {
+      id: 'step3_ratio',
+      tag: isTh ? '05 / สัดส่วนภาพ & ห้องสี' : '05 / RATIO & COLOR LAB',
+      title: isTh ? 'สลับสัดส่วน 9:16 / 16:9 และปรับแต่งเฉดสี' : 'Solid Canvas Palette & Play Queue Sequence',
+      desc: isTh
+        ? 'เลือกสัดส่วนภาพสำหรับ TikTok หรือ YouTube แนวนอน ถาดสีระดับโปรแบบ Canva พร้อมฟังก์ชันคิวคลิปเล่นต่อเนื่องด้วย Python Media Engine'
+        : 'Toggle between 9:16 portrait and 16:9 widescreen, pick custom backdrop tones, and organize sequential playback.',
+      img: '/screenshots/section_step3_ratio.webp',
+      fallback: '/screenshots/section_step3_ratio.png',
+      badge: isTh ? 'สลับอัตราส่วนทันที ไม่ต้องรีเรนเดอร์' : 'Instant Canvas Reframe'
+    },
+    {
+      id: 'mobile_touch',
+      tag: isTh ? '06 / โหมดสมาร์ตโฟน' : '06 / TOUCH-OPTIMIZED MOBILE',
+      title: isTh ? 'สร้างสรรค์ได้ทุกที่ผ่านหน้าจอสมาร์ตโฟน' : 'Dedicated Mobile Interface at /edit',
+      desc: isTh
+        ? 'ออกแบบอินเทอร์เฟซแยกสำหรับมือถือโดยเฉพาะ แถบเมนูด้านล่างขนาดใหญ่แตะสัมผัสง่าย พร้อมปุ่ม Export วิดีโอบนมือถือได้ทันที'
+        : 'Fully responsive mobile creator studio with bottom action bar, thumb-reachable step navigation, and direct MP4 export.',
+      img: '/screenshots/mobile_touch_studio.webp',
+      fallback: '/screenshots/mobile_touch_studio.png',
+      badge: isTh ? 'รองรับ Touch Gesture เต็มรูปแบบ' : '414 x 896 Mobile Touch'
+    }
+  ];
 
-      feat1Title: 'Multi-AI Prompt Engine',
-      feat1Desc:
-        'Integrated with Gemini 2.5, OpenAI GPT-4o, Groq LLaMA 3, Claude 3.5 and OpenRouter for natural collocations, Thai phonetics, and viral social hooks.',
-      feat2Title: 'Clip.cafe High-Res Cinema',
-      feat2Desc:
-        'Indexes verified movie moments matching your vocabulary, providing seamless sequential multi-clip playback inside 16:9 canvas apertures.',
-      feat3Title: 'Automated Cache Pruning',
-      feat3Desc:
-        'Python FFmpeg video compiler with intelligent post-download cleanup that purges server temporary files immediately upon completed download.',
-      ctaFinalTitle: 'Ready to create engaging video lessons?',
-      ctaFinalDesc: 'Jump into MoovyEng Studio directly in your browser — zero installation required.',
-      ctaFinalBtn: 'Launch MoovyEng Studio',
-      
-      // Footer Creator & Repo
-      creatorHeading: 'Creator & Educational Open Source',
-      creatorDesc: 'Created by Nawapawn as a full-stack learning project combining Next.js with Python media engines, and open-sourced for developers and creators to study and build upon.',
-      githubBtn: 'Study Source Code on GitHub',
-      footerRights: '© 2026 MoovyEng. Created with passion by Nawapawn for educational & creative purposes.',
-      footerHome: 'Studio Home',
-      footerMobile: 'Mobile Mode',
-      footerAbout: 'About Showcase',
-    },
-  }[lang];
+  const currentSlide = slides[carouselIndex];
 
-  const galleryData = {
-    desktop: {
-      tag: t.tagDesktop,
-      title: t.titleDesktop,
-      desc: t.descDesktop,
-      avif: '/screenshots/hero_studio_1440.avif',
-      webp: '/screenshots/hero_studio_1440.webp',
-      png: '/screenshots/hero_studio_1440.png',
-      isMobileFrame: false,
-      badge: '1440 x 900 Desktop View',
-    },
-    dark: {
-      tag: t.tagDark,
-      title: t.titleDark,
-      desc: t.descDark,
-      avif: '/screenshots/studio_dark_1440.avif',
-      webp: '/screenshots/studio_dark_1440.webp',
-      png: '/screenshots/studio_dark_1440.png',
-      isMobileFrame: false,
-      badge: 'Dark Mode Activated',
-    },
-    mobile: {
-      tag: t.tagMobile,
-      title: t.titleMobile,
-      desc: t.descMobile,
-      avif: '/screenshots/mobile_editor_touch.avif',
-      webp: '/screenshots/mobile_editor_touch.webp',
-      png: '/screenshots/mobile_editor_touch.png',
-      isMobileFrame: true,
-      badge: '414 x 896 Mobile Touch View',
-    },
+  const handlePrevSlide = () => {
+    setCarouselIndex((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
   };
 
-  const currentShot = galleryData[activeTab] || galleryData.desktop;
+  const handleNextSlide = () => {
+    setCarouselIndex((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
+  };
 
   return (
     <div
       ref={mainContainerRef}
-      className="min-h-screen bg-[#f5f5f5] dark:bg-[#0c0a09] text-[#292524] dark:text-[#f5f5f4] selection:bg-[#f4c5a8]/40 transition-colors duration-300 relative overflow-x-hidden font-sans"
+      className="min-h-screen bg-[#fafaf9] dark:bg-[#0c0a09] text-[#0c0a09] dark:text-[#f5f5f4] transition-colors duration-300 font-sans selection:bg-[#0c0a09] selection:text-white dark:selection:bg-white dark:selection:text-[#0c0a09] relative overflow-hidden"
     >
-      {/* ElevenLabs Atmospheric Pastel Ambient Glows */}
-      <div className="pointer-events-none fixed -top-40 -left-40 w-[42rem] h-[42rem] rounded-full opacity-40 dark:opacity-15 blur-3xl z-0" style={{ background: 'radial-gradient(circle, #a7e5d3 0%, transparent 70%)' }} />
-      <div className="pointer-events-none fixed top-1/3 -right-40 w-[44rem] h-[44rem] rounded-full opacity-40 dark:opacity-15 blur-3xl z-0" style={{ background: 'radial-gradient(circle, #f4c5a8 0%, transparent 70%)' }} />
-      <div className="pointer-events-none fixed -bottom-40 left-1/4 w-[42rem] h-[42rem] rounded-full opacity-35 dark:opacity-10 blur-3xl z-0" style={{ background: 'radial-gradient(circle, #c8b8e0 0%, transparent 70%)' }} />
+      {/* Ambient Floating Glow Orbs (Subtle luxury ElevenLabs background) */}
+      <div className="pointer-events-none fixed inset-0 overflow-hidden z-0">
+        <div className="absolute top-[-10%] left-[-5%] w-[55vw] h-[55vw] rounded-full bg-gradient-to-br from-[#a7e5d3]/20 via-[#f4c5a8]/10 to-transparent blur-3xl animate-float-slow" />
+        <div className="absolute top-[35%] right-[-10%] w-[50vw] h-[50vw] rounded-full bg-gradient-to-bl from-[#c8b8e0]/20 via-[#a7e5d3]/10 to-transparent blur-3xl animate-float-delayed" />
+        <div className="absolute bottom-[-10%] left-[20%] w-[45vw] h-[45vw] rounded-full bg-gradient-to-tr from-[#f4c5a8]/15 via-transparent to-transparent blur-3xl animate-float-slow" />
+      </div>
 
-      {/* Floating Editorial Top Navigation */}
-      <nav className="sticky top-4 z-50 max-w-5xl mx-auto px-4 sm:px-6">
-        <div className="bg-white/90 dark:bg-[#1c1917]/90 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] rounded-2xl px-4 py-3 shadow-[0_4px_20px_rgba(0,0,0,0.05)] flex items-center justify-between gap-4 transition-all">
-          <Link href="/" className="flex items-center gap-3 group">
-            <img src="/icon.svg" alt="MoovyEng Logo" className="w-10 h-10 object-contain drop-shadow-sm group-hover:scale-105 transition-transform" />
-            <div>
-              <span className="editorial-display text-xl font-bold tracking-tight text-[#0c0a09] dark:text-white leading-none block">
-                MoovyEng
-              </span>
-              <span className="text-[10px] text-[#777169] dark:text-[#a8a29e] block font-medium mt-0.5">
-                {t.brandSub}
-              </span>
-            </div>
-          </Link>
-
-          <div className="flex items-center gap-2">
-            {/* Language Switcher Button (TH / EN) */}
-            <button
-              type="button"
-              onClick={toggleLanguage}
-              className="h-8 px-3 rounded-full bg-[#f0efed] dark:bg-[#292524] text-[#0c0a09] dark:text-[#f5f5f4] text-xs font-semibold border border-[#d6d3d1] dark:border-[#44403c] hover:bg-[#e7e5e4] dark:hover:bg-[#3b3633] transition flex items-center gap-1.5 shadow-2xs"
-              title="Switch Language (TH / EN)"
-            >
-              <i className="fa-solid fa-globe text-[11px] text-[#777169] dark:text-[#a8a29e]" />
-              <span>{lang.toUpperCase()}</span>
-            </button>
-
-            {/* Launch Studio CTA */}
-            <Link
-              href="/"
-              className="h-8 px-4 rounded-full bg-[#0c0a09] dark:bg-white text-white dark:text-[#0c0a09] text-xs font-semibold hover:opacity-90 transition flex items-center gap-1.5 shadow-xs"
-            >
-              <span>{t.openStudio}</span>
-              <i className="fa-solid fa-arrow-right text-[10px]" />
-            </Link>
+      {/* Luxury Minimalist Header */}
+      <nav className="relative z-20 max-w-6xl mx-auto px-6 py-6 flex items-center justify-between">
+        <Link href="/" className="flex items-center gap-3 group">
+          <img
+            src="/icon.svg"
+            alt="MoovyEng Logo"
+            className="w-10 h-10 object-contain drop-shadow-sm transition-transform duration-300 group-hover:scale-105"
+          />
+          <div>
+            <span className="editorial-display text-2xl font-normal tracking-tight text-[#0c0a09] dark:text-white block leading-none">
+              MoovyEng
+            </span>
+            <span className="text-[10px] text-[#777169] dark:text-[#a8a29e] tracking-wider uppercase font-medium">
+              Cinema Vocab Studio
+            </span>
           </div>
+        </Link>
+
+        <div className="flex items-center gap-3">
+          {/* Language Switcher */}
+          <button
+            type="button"
+            onClick={toggleLanguage}
+            className="px-3 py-1.5 rounded-full bg-white/80 dark:bg-[#1c1917]/80 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] text-xs font-semibold text-[#0c0a09] dark:text-white hover:bg-white dark:hover:bg-[#25221f] transition shadow-2xs"
+            title={isTh ? 'Switch to English' : 'เปลี่ยนเป็นภาษาไทย'}
+          >
+            {lang.toUpperCase()}
+          </button>
+
+          <Link
+            href="/"
+            className="btn-magical px-4 py-2 rounded-xl bg-[#0c0a09] dark:bg-white text-white dark:text-[#0c0a09] text-xs font-semibold shadow-xs flex items-center gap-2"
+          >
+            <span>{isTh ? 'เข้าสู่สตูดิโอ' : 'Launch Studio'}</span>
+            <i className="fa-solid fa-arrow-right text-[10px]" />
+          </Link>
         </div>
       </nav>
 
-      {/* Hero Header with GSAP Entrance Classes */}
-      <header className="relative z-10 max-w-4xl mx-auto px-6 pt-16 pb-12 text-center">
-        {/* Animated Badge */}
-        <div className="hero-badge inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/80 dark:bg-white/10 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] text-xs font-medium text-[#777169] dark:text-[#d6d3d1] mb-6 shadow-2xs">
-          <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-          <span>{t.badge}</span>
+      {/* Hero Section */}
+      <header className="relative z-10 max-w-4xl mx-auto px-6 pt-12 pb-16 text-center space-y-6">
+        {/* Shimmer Badge */}
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-amber-500/20 dark:border-amber-400/25 shadow-xs shimmer-badge">
+          <i className="fa-solid fa-wand-magic-sparkles text-amber-500 text-xs" />
+          <span className="text-[11px] font-medium text-[#0c0a09] dark:text-white tracking-wide">
+            {isTh ? 'สถาปัตยกรรมสตูดิโอระดับพรีเมียม • ElevenLabs Aesthetic' : 'Next-Generation Cinema Vocab Engine'}
+          </span>
         </div>
 
-        {/* Animated Hero Title: Slid up & Scaled gently */}
-        <h1 className="hero-title editorial-display text-4xl sm:text-6xl font-light text-[#0c0a09] dark:text-white leading-[1.15] mb-6 tracking-tight">
-          {t.heroTitleLine1} <br />
-          <span className="font-normal text-[#292524] dark:text-[#f5f5f4] underline decoration-[#f4c5a8] decoration-wavy decoration-2 underline-offset-8">
-            {t.heroTitleLine2}
-          </span>
+        <h1 className="hero-title editorial-display text-4xl sm:text-6xl text-[#0c0a09] dark:text-white font-normal tracking-tight leading-[1.12]">
+          {isTh ? (
+            <>
+              สร้างคอนเทนต์สอนภาษาอังกฤษ <br className="hidden sm:inline" />
+              <span className="italic font-serif">จากซีนภาพยนตร์จริง</span> สู่โซเชียลมีเดีย
+            </>
+          ) : (
+            <>
+              Craft English Video Lessons <br className="hidden sm:inline" />
+              <span className="italic font-serif">from Authentic Cinema Scenes</span>
+            </>
+          )}
         </h1>
 
-        {/* Animated Hero Description */}
-        <p className="hero-desc text-sm sm:text-base text-[#777169] dark:text-[#a8a29e] max-w-2xl mx-auto leading-relaxed mb-8">
-          {t.heroDesc}
+        <p className="hero-desc max-w-2xl mx-auto text-sm sm:text-base text-[#777169] dark:text-[#a8a29e] leading-relaxed">
+          {isTh
+            ? 'MoovyEng รวมพลังของ Multi-AI, คลังคลิปหนังความละเอียดสูง และระบบเรนเดอร์วิดีโอ Full Canvas เพื่อสร้างคลิปสั้นสำหรับ TikTok, Reels และ YouTube Shorts ได้ในไม่กี่คลิก'
+            : 'MoovyEng seamlessly fuses multi-vendor AI reasoning, high-definition Hollywood dialogue moments, and instant full-canvas video generation in your browser.'}
         </p>
 
-        {/* Action Buttons with Staggered Entrance */}
-        <div className="flex flex-wrap items-center justify-center gap-3.5">
+        {/* CTA Buttons */}
+        <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
           <Link
             href="/"
             className="hero-cta-btn btn-magical px-6 py-3.5 rounded-xl bg-[#0c0a09] dark:bg-white text-white dark:text-[#0c0a09] text-xs font-semibold shadow-md flex items-center gap-2.5"
           >
-            <span>{t.ctaPrimary}</span>
-            <i className="fa-solid fa-arrow-right text-[10px] transition-transform duration-200 group-hover:translate-x-1" />
+            <span>{isTh ? 'เปิดสตูดิโอบนคอม (Desktop)' : 'Launch Desktop Studio'}</span>
+            <i className="fa-solid fa-desktop text-[11px]" />
           </Link>
           <Link
             href="/edit"
             className="hero-cta-btn btn-magical px-5 py-3.5 rounded-xl bg-white dark:bg-[#1c1917] border border-[#e7e5e4] dark:border-[#292524] text-[#0c0a09] dark:text-white text-xs font-semibold shadow-2xs flex items-center gap-2"
           >
             <i className="fa-solid fa-mobile-screen text-xs text-[#777169] dark:text-[#a8a29e]" />
-            <span>{t.ctaSecondary}</span>
+            <span>{isTh ? 'เปิดโหมดมือถือ (Mobile /edit)' : 'Open Mobile Interface'}</span>
           </Link>
         </div>
       </header>
 
-      {/* Live Interactive UI Gallery Section (Animated via ScrollTrigger) */}
-      <section className="showcase-panel relative z-10 max-w-5xl mx-auto px-4 sm:px-6 py-6">
-        <div className="text-center mb-6">
-          <h2 className="editorial-display text-2xl sm:text-3xl font-normal text-[#0c0a09] dark:text-white mb-2">
-            {t.galleryHeading}
-          </h2>
-          <p className="text-xs text-[#777169] dark:text-[#a8a29e]">
-            {t.gallerySub}
-          </p>
-        </div>
-
-        {/* Minimalist Tabs */}
-        <div className="flex flex-wrap items-center justify-center gap-2 mb-6">
-          <button
-            type="button"
-            onClick={() => setActiveTab('desktop')}
-            className={`px-4 py-2 rounded-xl text-xs font-medium transition-all flex items-center gap-2 ${
-              activeTab === 'desktop'
-                ? 'bg-[#0c0a09] dark:bg-white text-white dark:text-[#0c0a09] shadow-xs'
-                : 'bg-white/80 dark:bg-[#1c1917]/80 text-[#777169] dark:text-[#a8a29e] border border-[#e7e5e4] dark:border-[#292524] hover:bg-white dark:hover:bg-[#25221f]'
-            }`}
-          >
-            <i className="fa-solid fa-desktop text-xs" />
-            <span>{t.tabDesktop}</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab('dark')}
-            className={`px-4 py-2 rounded-xl text-xs font-medium transition-all flex items-center gap-2 ${
-              activeTab === 'dark'
-                ? 'bg-[#0c0a09] dark:bg-white text-white dark:text-[#0c0a09] shadow-xs'
-                : 'bg-white/80 dark:bg-[#1c1917]/80 text-[#777169] dark:text-[#a8a29e] border border-[#e7e5e4] dark:border-[#292524] hover:bg-white dark:hover:bg-[#25221f]'
-            }`}
-          >
-            <i className="fa-solid fa-moon text-xs" />
-            <span>{t.tabDark}</span>
-          </button>
-          <button
-            type="button"
-            onClick={() => setActiveTab('mobile')}
-            className={`px-4 py-2 rounded-xl text-xs font-medium transition-all flex items-center gap-2 ${
-              activeTab === 'mobile'
-                ? 'bg-[#0c0a09] dark:bg-white text-white dark:text-[#0c0a09] shadow-xs'
-                : 'bg-white/80 dark:bg-[#1c1917]/80 text-[#777169] dark:text-[#a8a29e] border border-[#e7e5e4] dark:border-[#292524] hover:bg-white dark:hover:bg-[#25221f]'
-            }`}
-          >
-            <i className="fa-solid fa-mobile-screen text-xs" />
-            <span>{t.tabMobile}</span>
-          </button>
-        </div>
-
-        {/* Master Showcase Frame with Minimal Chrome */}
-        <div className="bg-white/90 dark:bg-[#1c1917]/90 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] rounded-2xl p-5 sm:p-7 shadow-[0_8px_32px_rgba(0,0,0,0.05)] space-y-5 transition-all">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-[#f0efed] dark:border-[#292524]">
-            <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[#777169] dark:text-[#a8a29e]">
-                {currentShot.tag}
-              </span>
-              <h3 className="text-lg font-semibold text-[#0c0a09] dark:text-white mt-0.5">
-                {currentShot.title}
-              </h3>
-              <p className="text-xs text-[#777169] dark:text-[#a8a29e] mt-1 max-w-2xl leading-relaxed">
-                {currentShot.desc}
-              </p>
-            </div>
-            <Link
-              href="/"
-              className="px-4 py-2 rounded-lg bg-[#f0efed] dark:bg-[#292524] hover:bg-[#0c0a09] hover:text-white dark:hover:bg-white dark:hover:text-[#0c0a09] text-xs font-semibold text-[#0c0a09] dark:text-white transition flex items-center gap-1.5 self-start sm:self-center flex-shrink-0"
-            >
-              <span>{t.openStudio}</span>
-              <i className="fa-solid fa-arrow-up-right-from-square text-[9px]" />
-            </Link>
-          </div>
-
-          {/* Picture Display - Custom ratio depending on Desktop vs Mobile Frame */}
-          <div className="rounded-xl overflow-hidden border border-[#e7e5e4] dark:border-[#292524] bg-[#fafafa] dark:bg-[#12100e] shadow-sm flex flex-col items-center">
-            {/* Top Minimal Address Bar */}
-            <div className="w-full px-3.5 py-2 bg-white/80 dark:bg-[#1c1917]/80 backdrop-blur-md border-b border-[#e7e5e4] dark:border-[#292524] flex items-center justify-between text-[11px] text-[#777169] dark:text-[#a8a29e]">
-              <div className="flex items-center gap-1.5">
-                <span className="w-2.5 h-2.5 rounded-full bg-[#e7e5e4] dark:bg-[#292524]" />
-                <span className="w-2.5 h-2.5 rounded-full bg-[#e7e5e4] dark:bg-[#292524]" />
-                <span className="w-2.5 h-2.5 rounded-full bg-[#e7e5e4] dark:bg-[#292524]" />
-                <span className="ml-2 font-mono text-[10px]">https://moovyeng.vercel.app</span>
-              </div>
-              <span className="text-[10px] font-medium hidden sm:inline">{currentShot.badge}</span>
-            </div>
-
-            {/* If mobile tab, present in dedicated centered smartphone card */}
-            {currentShot.isMobileFrame ? (
-              <div className="w-full py-8 px-4 flex justify-center bg-gradient-to-b from-[#f5f5f4] to-[#e7e5e4] dark:from-[#181614] dark:to-[#0f0e0d]">
-                <div className="w-[320px] sm:w-[360px] rounded-[36px] p-2 bg-[#292524] shadow-[0_24px_50px_rgba(0,0,0,0.2)] border-2 border-[#57534e]">
-                  <div className="rounded-[28px] overflow-hidden bg-white dark:bg-[#0c0a09] relative shadow-inner">
-                    <picture className="w-full h-auto block">
-                      <source srcSet={currentShot.avif} type="image/avif" />
-                      <source srcSet={currentShot.webp} type="image/webp" />
-                      <img
-                        src={currentShot.png}
-                        alt={currentShot.title}
-                        loading="eager"
-                        className="w-full h-auto max-h-[580px] object-cover object-top"
-                      />
-                    </picture>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              /* Desktop Widescreen Display */
-              <div className="relative aspect-[16/10] w-full overflow-hidden bg-black/5 flex items-center justify-center">
-                <picture className="w-full h-full">
-                  <source srcSet={currentShot.avif} type="image/avif" />
-                  <source srcSet={currentShot.webp} type="image/webp" />
-                  <img
-                    src={currentShot.png}
-                    alt={currentShot.title}
-                    loading="eager"
-                    className="w-full h-full object-contain object-top"
-                  />
-                </picture>
-              </div>
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* Step-by-Step Interactive Guide (ScrollTrigger Ripple with Stagger 0.1s) */}
-      <section className="relative z-10 max-w-5xl mx-auto px-6 py-12">
-        <div className="text-center mb-10">
-          <h2 className="editorial-display text-2xl sm:text-3xl font-normal text-[#0c0a09] dark:text-white mb-2">
-            {t.guideHeading}
-          </h2>
-          <p className="text-xs text-[#777169] dark:text-[#a8a29e]">
-            {t.guideSub}
-          </p>
-        </div>
-
-        <div className="guide-steps-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="guide-step-card card-magical p-5 rounded-2xl bg-white/85 dark:bg-[#1c1917]/85 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] shadow-2xs space-y-2.5">
-            <div className="w-8 h-8 rounded-lg bg-[#0c0a09] dark:bg-white text-white dark:text-[#0c0a09] text-xs font-mono font-bold flex items-center justify-center">
-              {t.step1Num}
-            </div>
-            <h3 className="text-sm font-semibold text-[#0c0a09] dark:text-white">
-              {t.step1Title}
-            </h3>
-            <p className="text-xs text-[#777169] dark:text-[#a8a29e] leading-relaxed">
-              {t.step1Desc}
-            </p>
-          </div>
-
-          <div className="guide-step-card card-magical p-5 rounded-2xl bg-white/85 dark:bg-[#1c1917]/85 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] shadow-2xs space-y-2.5">
-            <div className="w-8 h-8 rounded-lg bg-[#0c0a09] dark:bg-white text-white dark:text-[#0c0a09] text-xs font-mono font-bold flex items-center justify-center">
-              {t.step2Num}
-            </div>
-            <h3 className="text-sm font-semibold text-[#0c0a09] dark:text-white">
-              {t.step2Title}
-            </h3>
-            <p className="text-xs text-[#777169] dark:text-[#a8a29e] leading-relaxed">
-              {t.step2Desc}
-            </p>
-          </div>
-
-          <div className="guide-step-card card-magical p-5 rounded-2xl bg-white/85 dark:bg-[#1c1917]/85 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] shadow-2xs space-y-2.5">
-            <div className="w-8 h-8 rounded-lg bg-[#0c0a09] dark:bg-white text-white dark:text-[#0c0a09] text-xs font-mono font-bold flex items-center justify-center">
-              {t.step3Num}
-            </div>
-            <h3 className="text-sm font-semibold text-[#0c0a09] dark:text-white">
-              {t.step3Title}
-            </h3>
-            <p className="text-xs text-[#777169] dark:text-[#a8a29e] leading-relaxed">
-              {t.step3Desc}
-            </p>
-          </div>
-
-          <div className="guide-step-card card-magical p-5 rounded-2xl bg-white/85 dark:bg-[#1c1917]/85 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] shadow-2xs space-y-2.5">
-            <div className="w-8 h-8 rounded-lg bg-[#0c0a09] dark:bg-white text-white dark:text-[#0c0a09] text-xs font-mono font-bold flex items-center justify-center">
-              {t.step4Num}
-            </div>
-            <h3 className="text-sm font-semibold text-[#0c0a09] dark:text-white">
-              {t.step4Title}
-            </h3>
-            <p className="text-xs text-[#777169] dark:text-[#a8a29e] leading-relaxed">
-              {t.step4Desc}
-            </p>
-          </div>
-        </div>
-      </section>
-
-      {/* Feature Pillars: Horizontal Modern Row Layout with Staggered Entrance */}
-      <section className="relative z-10 max-w-5xl mx-auto px-6 py-6">
+      {/* Interactive Showcase Carousel Section */}
+      <section className="carousel-section relative z-10 max-w-5xl mx-auto px-4 sm:px-6 py-8">
         <div className="text-center mb-8">
-          <h2 className="editorial-display text-2xl sm:text-3xl font-normal text-[#0c0a09] dark:text-white mb-2">
-            {t.featuresHeading}
+          <h2 className="editorial-display text-2xl sm:text-4xl font-normal text-[#0c0a09] dark:text-white mb-2">
+            {isTh ? 'ทัวร์ชมเครื่องมือและระบบการทำงานจริง' : 'Interactive System Tour & Workspace Gallery'}
           </h2>
-          <p className="text-xs text-[#777169] dark:text-[#a8a29e]">
-            {t.featuresSub}
+          <p className="text-xs sm:text-sm text-[#777169] dark:text-[#a8a29e]">
+            {isTh
+              ? 'เลื่อนดูฟังก์ชันเด่นแต่ละส่วนที่ออกแบบมาเพื่อการผลิตคลิปอย่างมืออาชีพ'
+              : 'Explore each synchronized module engineered for high-engagement educational content creation'}
           </p>
         </div>
 
-        <div className="feature-pillars-grid grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="feature-pillar-card p-5 rounded-2xl bg-white/90 dark:bg-[#1c1917]/90 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] shadow-2xs hover:border-[#0c0a09] dark:hover:border-white transition-all flex flex-col justify-between">
-            <div>
-              <div className="w-9 h-9 rounded-xl bg-[#f0efed] dark:bg-[#292524] text-[#0c0a09] dark:text-white flex items-center justify-center text-xs mb-3">
-                <i className="fa-solid fa-microchip" />
-              </div>
-              <h3 className="text-sm font-semibold text-[#0c0a09] dark:text-white mb-1.5">
-                {t.feat1Title}
-              </h3>
-              <p className="text-xs text-[#777169] dark:text-[#a8a29e] leading-relaxed">
-                {t.feat1Desc}
-              </p>
+        {/* Carousel Master Frame */}
+        <div className="card-magical rounded-3xl overflow-hidden border border-[#e7e5e4] dark:border-[#292524] bg-white/90 dark:bg-[#18181b]/90 backdrop-blur-xl shadow-xl">
+          {/* Top Window Chrome Bar */}
+          <div className="px-5 py-3.5 border-b border-[#f0efed] dark:border-[#27272a] flex items-center justify-between bg-[#fafaf9]/80 dark:bg-[#18181b]/80">
+            <div className="flex items-center gap-2">
+              <span className="w-3 h-3 rounded-full bg-[#ef4444]/80 inline-block" />
+              <span className="w-3 h-3 rounded-full bg-[#f59e0b]/80 inline-block" />
+              <span className="w-3 h-3 rounded-full bg-[#10b981]/80 inline-block" />
+              <span className="text-[11px] font-mono text-[#777169] dark:text-[#a8a29e] ml-2 hidden sm:inline">
+                https://moovyeng.vercel.app/
+              </span>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] font-mono font-bold px-2.5 py-0.5 rounded-full bg-[#f0efed] dark:bg-[#27272a] text-[#0c0a09] dark:text-white">
+                {currentSlide.badge}
+              </span>
             </div>
           </div>
 
-          <div className="feature-pillar-card p-5 rounded-2xl bg-white/90 dark:bg-[#1c1917]/90 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] shadow-2xs hover:border-[#0c0a09] dark:hover:border-white transition-all flex flex-col justify-between">
-            <div>
-              <div className="w-9 h-9 rounded-xl bg-[#f0efed] dark:bg-[#292524] text-[#0c0a09] dark:text-white flex items-center justify-center text-xs mb-3">
-                <i className="fa-solid fa-film" />
-              </div>
-              <h3 className="text-sm font-semibold text-[#0c0a09] dark:text-white mb-1.5">
-                {t.feat2Title}
-              </h3>
-              <p className="text-xs text-[#777169] dark:text-[#a8a29e] leading-relaxed">
-                {t.feat2Desc}
-              </p>
-            </div>
-          </div>
+          {/* Carousel Slide Media & Viewport */}
+          <div className="relative aspect-[16/10] sm:aspect-[16/9] w-full overflow-hidden bg-[#f4f4f5] dark:bg-[#09090b] flex items-center justify-center group">
+            <img
+              src={currentSlide.img}
+              alt={currentSlide.title}
+              loading="eager"
+              className="w-full h-full object-contain object-top transition-transform duration-500 group-hover:scale-[1.01]"
+              onError={(e) => {
+                // Fallback to PNG if WebP is still processing
+                e.currentTarget.src = currentSlide.fallback;
+              }}
+            />
 
-          <div className="feature-pillar-card p-5 rounded-2xl bg-white/90 dark:bg-[#1c1917]/90 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] shadow-2xs hover:border-[#0c0a09] dark:hover:border-white transition-all flex flex-col justify-between">
-            <div>
-              <div className="w-9 h-9 rounded-xl bg-[#f0efed] dark:bg-[#292524] text-[#0c0a09] dark:text-white flex items-center justify-center text-xs mb-3">
-                <i className="fa-solid fa-trash-can-arrow-up" />
-              </div>
-              <h3 className="text-sm font-semibold text-[#0c0a09] dark:text-white mb-1.5">
-                {t.feat3Title}
-              </h3>
-              <p className="text-xs text-[#777169] dark:text-[#a8a29e] leading-relaxed">
-                {t.feat3Desc}
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Clean Call to Action */}
-      <section className="relative z-10 max-w-4xl mx-auto px-6 py-10 text-center">
-        <div className="p-8 sm:p-10 rounded-2xl bg-white/90 dark:bg-[#1c1917]/90 border border-[#e7e5e4] dark:border-[#292524] backdrop-blur-md shadow-sm">
-          <h2 className="editorial-display text-2xl sm:text-3xl font-normal text-[#0c0a09] dark:text-white mb-3">
-            {t.ctaFinalTitle}
-          </h2>
-          <p className="text-xs sm:text-sm text-[#777169] dark:text-[#a8a29e] max-w-lg mx-auto mb-6 leading-relaxed">
-            {t.ctaFinalDesc}
-          </p>
-          <div className="flex flex-wrap items-center justify-center gap-3">
-            <Link
-              href="/"
-              className="px-6 py-3 rounded-xl bg-[#0c0a09] dark:bg-white text-white dark:text-[#0c0a09] text-xs font-semibold shadow-xs hover:shadow-md transition flex items-center gap-2"
+            {/* Left / Right Carousel Controls */}
+            <button
+              type="button"
+              onClick={handlePrevSlide}
+              className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 dark:bg-[#18181b]/90 text-[#0c0a09] dark:text-white border border-[#e7e5e4] dark:border-[#27272a] shadow-lg flex items-center justify-center hover:scale-110 active:scale-95 transition-all opacity-80 hover:opacity-100"
+              aria-label="Previous Slide"
             >
-              <span>{t.ctaFinalBtn}</span>
-              <i className="fa-solid fa-arrow-right text-[10px]" />
-            </Link>
+              <i className="fa-solid fa-chevron-left text-xs" />
+            </button>
+            <button
+              type="button"
+              onClick={handleNextSlide}
+              className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/90 dark:bg-[#18181b]/90 text-[#0c0a09] dark:text-white border border-[#e7e5e4] dark:border-[#27272a] shadow-lg flex items-center justify-center hover:scale-110 active:scale-95 transition-all opacity-80 hover:opacity-100"
+              aria-label="Next Slide"
+            >
+              <i className="fa-solid fa-chevron-right text-xs" />
+            </button>
+          </div>
+
+          {/* Slide Description & Meta Footer */}
+          <div className="p-6 sm:p-8 bg-white dark:bg-[#18181b] border-t border-[#f0efed] dark:border-[#27272a] flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div className="space-y-1.5 max-w-2xl">
+              <span className="text-[11px] font-mono font-bold text-amber-600 dark:text-amber-400 tracking-wider">
+                {currentSlide.tag}
+              </span>
+              <h3 className="editorial-display text-xl sm:text-2xl text-[#0c0a09] dark:text-white font-normal">
+                {currentSlide.title}
+              </h3>
+              <p className="text-xs sm:text-sm text-[#777169] dark:text-[#a8a29e] leading-relaxed">
+                {currentSlide.desc}
+              </p>
+            </div>
+
+            {/* Slide Pagination Dots */}
+            <div className="flex items-center gap-1.5 self-start sm:self-center">
+              {slides.map((s, idx) => (
+                <button
+                  key={s.id}
+                  type="button"
+                  onClick={() => setCarouselIndex(idx)}
+                  className={`h-2 rounded-full transition-all duration-300 ${
+                    idx === carouselIndex
+                      ? 'w-7 bg-[#0c0a09] dark:bg-white'
+                      : 'w-2 bg-[#d6d3d1] dark:bg-[#3f3f46] hover:bg-[#a1a1aa]'
+                  }`}
+                  aria-label={`Go to slide ${idx + 1}`}
+                />
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Creator Profile & Open Source Section with Official Social Sample Channels */}
-      <section className="creator-container relative z-10 max-w-4xl mx-auto px-6 pb-16 space-y-4">
-        {/* TikTok & Instagram Official Showcase Channels */}
-        <div className="creator-card p-5 sm:p-6 rounded-2xl bg-amber-50/90 dark:bg-amber-950/30 border border-amber-200/80 dark:border-amber-900/40 backdrop-blur-md flex flex-col sm:flex-row items-center justify-between gap-4 shadow-2xs">
-          <div className="flex items-center gap-3">
-            <span className="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center text-base flex-shrink-0">
-              <i className="fa-solid fa-play" />
-            </span>
-            <div>
-              <h4 className="text-xs sm:text-sm font-bold text-amber-950 dark:text-amber-200">
-                {lang === 'th' ? 'ช่องทางการเผยแพร่วิดีโอตัวอย่างผลงาน' : 'Official Showcase Video Channels'}
-              </h4>
-              <p className="text-[11px] text-amber-800 dark:text-amber-300 mt-0.5 leading-relaxed">
-                {lang === 'th'
-                  ? 'ดูตัวอย่างคลิปสอนภาษาอังกฤษสั้นที่สร้างและเรนเดอร์จริงจากระบบ MoovyEng ได้ที่:'
-                  : 'Watch real educational short videos generated and rendered with MoovyEng:'}
-              </p>
+      {/* Step-by-Step 4 Core Workflow Modules */}
+      <section className="relative z-10 max-w-5xl mx-auto px-6 py-14">
+        <div className="text-center mb-10">
+          <h2 className="editorial-display text-2xl sm:text-4xl font-normal text-[#0c0a09] dark:text-white mb-2">
+            {isTh ? 'วิธีใช้งาน MoovyEng อย่างละเอียดใน 4 ขั้นตอน' : 'How It Works: 4 Step-by-Step Walkthrough'}
+          </h2>
+          <p className="text-xs sm:text-sm text-[#777169] dark:text-[#a8a29e]">
+            {isTh
+              ? 'ตั้งแต่การเชื่อมต่อโมเดล AI จนถึงการบันทึกวิดีโอ MP4 คมชัดพร้อมลง TikTok และ Reels'
+              : 'From connecting your preferred AI engine to rendering high-impact short videos in seconds'}
+          </p>
+        </div>
+
+        <div className="guide-cards-grid grid grid-cols-1 md:grid-cols-2 gap-5">
+          {/* Step 1 */}
+          <div className="guide-card-detail card-magical p-6 rounded-3xl bg-white/85 dark:bg-[#1c1917]/85 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="w-9 h-9 rounded-xl bg-[#0c0a09] dark:bg-white text-white dark:text-[#0c0a09] text-xs font-mono font-bold flex items-center justify-center shadow-xs">
+                01
+              </span>
+              <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded-full bg-[#f0efed] dark:bg-[#292524] text-[#777169] dark:text-[#a8a29e]">
+                AI Provider Setup
+              </span>
             </div>
+            <h3 className="text-base font-semibold text-[#0c0a09] dark:text-white">
+              {isTh ? '1. เลือกโมเดล AI & วาง API Key' : '1. Select AI Model & Authenticate Key'}
+            </h3>
+            <p className="text-xs text-[#777169] dark:text-[#a8a29e] leading-relaxed">
+              {isTh
+                ? 'เลือกผู้ให้บริการที่ต้องการ เช่น Google Gemini, OpenAI, Claude หรือ Groq วาง API Key แล้วคลิกปุ่มตรวจเช็ก ระบบจะโหลดลิสต์โมเดลที่ใช้งานได้ให้อัตโนมัติ'
+                : 'Select your preferred vendor (Gemini, OpenAI, Anthropic Claude, Groq). Paste your API Key and verify to unlock real-time prompt generation.'}
+            </p>
           </div>
 
-          <div className="flex items-center gap-2 flex-shrink-0">
+          {/* Step 2 */}
+          <div className="guide-card-detail card-magical p-6 rounded-3xl bg-white/85 dark:bg-[#1c1917]/85 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="w-9 h-9 rounded-xl bg-[#0c0a09] dark:bg-white text-white dark:text-[#0c0a09] text-xs font-mono font-bold flex items-center justify-center shadow-xs">
+                02
+              </span>
+              <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded-full bg-[#f0efed] dark:bg-[#292524] text-[#777169] dark:text-[#a8a29e]">
+                Vocab & Movie Scraper
+              </span>
+            </div>
+            <h3 className="text-base font-semibold text-[#0c0a09] dark:text-white">
+              {isTh ? '2. พิมพ์คำศัพท์ & ดึงคลิปหนังภาษาอังกฤษ' : '2. Enter Vocabulary & Queue Movie Scenes'}
+            </h3>
+            <p className="text-xs text-[#777169] dark:text-[#a8a29e] leading-relaxed">
+              {isTh
+                ? 'กรอกคำศัพท์ที่ต้องการ หรือกดไอคอนลูกเต๋าเพื่อสุ่มสำนวนยอดฮิต กดปุ่ม "AI วิเคราะห์ & ดึงคลิป" ระบบจะสแกนหาซีนภาพยนตร์ฮอลลีวูดที่มีประโยคตรงกัน พร้อมแต่งประโยคตัวอย่างให้ทันที'
+                : 'Type your word or click the random dice. Our engine queries authentic cinema lines containing that phrase, generating natural collocations and Thai phonetics.'}
+            </p>
+          </div>
+
+          {/* Step 3 */}
+          <div className="guide-card-detail card-magical p-6 rounded-3xl bg-white/85 dark:bg-[#1c1917]/85 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="w-9 h-9 rounded-xl bg-[#0c0a09] dark:bg-white text-white dark:text-[#0c0a09] text-xs font-mono font-bold flex items-center justify-center shadow-xs">
+                03
+              </span>
+              <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded-full bg-[#f0efed] dark:bg-[#292524] text-[#777169] dark:text-[#a8a29e]">
+                Visual Layout & Font
+              </span>
+            </div>
+            <h3 className="text-base font-semibold text-[#0c0a09] dark:text-white">
+              {isTh ? '3. ปรับสัดส่วนภาพ สีพื้นหลัง และจัดฟอนต์' : '3. Customize Aspect Ratio & Typography'}
+            </h3>
+            <p className="text-xs text-[#777169] dark:text-[#a8a29e] leading-relaxed">
+              {isTh
+                ? 'เลือกสัดส่วน 9:16 สำหรับแนวตั้ง หรือ 16:9 แนวนอน ปรับสีพื้นหลังผ่าน Color Lab เลือกลายมือหรือฟอนต์มินิมอล และลากวางข้อความบนหน้าพรีวิวได้อย่างอิสระ'
+                : 'Switch between 9:16 vertical and 16:9 widescreen. Refine solid backdrop tones, select playful Thai handwriting fonts, and drag elements on the canvas.'}
+            </p>
+          </div>
+
+          {/* Step 4 */}
+          <div className="guide-card-detail card-magical p-6 rounded-3xl bg-white/85 dark:bg-[#1c1917]/85 backdrop-blur-md border border-[#e7e5e4] dark:border-[#292524] space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="w-9 h-9 rounded-xl bg-[#0c0a09] dark:bg-white text-white dark:text-[#0c0a09] text-xs font-mono font-bold flex items-center justify-center shadow-xs">
+                04
+              </span>
+              <span className="text-[10px] uppercase font-mono px-2 py-0.5 rounded-full bg-[#f0efed] dark:bg-[#292524] text-[#777169] dark:text-[#a8a29e]">
+                Direct MP4 Video Export
+              </span>
+            </div>
+            <h3 className="text-base font-semibold text-[#0c0a09] dark:text-white">
+              {isTh ? '4. ส่งออกวิดีโอ MP4 & แคปชั่นพร้อมโพสต์' : '4. Render MP4 & Copy Social Caption'}
+            </h3>
+            <p className="text-xs text-[#777169] dark:text-[#a8a29e] leading-relaxed">
+              {isTh
+                ? 'คลิกปุ่ม Export บนแถบเมนูบนสุด เครื่องยนต์ Python FFmpeg จะคอมไพล์วิดีโอทั้งสไลด์พร้อมเสียงให้ทันที พร้อมล้างไฟล์แคชส่วนเกินออกจากเซิร์ฟเวอร์อัตโนมัติ'
+                : 'Click Export in the top header. The Python FFmpeg media compiler renders your complete card and movie playback into an MP4 file with automatic server cache pruning.'}
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Official Social Channels & Example Output */}
+      <section className="relative z-10 max-w-4xl mx-auto px-6 py-12">
+        <div className="p-8 sm:p-10 rounded-3xl bg-gradient-to-br from-amber-500/10 via-amber-400/5 to-transparent border border-amber-500/20 dark:border-amber-400/20 text-center space-y-4">
+          <div className="w-12 h-12 rounded-2xl bg-amber-500 text-white flex items-center justify-center mx-auto shadow-md">
+            <i className="fa-solid fa-play text-base" />
+          </div>
+          <h3 className="editorial-display text-2xl sm:text-3xl text-[#0c0a09] dark:text-white font-normal">
+            {isTh ? 'ชมตัวอย่างคลิปวิดีโอที่สร้างจริงบนโซเชียลมีเดีย' : 'Explore Real Video Output on Social Channels'}
+          </h3>
+          <p className="text-xs sm:text-sm text-[#777169] dark:text-[#a8a29e] max-w-xl mx-auto leading-relaxed">
+            {isTh
+              ? 'ติดตามผลงานคลิปวิดีโอสั้นสอนภาษาอังกฤษจากหนังที่เรนเดอร์ผ่านระบบ MoovyEng ได้ที่ช่องทางการของเรา:'
+              : 'View educational video lessons generated directly from this studio on our official channels:'}
+          </p>
+
+          <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
             <a
               href="https://www.tiktok.com/@move0nyoung"
               target="_blank"
               rel="noopener noreferrer"
-              className="px-3.5 py-2 rounded-xl bg-[#0c0a09] text-white text-xs font-semibold hover:bg-black transition flex items-center gap-1.5 shadow-xs"
+              className="btn-magical px-5 py-3 rounded-xl bg-[#0c0a09] text-white text-xs font-semibold hover:bg-black transition flex items-center gap-2.5 shadow-md"
             >
               <i className="fa-brands fa-tiktok text-sm" />
               <span>TikTok @move0nyoung</span>
@@ -693,72 +495,49 @@ export default function PersonalShowcasePage() {
               href="https://www.instagram.com/move0nyoung/"
               target="_blank"
               rel="noopener noreferrer"
-              className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xs font-semibold hover:opacity-90 transition flex items-center gap-1.5 shadow-xs"
+              className="btn-magical px-5 py-3 rounded-xl bg-gradient-to-r from-purple-600 via-pink-600 to-amber-500 text-white text-xs font-semibold hover:opacity-95 transition flex items-center gap-2.5 shadow-md"
             >
               <i className="fa-brands fa-instagram text-sm" />
-              <span>Instagram</span>
+              <span>Instagram @move0nyoung</span>
             </a>
           </div>
         </div>
-
-        {/* Creator Profile & Open Source Section */}
-        <div className="creator-card p-6 sm:p-8 rounded-2xl bg-white/80 dark:bg-[#1c1917]/80 border border-[#e7e5e4] dark:border-[#292524] backdrop-blur-md flex flex-col sm:flex-row items-center justify-between gap-6 shadow-2xs">
-          <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-full bg-[#f0efed] dark:bg-[#292524] border border-[#e7e5e4] dark:border-[#44403c] flex items-center justify-center text-xl text-[#0c0a09] dark:text-white flex-shrink-0">
-              <i className="fa-brands fa-github" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-semibold text-[#0c0a09] dark:text-white">
-                  nawapawn / MoovyEng
-                </span>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-mono bg-[#f0efed] dark:bg-[#292524] text-[#777169] dark:text-[#a8a29e]">
-                  Public Repo
-                </span>
-              </div>
-              <p className="text-xs text-[#777169] dark:text-[#a8a29e] mt-1 max-w-xl leading-relaxed">
-                {t.creatorDesc}
-              </p>
-            </div>
-          </div>
-
-          <a
-            href="https://github.com/nawapawn/MoovyEng"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="px-4 py-2.5 rounded-xl bg-[#0c0a09] dark:bg-white text-white dark:text-[#0c0a09] text-xs font-semibold hover:opacity-90 transition flex items-center gap-2 flex-shrink-0 shadow-xs"
-          >
-            <i className="fa-brands fa-github text-sm" />
-            <span>{t.githubBtn}</span>
-          </a>
-        </div>
       </section>
 
-      {/* Editorial Footer */}
-      <footer className="relative z-10 border-t border-[#e7e5e4] dark:border-[#292524] py-8 text-center text-xs text-[#777169] dark:text-[#a8a29e]">
-        <p className="font-mono text-[11px]">{t.footerRights}</p>
-        <div className="mt-2 flex items-center justify-center gap-4 text-[11px]">
-          <Link href="/" className="hover:text-[#0c0a09] dark:hover:text-white transition">
-            {t.footerHome}
-          </Link>
-          <span>•</span>
-          <Link href="/edit" className="hover:text-[#0c0a09] dark:hover:text-white transition">
-            {t.footerMobile}
-          </Link>
-          <span>•</span>
-          <Link href="/about" className="hover:text-[#0c0a09] dark:hover:text-white transition">
-            {t.footerAbout}
-          </Link>
-          <span>•</span>
+      {/* Creator Profile & Open Source Learning Showcase */}
+      <footer className="relative z-10 max-w-5xl mx-auto px-6 pt-10 pb-16 border-t border-[#e7e5e4] dark:border-[#292524] flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left">
+        <div className="space-y-1">
+          <div className="flex items-center justify-center sm:justify-start gap-2">
+            <span className="editorial-display text-lg text-[#0c0a09] dark:text-white font-normal">
+              MoovyEng
+            </span>
+            <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#f0efed] dark:bg-[#292524] text-[#777169] dark:text-[#a8a29e] font-mono">
+              Open Source
+            </span>
+          </div>
+          <p className="text-xs text-[#777169] dark:text-[#a8a29e]">
+            {isTh
+              ? 'พัฒนาโดย Nawapawn เพื่อการศึกษาและสร้างสรรค์คอนเทนต์การเรียนรู้ภาษาอังกฤษ'
+              : 'Crafted with passion by Nawapawn for educational and creative purposes.'}
+          </p>
+        </div>
+
+        <div className="flex flex-wrap items-center justify-center gap-3">
           <a
             href="https://github.com/nawapawn/MoovyEng"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:text-[#0c0a09] dark:hover:text-white transition inline-flex items-center gap-1"
+            className="btn-magical px-4 py-2 rounded-xl bg-white dark:bg-[#1c1917] border border-[#e7e5e4] dark:border-[#292524] text-xs font-semibold text-[#0c0a09] dark:text-white flex items-center gap-2 shadow-2xs"
           >
-            <i className="fa-brands fa-github text-[11px]" />
-            <span>GitHub</span>
+            <i className="fa-brands fa-github text-sm" />
+            <span>{isTh ? 'ศึกษาโค้ดบน GitHub' : 'View GitHub Repo'}</span>
           </a>
+          <Link
+            href="/"
+            className="btn-magical px-4 py-2 rounded-xl bg-[#0c0a09] dark:bg-white text-white dark:text-[#0c0a09] text-xs font-semibold shadow-xs"
+          >
+            <span>{isTh ? 'ไปที่สตูดิโอ' : 'Launch Studio'}</span>
+          </Link>
         </div>
       </footer>
     </div>
