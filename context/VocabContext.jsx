@@ -33,22 +33,22 @@ import {
 } from '../lib/services/selectionFormatService';
 import { sanitizeGrammarFormula } from '../lib/utils';
 
-import defaultClips from '../lib/defaultUnderTheWeatherClips.json';
+import defaultClips from '../lib/defaultBreakALegClips.json';
 
 const VocabContext = createContext(null);
 
 export function VocabProvider({ children }) {
   // Core Vocab State - Default to "under the weather" to match the user's showcase
-  const [word, setWord] = useState('under the weather');
-  const [phonetic, setPhonetic] = useState("/'ʌn.dər ðə 'weð.ər/");
-  const [thaiRead, setThaiRead] = useState('(อันเดอะ เดอะ เวธเธอะ)');
-  const [meaning, setMeaning] = useState('รู้สึกไม่สบาย, ป่วยเล็กน้อย');
+  const [word, setWord] = useState('break a leg');
+  const [phonetic, setPhonetic] = useState('/breɪk ə leɡ/');
+  const [thaiRead, setThaiRead] = useState('(เบรค-อะ-เลก)');
+  const [meaning, setMeaning] = useState('ขอให้โชคดี (นิยมใช้ก่อนขึ้นเวทีแสดง)');
   const [grammar, setGrammar] = useState('feel / be + under the weather (ใช้บอกว่ารู้สึกครั่นเนื้อครั่นตัวหรือไม่ค่อยสบาย)');
-  const [movieContextTh, setMovieContextTh] = useState('ฉันป่วยหรือรู้สึกไม่สบายเล็กน้อย');
-  const [ex1En, setEx1En] = useState('i feel a bit under the weather today.');
-  const [ex1Th, setEx1Th] = useState('วันนี้ฉันรู้สึกไม่ค่อยสบายตัวนิดหน่อย');
-  const [ex2En, setEx2En] = useState('Stay home if you are under the weather.');
-  const [ex2Th, setEx2Th] = useState('อยู่บ้านพักผ่อนนะถ้ารู้สึกไม่สบาย');
+  const [movieContextTh, setMovieContextTh] = useState('ถือเป็นโชคดี! - ขอให้โชคดีนะ');
+  const [ex1En, setEx1En] = useState('Break a leg tonight, you are going to rock the stage!');
+  const [ex1Th, setEx1Th] = useState('ขอให้คืนนี้โชคดีนะ เธอจะทำให้เวทีนี้ลุกเป็นไฟแน่นอน!');
+  const [ex2En, setEx2En] = useState("Before she walked on stage, I whispered, 'Break a leg,' and smiled at her.");
+  const [ex2Th, setEx2Th] = useState("ก่อนที่เธอจะก้าวขึ้นเวที ฉันกระซิบว่า 'ขอให้โชคดีนะ' แล้วยิ้มให้เธอ");
 
   // Video Clips & Playback
   const [activeClipSequence, setActiveClipSequence] = useState(defaultClips.slice(0, 6));
@@ -130,9 +130,9 @@ export function VocabProvider({ children }) {
       textAlign: 'left'
     },
     word: {
-      fontFamily: 'Biscuit',
+      fontFamily: 'MN PangPing',
       textColor: '#0c0a09',
-      fontSize: 44,
+      fontSize: 37,
       bold: true,
       italic: false,
       underline: false,
@@ -140,7 +140,7 @@ export function VocabProvider({ children }) {
     },
     phonetic: {
       fontFamily: 'Inter',
-      textColor: '#78716c',
+      textColor: '#7A7A7A',
       fontSize: 16,
       bold: false,
       italic: true,
@@ -148,45 +148,45 @@ export function VocabProvider({ children }) {
       textAlign: 'center'
     },
     thaiRead: {
-      fontFamily: 'Kanit',
-      textColor: '#ef4444', // Red as shown in the user's uploaded screenshot
-      fontSize: 18,
-      bold: true,
-      italic: false,
-      underline: false,
-      textAlign: 'center'
-    },
-    meaning: {
-      fontFamily: 'Biscuit',
-      textColor: '#0c0a09',
-      fontSize: 34,
-      bold: true,
-      italic: false,
-      underline: false,
-      textAlign: 'center'
-    },
-    grammar: {
-      fontFamily: 'Biscuit',
-      textColor: '#0c0a09',
-      fontSize: 22,
+      fontFamily: 'Garuda',
+      textColor: '#DC2626',
+      fontSize: 16,
       bold: false,
       italic: false,
       underline: false,
       textAlign: 'center'
     },
+    meaning: {
+      fontFamily: 'MiPancake',
+      textColor: '#0c0a09',
+      fontSize: 28,
+      bold: false,
+      italic: false,
+      underline: false,
+      textAlign: 'center'
+    },
+    grammar: {
+      fontFamily: 'MiPancake',
+      textColor: '#0c0a09',
+      fontSize: 24,
+      bold: false,
+      italic: false,
+      underline: false,
+      textAlign: 'left'
+    },
     ex1: {
-      fontFamily: 'Inter',
+      fontFamily: 'Prompt',
       textColor: '#1c1917',
-      fontSize: 15,
+      fontSize: 16,
       bold: false,
       italic: false,
       underline: false,
       textAlign: 'left'
     },
     ex2: {
-      fontFamily: 'Inter',
+      fontFamily: 'Prompt',
       textColor: '#1c1917',
-      fontSize: 15,
+      fontSize: 16,
       bold: false,
       italic: false,
       underline: false,
@@ -539,15 +539,15 @@ export function VocabProvider({ children }) {
           clearTimeout(historyTimerRef.current);
           historyTimerRef.current = null;
         }
-        setWord('under the weather');
-        setPhonetic("/'ʌn.dər ðə 'weð.ər/");
-        setThaiRead('(อันเดอะ เดอะ เวธเธอะ)');
-        setMeaning('รู้สึกไม่สบาย, ป่วยเล็กน้อย');
+        setWord('break a leg');
+        setPhonetic('/breɪk ə leɡ/');
+        setThaiRead('(เบรค-อะ-เลก)');
+        setMeaning('ขอให้โชคดี (นิยมใช้ก่อนขึ้นเวทีแสดง)');
         setGrammar('feel / be + under the weather (ใช้บอกว่ารู้สึกครั่นเนื้อครั่นตัวหรือไม่ค่อยสบาย)');
-        setEx1En('i feel a bit under the weather today.');
-        setEx1Th('วันนี้ฉันรู้สึกไม่ค่อยสบายตัวนิดหน่อย');
-        setEx2En('Stay home if you are under the weather.');
-        setEx2Th('อยู่บ้านพักผ่อนนะถ้ารู้สึกไม่สบาย');
+        setEx1En('Break a leg tonight, you are going to rock the stage!');
+        setEx1Th('ขอให้คืนนี้โชคดีนะ เธอจะทำให้เวทีนี้ลุกเป็นไฟแน่นอน!');
+        setEx2En("Before she walked on stage, I whispered, 'Break a leg,' and smiled at her.");
+        setEx2Th("ก่อนที่เธอจะก้าวขึ้นเวที ฉันกระซิบว่า 'ขอให้โชคดีนะ' แล้วยิ้มให้เธอ");
         setChannel('@move0nyoung');
         setAvatar('/avatar_default.png');
         setCaption(
