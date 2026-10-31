@@ -34,3 +34,5 @@ Thumbs.db
 .codex/
 .cursor/
 .gemini/
+
+.vercel
