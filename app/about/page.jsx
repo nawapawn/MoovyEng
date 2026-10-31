@@ -545,8 +545,49 @@ export default function PersonalShowcasePage() {
         </div>
       </section>
 
-      {/* Creator Profile & Open Source Section */}
-      <section className="relative z-10 max-w-4xl mx-auto px-6 pb-16">
+      {/* Creator Profile & Open Source Section with Official Social Sample Channels */}
+      <section className="relative z-10 max-w-4xl mx-auto px-6 pb-16 space-y-4">
+        {/* TikTok & Instagram Official Showcase Channels */}
+        <div className="p-5 sm:p-6 rounded-2xl bg-amber-50/90 dark:bg-amber-950/30 border border-amber-200/80 dark:border-amber-900/40 backdrop-blur-md flex flex-col sm:flex-row items-center justify-between gap-4 shadow-2xs">
+          <div className="flex items-center gap-3">
+            <span className="w-10 h-10 rounded-xl bg-amber-500 text-white flex items-center justify-center text-base flex-shrink-0">
+              <i className="fa-solid fa-play" />
+            </span>
+            <div>
+              <h4 className="text-xs sm:text-sm font-bold text-amber-950 dark:text-amber-200">
+                {lang === 'th' ? 'ช่องทางการเผยแพร่วิดีโอตัวอย่างผลงาน' : 'Official Showcase Video Channels'}
+              </h4>
+              <p className="text-[11px] text-amber-800 dark:text-amber-300 mt-0.5 leading-relaxed">
+                {lang === 'th'
+                  ? 'ดูตัวอย่างคลิปสอนภาษาอังกฤษสั้นที่สร้างและเรนเดอร์จริงจากระบบ MoovyEng ได้ที่:'
+                  : 'Watch real educational short videos generated and rendered with MoovyEng:'}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 flex-shrink-0">
+            <a
+              href="https://www.tiktok.com/@move0nyoung"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-3.5 py-2 rounded-xl bg-[#0c0a09] text-white text-xs font-semibold hover:bg-black transition flex items-center gap-1.5 shadow-xs"
+            >
+              <i className="fa-brands fa-tiktok text-sm" />
+              <span>TikTok @move0nyoung</span>
+            </a>
+            <a
+              href="https://www.instagram.com/move0nyoung/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-3.5 py-2 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xs font-semibold hover:opacity-90 transition flex items-center gap-1.5 shadow-xs"
+            >
+              <i className="fa-brands fa-instagram text-sm" />
+              <span>Instagram</span>
+            </a>
+          </div>
+        </div>
+
+        {/* Creator Profile & Open Source Section */}
         <div className="p-6 sm:p-8 rounded-2xl bg-white/80 dark:bg-[#1c1917]/80 border border-[#e7e5e4] dark:border-[#292524] backdrop-blur-md flex flex-col sm:flex-row items-center justify-between gap-6 shadow-2xs">
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 rounded-full bg-[#f0efed] dark:bg-[#292524] border border-[#e7e5e4] dark:border-[#44403c] flex items-center justify-center text-xl text-[#0c0a09] dark:text-white flex-shrink-0">

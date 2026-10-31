@@ -423,6 +423,15 @@ export function VocabProvider({ children }) {
           setElementPositions((prev) => ({ ...prev, ...parsedPos }));
         }
       }
+
+      // Dedicated persistent check for text format styling across refreshes
+      const savedTextFormat = localStorage.getItem('movy_text_format');
+      if (savedTextFormat) {
+        const parsedFmt = JSON.parse(savedTextFormat);
+        if (parsedFmt && typeof parsedFmt === 'object') {
+          setTextFormat((prev) => ({ ...prev, ...parsedFmt }));
+        }
+      }
     } catch (e) {
       console.error('Error restoring localStorage data:', e);
     } finally {
@@ -464,6 +473,7 @@ export function VocabProvider({ children }) {
       };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
       localStorage.setItem('movy_element_positions', JSON.stringify(elementPositions));
+      localStorage.setItem('movy_text_format', JSON.stringify(textFormat));
     } catch (e) {
       console.warn('LocalStorage save error:', e);
     }
