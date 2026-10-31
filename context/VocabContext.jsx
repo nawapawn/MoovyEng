@@ -33,24 +33,26 @@ import {
 } from '../lib/services/selectionFormatService';
 import { sanitizeGrammarFormula } from '../lib/utils';
 
+import defaultClips from '../lib/defaultUnderTheWeatherClips.json';
+
 const VocabContext = createContext(null);
 
 export function VocabProvider({ children }) {
-  // Core Vocab State
-  const [word, setWord] = useState('break a leg');
-  const [phonetic, setPhonetic] = useState('/breɪk ə leɡ/');
-  const [thaiRead, setThaiRead] = useState('(เบรค อะ เลก)');
-  const [meaning, setMeaning] = useState('ขอให้โชคดี (นิยมใช้ก่อนขึ้นเวทีแสดง)');
-  const [grammar, setGrammar] = useState('tell Someone to + break a leg (ใช้อวยพรขอให้โชคดีก่อนขึ้นแสดง/สอบแข่งขัน)');
-  const [movieContextTh, setMovieContextTh] = useState('');
-  const [ex1En, setEx1En] = useState('Go out there and break a leg!');
-  const [ex1Th, setEx1Th] = useState('ออกไปทำให้เต็มที่ ขอให้โชคดีนะ!');
-  const [ex2En, setEx2En] = useState('Break a leg on your test today.');
-  const [ex2Th, setEx2Th] = useState('ขอให้ทำข้อสอบได้คะแนนดีๆ โชคดีนะ');
+  // Core Vocab State - Default to "under the weather" to match the user's showcase
+  const [word, setWord] = useState('under the weather');
+  const [phonetic, setPhonetic] = useState("/'ʌn.dər ðə 'weð.ər/");
+  const [thaiRead, setThaiRead] = useState('(อันเดอะ เดอะ เวธเธอะ)');
+  const [meaning, setMeaning] = useState('รู้สึกไม่สบาย, ป่วยเล็กน้อย');
+  const [grammar, setGrammar] = useState('feel / be + under the weather (ใช้บอกว่ารู้สึกครั่นเนื้อครั่นตัวหรือไม่ค่อยสบาย)');
+  const [movieContextTh, setMovieContextTh] = useState('ฉันป่วยหรือรู้สึกไม่สบายเล็กน้อย');
+  const [ex1En, setEx1En] = useState('i feel a bit under the weather today.');
+  const [ex1Th, setEx1Th] = useState('วันนี้ฉันรู้สึกไม่ค่อยสบายตัวนิดหน่อย');
+  const [ex2En, setEx2En] = useState('Stay home if you are under the weather.');
+  const [ex2Th, setEx2Th] = useState('อยู่บ้านพักผ่อนนะถ้ารู้สึกไม่สบาย');
 
   // Video Clips & Playback
-  const [activeClipSequence, setActiveClipSequence] = useState([]);
-  const [cafeClipPool, setCafeClipPool] = useState([]);
+  const [activeClipSequence, setActiveClipSequence] = useState(defaultClips.slice(0, 6));
+  const [cafeClipPool, setCafeClipPool] = useState(defaultClips);
   const [isPlayingVideo, setIsPlayingVideo] = useState(false);
   const [currentSequenceIndex, setCurrentSequenceIndex] = useState(0);
   const [playTrigger, setPlayTrigger] = useState(0);
@@ -119,8 +121,8 @@ export function VocabProvider({ children }) {
   // Itemized Text Formatting for All Vocabulary Components
   const DEFAULT_TEXT_FORMAT = {
     global: {
-      fontFamily: 'Kanit',
-      textColor: '',
+      fontFamily: 'Biscuit',
+      textColor: '#0c0a09',
       fontSize: 'normal',
       bold: true,
       italic: false,
@@ -128,9 +130,9 @@ export function VocabProvider({ children }) {
       textAlign: 'left'
     },
     word: {
-      fontFamily: 'Kanit',
-      textColor: '',
-      fontSize: 'large',
+      fontFamily: 'Biscuit',
+      textColor: '#0c0a09',
+      fontSize: 44,
       bold: true,
       italic: false,
       underline: false,
@@ -138,61 +140,61 @@ export function VocabProvider({ children }) {
     },
     phonetic: {
       fontFamily: 'Inter',
-      textColor: '',
-      fontSize: 'normal',
+      textColor: '#78716c',
+      fontSize: 16,
       bold: false,
-      italic: false,
+      italic: true,
       underline: false,
       textAlign: 'center'
     },
     thaiRead: {
       fontFamily: 'Kanit',
-      textColor: '',
-      fontSize: 'normal',
+      textColor: '#ef4444', // Red as shown in the user's uploaded screenshot
+      fontSize: 18,
       bold: true,
       italic: false,
       underline: false,
       textAlign: 'center'
     },
     meaning: {
-      fontFamily: 'Kanit',
-      textColor: '',
-      fontSize: 'normal',
+      fontFamily: 'Biscuit',
+      textColor: '#0c0a09',
+      fontSize: 34,
       bold: true,
       italic: false,
       underline: false,
       textAlign: 'center'
     },
     grammar: {
-      fontFamily: 'Kanit',
-      textColor: '',
-      fontSize: 'normal',
-      bold: true,
+      fontFamily: 'Biscuit',
+      textColor: '#0c0a09',
+      fontSize: 22,
+      bold: false,
       italic: false,
       underline: false,
       textAlign: 'center'
     },
     ex1: {
-      fontFamily: 'Kanit',
-      textColor: '',
-      fontSize: 'normal',
-      bold: true,
+      fontFamily: 'Inter',
+      textColor: '#1c1917',
+      fontSize: 15,
+      bold: false,
       italic: false,
       underline: false,
       textAlign: 'left'
     },
     ex2: {
-      fontFamily: 'Kanit',
-      textColor: '',
-      fontSize: 'normal',
-      bold: true,
+      fontFamily: 'Inter',
+      textColor: '#1c1917',
+      fontSize: 15,
+      bold: false,
       italic: false,
       underline: false,
       textAlign: 'left'
     },
     channel: {
       fontFamily: 'Inter',
-      textColor: '',
+      textColor: '#0c0a09',
       fontSize: 20,
       bold: true,
       italic: false,
@@ -203,12 +205,12 @@ export function VocabProvider({ children }) {
   const [activeFormatTarget, setActiveFormatTarget] = useState('all');
   const [textFormat, setTextFormat] = useState(DEFAULT_TEXT_FORMAT);
 
-  // Social Profile
-  const [channel, setChannelState] = useState('@MoovyEng');
-  const [avatar, setAvatar] = useState('');
+  // Social Profile - Default to @move0nyoung and default anime avatar
+  const [channel, setChannelState] = useState('@move0nyoung');
+  const [avatar, setAvatar] = useState('/avatar_default.png');
   const [captionStyle, setCaptionStyle] = useState('educational');
   const [caption, setCaption] = useState(
-    "แจกประโยคเด็ดจากหนัง! คำว่า 'break a leg' ไม่ได้แปลตรงตัวอย่างที่คิด แต่อมความหมายว่า 'ขอให้โชคดี' เอาไว้ เอาไปใช้พูดตามนี้เลิศแน่นอน! #เรียนภาษาอังกฤษจากหนัง #ฝึกภาษาอังกฤษ #แคปชันอังกฤษ #MoovyEng"
+    "แจกประโยคเด็ดจากหนัง! คำว่า 'under the weather' ไม่ได้แปลว่าอยู่ใต้สภาพอากาศ แต่แปลว่า 'รู้สึกไม่สบาย, ครั่นเนื้อครั่นตัว' #เรียนภาษาอังกฤษจากหนัง #ฝึกภาษาอังกฤษ #แคปชันอังกฤษ #move0nyoung"
   );
 
   // Sync channel hashtag inside social caption whenever user edits channel handle
@@ -537,19 +539,19 @@ export function VocabProvider({ children }) {
           clearTimeout(historyTimerRef.current);
           historyTimerRef.current = null;
         }
-        setWord('break a leg');
-        setPhonetic('/breɪk ə leɡ/');
-        setThaiRead('(เบรค อะ เลก)');
-        setMeaning('ขอให้โชคดี (นิยมใช้ก่อนขึ้นเวทีแสดง)');
-        setGrammar('wish + [Someone] + to + break a leg (อวยพรให้โชคดี)');
-        setEx1En('Go out there and break a leg!');
-        setEx1Th('ออกไปทำให้เต็มที่ ขอให้โชคดีนะ!');
-        setEx2En('Break a leg on your test today.');
-        setEx2Th('ขอให้ทำข้อสอบได้คะแนนดีๆ โชคดีนะ');
-        setChannel('@MoovyEng');
-        setAvatar('');
+        setWord('under the weather');
+        setPhonetic("/'ʌn.dər ðə 'weð.ər/");
+        setThaiRead('(อันเดอะ เดอะ เวธเธอะ)');
+        setMeaning('รู้สึกไม่สบาย, ป่วยเล็กน้อย');
+        setGrammar('feel / be + under the weather (ใช้บอกว่ารู้สึกครั่นเนื้อครั่นตัวหรือไม่ค่อยสบาย)');
+        setEx1En('i feel a bit under the weather today.');
+        setEx1Th('วันนี้ฉันรู้สึกไม่ค่อยสบายตัวนิดหน่อย');
+        setEx2En('Stay home if you are under the weather.');
+        setEx2Th('อยู่บ้านพักผ่อนนะถ้ารู้สึกไม่สบาย');
+        setChannel('@move0nyoung');
+        setAvatar('/avatar_default.png');
         setCaption(
-          "แจกประโยคเด็ดจากหนัง! คำว่า 'break a leg' ไม่ได้แปลตรงตัวอย่างที่คิด แต่อมความหมายว่า 'ขอให้โชคดี' เอาไว้ เอาไปใช้พูดตามนี้เลิศแน่นอน! #เรียนภาษาอังกฤษจากหนัง #ฝึกภาษาอังกฤษ #แคปชันอังกฤษ #MoovyEng"
+          "แจกประโยคเด็ดจากหนัง! คำว่า 'under the weather' ไม่ได้แปลว่าอยู่ใต้สภาพอากาศ แต่แปลว่า 'รู้สึกไม่สบาย, ครั่นเนื้อครั่นตัว' #เรียนภาษาอังกฤษจากหนัง #ฝึกภาษาอังกฤษ #แคปชันอังกฤษ #move0nyoung"
         );
         setBgColor1('#ffffff');
         setBgColor2('#ffffff');
@@ -559,10 +561,11 @@ export function VocabProvider({ children }) {
         setTextFormat(JSON.parse(JSON.stringify(DEFAULT_TEXT_FORMAT)));
         setElementPositions(DEFAULT_ELEMENT_POSITIONS);
         setClipAspectRatio('9:16');
-        setActiveClipSequence([]);
-        setCafeClipPool([]);
+        setActiveClipSequence(defaultClips.slice(0, 6));
+        setCafeClipPool(defaultClips);
         localStorage.removeItem(STORAGE_KEY);
         localStorage.removeItem('movy_element_positions');
+        localStorage.removeItem('movy_text_format');
         showToast(lang === 'th' ? 'รีเซ็ตข้อมูลเรียบร้อยแล้ว' : 'All data reset');
       }
     });
