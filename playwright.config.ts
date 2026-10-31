@@ -4,7 +4,7 @@
  * Supports Desktop (1920x1080 Chrome/Firefox) and Mobile (iPhone 14 Pro / Pixel 7)
  * ============================================================================
  */
-import { defineConfig, devices } from 'playwright';
+import { defineConfig, devices } from '@playwright/test';
 
 export default defineConfig({
   testDir: './tests/e2e',
