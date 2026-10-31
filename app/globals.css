@@ -84,9 +84,38 @@
   font-display: swap;
 }
 
-/* FC Mee Sakul Serif (เอฟซี มีสกุล เซอริฟ) - Luxury Thai Serif
+/* FC Mee Sakul (เอฟซี มีสกุล) - Quiet Luxury Sans Typeface by Fontcraft (f0nt.com/release/fc-mee-sakul)
    unicode-range: U+0E00-0E7F restricts this font strictly to Thai glyphs,
    allowing English letters to render with EB Garamond / ElevenLabs aesthetic */
+@font-face {
+  font-family: 'FC Mee Sakul';
+  src: url('/fonts/FCMeeSakul-Bold.woff2') format('woff2'),
+       url('/fonts/FCMeeSakul-Bold.ttf') format('truetype'),
+       url('/fonts/FCMeeSakul-Bold.otf') format('opentype'),
+       local('FC Mee Sakul'),
+       local('FC Mee Sakul [Non-commercial]'),
+       local('FCMeeSakul');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0E00-0E7F;
+}
+
+@font-face {
+  font-family: 'FC Mee Sakul';
+  src: url('/fonts/FCMeeSakul-Bold.woff2') format('woff2'),
+       url('/fonts/FCMeeSakul-Bold.ttf') format('truetype'),
+       url('/fonts/FCMeeSakul-Bold.otf') format('opentype'),
+       local('FC Mee Sakul Bold'),
+       local('FC Mee Sakul [Non-commercial] Bold'),
+       local('FCMeeSakul-Bold');
+  font-weight: bold;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0E00-0E7F;
+}
+
+/* FC Mee Sakul Serif (เอฟซี มีสกุล เซอริฟ) - Luxury Thai Serif */
 @font-face {
   font-family: 'FC Mee Sakul Serif';
   src: local('FC Mee Sakul Serif Regular'),
@@ -94,7 +123,7 @@
        local('FC MeeSakul Serif'),
        local('FCMeeSakulSerif-Regular'),
        local('FCMeeSakulSerif'),
-       url('/fonts/MNRodjana-Regular.ttf') format('truetype');
+       url('/fonts/FCMeeSakul-Bold.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
   font-display: swap;
@@ -106,7 +135,7 @@
   src: local('FC Mee Sakul Serif Bold'),
        local('FC MeeSakul Serif Bold'),
        local('FCMeeSakulSerif-Bold'),
-       url('/fonts/MNRodjana-Bold.ttf') format('truetype');
+       url('/fonts/FCMeeSakul-Bold.ttf') format('truetype');
   font-weight: bold;
   font-style: normal;
   font-display: swap;
@@ -199,7 +228,7 @@ html.dark body {
 }
 
 .editorial-display {
-  font-family: 'FC Mee Sakul Serif', 'FC MeeSakul Serif', 'MN Rodjana', 'EB Garamond', 'Times New Roman', serif;
+  font-family: 'FC Mee Sakul', 'FC Mee Sakul Serif', 'FC MeeSakul', 'MN Rodjana', 'EB Garamond', 'Times New Roman', serif;
   font-weight: 300;
   letter-spacing: -0.96px;
 }
