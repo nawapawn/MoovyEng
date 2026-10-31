@@ -38,8 +38,7 @@ export default function LuxuryAboutPage() {
       // 1. Hero Entrance
       const heroTl = gsap.timeline({ defaults: { ease: 'power4.out', duration: 1.2 } });
       heroTl
-        .from('.hero-badge', { y: 20, opacity: 0, scale: 0.95, duration: 0.8 })
-        .from('.hero-title', { y: 40, opacity: 0, scale: 0.98, duration: 1.2 }, '-=0.5')
+        .from('.hero-title', { y: 40, opacity: 0, scale: 0.98, duration: 1.2 })
         .from('.hero-desc', { y: 25, opacity: 0, duration: 1.0 }, '-=0.8')
         .from('.hero-cta-btn', { y: 20, opacity: 0, scale: 0.96, stagger: 0.1, duration: 0.8 }, '-=0.7');
 
@@ -227,14 +226,6 @@ export default function LuxuryAboutPage() {
 
       {/* Hero Section */}
       <header className="relative z-10 max-w-4xl mx-auto px-6 pt-12 pb-16 text-center space-y-6">
-        {/* Shimmer Badge */}
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-amber-500/20 dark:border-amber-400/25 shadow-xs shimmer-badge">
-          <i className="fa-solid fa-wand-magic-sparkles text-amber-500 text-xs" />
-          <span className="text-[11px] font-medium text-[#0c0a09] dark:text-white tracking-wide">
-            {isTh ? 'สถาปัตยกรรมสตูดิโอระดับพรีเมียม • ElevenLabs Aesthetic' : 'Next-Generation Cinema Vocab Engine'}
-          </span>
-        </div>
-
         <h1 className="hero-title editorial-display text-4xl sm:text-6xl text-[#0c0a09] dark:text-white font-normal tracking-tight leading-[1.12]">
           {isTh ? (
             <>
