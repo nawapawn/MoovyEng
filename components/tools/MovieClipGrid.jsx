@@ -47,21 +47,21 @@ export default function MovieClipGrid({
     <div className="space-y-3">
       {/* Step 1 User Input: Target Vocabulary + Thai Translation */}
       <div className="p-2.5 bg-[#fafafa] dark:bg-[#201d1a] rounded-xl border border-[#e7e5e4] dark:border-[#292524] space-y-2.5">
-        <div className="flex items-center justify-between">
-          <span className="text-[11px] font-semibold text-[#0c0a09] dark:text-white">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+          <span className="text-[11px] font-semibold text-[#0c0a09] dark:text-white shrink-0">
             {lang === 'th' ? 'ขั้นตอนที่ 1: กรอกคำศัพท์ + คำแปลไทยที่ต้องการ' : 'Step 1: Enter Vocabulary & Intended Thai Meaning'}
           </span>
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center flex-wrap sm:flex-nowrap gap-1.5 self-start sm:self-auto max-w-full">
             {/* Random Word Generator */}
             <button
               type="button"
               onClick={randomWordWithAi}
               id="btn-random-word"
-              className="w-8 h-8 bg-white dark:bg-[#292524] hover:bg-[#e7e5e4] text-[#0c0a09] dark:text-white border border-[#d6d3d1] dark:border-[#44403c] rounded-full transition flex items-center justify-center flex-shrink-0 t-btn-press"
+              className="w-7 h-7 sm:w-8 sm:h-8 bg-white dark:bg-[#292524] hover:bg-[#e7e5e4] text-[#0c0a09] dark:text-white border border-[#d6d3d1] dark:border-[#44403c] rounded-full transition flex items-center justify-center shrink-0 t-btn-press"
               title={lang === 'th' ? 'สุ่มคำศัพท์ภาษาอังกฤษ' : 'Random Word via AI'}
               aria-label="Random Word"
             >
-              <i id="random-dice-icon" className="fa-solid fa-dice text-xs text-[#0c0a09] dark:text-amber-300" />
+              <i id="random-dice-icon" className="fa-solid fa-dice text-[11px] sm:text-xs text-[#0c0a09] dark:text-amber-300" />
             </button>
 
             {/* AI Generate Wand (Process Word + Thai Meaning -> Match Clips -> Extract Pattern & Sentences -> SEO Caption) */}
@@ -75,11 +75,11 @@ export default function MovieClipGrid({
                   generateAiContent(word, meaning);
                 }
               }}
-              className="btn-magical px-3.5 h-8 bg-[#0c0a09] dark:bg-white hover:bg-[#292524] text-white dark:text-[#0c0a09] rounded-full shadow-sm flex items-center gap-1.5 flex-shrink-0 text-xs font-semibold"
+              className="btn-magical px-2.5 sm:px-3.5 h-7 sm:h-8 bg-[#0c0a09] dark:bg-white hover:bg-[#292524] text-white dark:text-[#0c0a09] rounded-full shadow-sm flex items-center gap-1 sm:gap-1.5 shrink-0 text-[11px] sm:text-xs font-semibold whitespace-nowrap"
               title={lang === 'th' ? 'เสกสรรคำแปล ดึงคลิปหนังแท้ และแต่งประโยคเสร็จสรรพ' : 'Analyze Meaning, Match Clips & Generate Pattern Sentences'}
               aria-label="Search Clips & Translate"
             >
-              <i className="fa-solid fa-wand-magic-sparkles text-[11px] text-amber-300 dark:text-amber-500" />
+              <i className="fa-solid fa-wand-magic-sparkles text-[10px] sm:text-[11px] text-amber-300 dark:text-amber-500" />
               <span>{lang === 'th' ? 'AI วิเคราะห์ & ดึงคลิป' : 'AI Analyze & Fetch'}</span>
             </button>
 
@@ -87,11 +87,11 @@ export default function MovieClipGrid({
             <button
               type="button"
               onClick={() => searchClips(word, true)}
-              className="w-8 h-8 bg-white dark:bg-[#292524] hover:bg-[#f0efed] text-[#0c0a09] dark:text-white border border-[#d6d3d1] dark:border-[#44403c] rounded-full transition flex items-center justify-center flex-shrink-0 t-btn-press"
+              className="w-7 h-7 sm:w-8 sm:h-8 bg-white dark:bg-[#292524] hover:bg-[#f0efed] text-[#0c0a09] dark:text-white border border-[#d6d3d1] dark:border-[#44403c] rounded-full transition flex items-center justify-center shrink-0 t-btn-press"
               title={lang === 'th' ? 'ค้นหาคลิปหนังอย่างเดียว' : 'Search Clips Only'}
               aria-label="Search Clips Only"
             >
-              <i className="fa-solid fa-film text-xs" />
+              <i className="fa-solid fa-film text-[11px] sm:text-xs" />
             </button>
           </div>
         </div>
