@@ -2,7 +2,6 @@ import './globals.css';
 import { VocabProvider } from '../context/VocabContext';
 import Toast from '../components/Toast';
 import ExportModal from '../components/ExportModal';
-import HowToUseGuideModal from '../components/HowToUseGuideModal';
 import CustomDialog from '../components/CustomDialog';
 
 export const metadata = {
@@ -38,7 +37,6 @@ export default function RootLayout({ children }) {
         <VocabProvider>
           {children}
           <ExportModal />
-          <HowToUseGuideModal />
           <CustomDialog />
           <Toast />
         </VocabProvider>
