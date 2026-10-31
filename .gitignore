@@ -36,3 +36,5 @@ Thumbs.db
 .gemini/
 
 .vercel
+
+test-results/
