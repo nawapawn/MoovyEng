@@ -235,7 +235,7 @@ async function invokeSelectedAiModel(prompt, statusEl) {
   let rawContent = '';
 
   if (vendor === 'gemini') {
-    const targetModel = model || 'gemini-2.5-flash';
+    const targetModel = model || 'gemini-3.8-flash';
     const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${targetModel}:generateContent?key=${encodeURIComponent(apiKey)}`;
     const resp = await fetch(endpoint, {
       method: 'POST',

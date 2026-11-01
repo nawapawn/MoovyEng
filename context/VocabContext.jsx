@@ -246,7 +246,7 @@ export function VocabProvider({ children }) {
 
   // AI Configuration
   const [aiVendor, setAiVendor] = useState('gemini');
-  const [aiModel, setAiModel] = useState('gemini-2.0-flash');
+  const [aiModel, setAiModel] = useState('gemini-3.8-flash');
   const [apiKey, setApiKey] = useState('');
   const [availableModels, setAvailableModels] = useState(DEFAULT_VENDOR_MODELS['gemini'] || []);
 
@@ -1283,7 +1283,7 @@ export function VocabProvider({ children }) {
         const timeoutId = setTimeout(() => controller.abort(), 12000);
 
         if (aiVendor === 'gemini') {
-          const gemModel = aiModel || 'gemini-2.0-flash';
+          const gemModel = aiModel || 'gemini-3.8-flash';
           const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${gemModel}:generateContent?key=${encodeURIComponent(apiKey)}`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -1525,7 +1525,7 @@ export function VocabProvider({ children }) {
 
     try {
       if (aiVendor === 'gemini') {
-        const preferredModel = (aiModel && !aiModel.includes('2.5')) ? aiModel : 'gemini-2.0-flash';
+        const isObsolete = !aiModel || aiModel.includes('1.5') || aiModel.includes('2.0') || aiModel.includes('2.5'); const preferredModel = isObsolete ? 'gemini-3.8-flash' : aiModel;
         const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${preferredModel}:generateContent?key=${encodeURIComponent(apiKey)}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
