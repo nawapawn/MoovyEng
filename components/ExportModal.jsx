@@ -52,16 +52,17 @@ export default function ExportModal() {
   };
 
   // Save file letting the user choose where to save via File System Access API or browser download prompt
-  const saveFileToUserChoice = async (blob, defaultFilename, mimeType = 'image/png', directUrl = null) => {
+  const saveFileToUserChoice = async (blob, defaultFilename, mimeType = 'video/mp4', directUrl = null) => {
+    const cleanMime = (mimeType || 'video/mp4').split(';')[0].trim();
     if (typeof window !== 'undefined' && 'showSaveFilePicker' in window) {
       try {
-        const ext = mimeType === 'video/mp4' ? '.mp4' : '.png';
+        const ext = cleanMime === 'video/webm' ? '.webm' : cleanMime === 'video/mp4' ? '.mp4' : '.png';
         const fileHandle = await window.showSaveFilePicker({
           suggestedName: defaultFilename,
           types: [
             {
-              description: mimeType === 'video/mp4' ? 'MP4 Video' : 'PNG Image',
-              accept: { [mimeType]: [ext] }
+              description: cleanMime.startsWith('video/') ? 'Video File' : 'PNG Image',
+              accept: { [cleanMime]: [ext] }
             }
           ]
         });
@@ -130,6 +131,19 @@ export default function ExportModal() {
         return false;
       },
       onclone: (clonedDoc) => {
+        // Ensure cloned phone container is 100% visible even when captured from mobile /edit offscreen container
+        const clonedPhone = clonedDoc.getElementById('phone-container');
+        if (clonedPhone) {
+          clonedPhone.style.opacity = '1';
+          let parent = clonedPhone.parentElement;
+          while (parent && parent !== clonedDoc.body) {
+            if (parent.classList && parent.classList.contains('opacity-0')) {
+              parent.classList.remove('opacity-0');
+              parent.style.opacity = '1';
+            }
+            parent = parent.parentElement;
+          }
+        }
         // Completely remove any video, image, subtitles, and badges inside movie-clip-box from the background slide!
         // This ensures the movie frame on the slide background is a 100% clean black box!
         const clonedClipBox = clonedDoc.getElementById('movie-clip-box');
