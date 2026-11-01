@@ -144,7 +144,7 @@ export default function PreviewMovieBox({
           {/* Minimalist Movie Title Credit Badge Top Left */}
           {movieTitle && (
             <div
-              id="preview-movie-credit-badge"
+              id="preview-movie-credit-badge" data-export-ignore="true"
               className="absolute top-2.5 left-2.5 z-20 pointer-events-none select-none flex items-center"
             >
               <div className="px-2.5 py-1 rounded bg-black/65 backdrop-blur-md border border-white/10 text-white flex items-center gap-1.5 shadow-sm">
@@ -161,7 +161,7 @@ export default function PreviewMovieBox({
 
           {/* Sequence Badge Top Right when multiple clips in queue */}
           {activeClipSequence && activeClipSequence.length > 1 && (
-            <div className="absolute top-2.5 right-2.5 z-20 pointer-events-none select-none">
+            <div data-export-ignore="true" className="absolute top-2.5 right-2.5 z-20 pointer-events-none select-none">
               <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-black/65 backdrop-blur-md text-white font-semibold border border-white/10 shadow-sm">
                 {currentSequenceIndex + 1}/{activeClipSequence.length}
               </span>
@@ -171,7 +171,7 @@ export default function PreviewMovieBox({
           {/* Minimalist Bilingual Subtitles (English + Thai) Overlay */}
           {(subEn || subTh) && (
             <div
-              id="preview-movie-subtitles"
+              id="preview-movie-subtitles" data-export-ignore="true"
               className="absolute bottom-2.5 left-2 right-2 z-20 pointer-events-none select-none flex flex-col items-center justify-center text-center px-1"
             >
               <div className="max-w-[94%] px-3 py-1.5 rounded-md bg-black/75 backdrop-blur-md border border-white/10 shadow-lg space-y-0.5">
