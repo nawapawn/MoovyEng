@@ -133,41 +133,6 @@ export default function ExportModal() {
     };
   };
 
-  // Export phone preview as High-Res PNG Image
-  const handleExportImage = async () => {
-    if (isExporting) return;
-    setIsExporting(true);
-    setStatusMessage(
-      lang === 'th'
-        ? `กำลังเรนเดอร์ภาพสไลด์พรีวิวความละเอียดสูง (${clipAspectRatio})...`
-        : `Exporting High-Res PNG slide (${clipAspectRatio})...`
-    );
-
-    try {
-      const captured = await capturePhoneSlide(false);
-      const cleanWord = (word || 'vocab').replace(/[^a-zA-Z0-9]/g, '_');
-      const filename = `MoovyEng_${cleanWord}_slide_${clipAspectRatio.replace(':', 'x')}.png`;
-
-      captured.canvas.toBlob(async (blob) => {
-        if (!blob) {
-          throw new Error('Canvas toBlob conversion failed');
-        }
-        const saved = await saveFileToUserChoice(blob, filename, 'image/png');
-        if (saved) {
-          setStatusMessage(lang === 'th' ? `บันทึกภาพ PNG (${clipAspectRatio}) สำเร็จ!` : 'Image saved successfully!');
-          showToast(lang === 'th' ? `บันทึกภาพ ${filename} สำเร็จ!` : `Exported ${filename}!`);
-        } else {
-          setStatusMessage(lang === 'th' ? 'ยกเลิกการบันทึก' : 'Save cancelled');
-        }
-        setIsExporting(false);
-      }, 'image/png');
-    } catch (err) {
-      console.error('Image export error:', err);
-      setStatusMessage(`${lang === 'th' ? 'เกิดข้อผิดพลาดในการบันทึกรูปภาพ' : 'Export failed'}: ${err.message}`);
-      setIsExporting(false);
-    }
-  };
-
   // 2. Export Video via Python composite compiler (Full sequence of active clips)
   const handleExportVideo = async (fitMode = 'pad') => {
     if (isExporting) return;
@@ -381,35 +346,7 @@ export default function ExportModal() {
             2. {lang === 'th' ? 'เลือกรูปแบบไฟล์ที่ต้องการ Export (บันทึกทั้งหน้าพรีวิว):' : 'Select Export Format:'}
           </label>
 
-                    {/* Option: PNG Image */}
-          <button
-            type="button"
-            id="btn-export-png"
-            onClick={handleExportImage}
-            disabled={isExporting}
-            className="w-full p-3.5 rounded-xl border border-[#e7e5e4] dark:border-[#292524] hover:border-[#0c0a09] dark:hover:border-white hover:bg-[#fafafa] dark:hover:bg-[#201d1a] transition flex items-center justify-between group text-left disabled:opacity-50"
-          >
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 rounded-lg bg-emerald-600 text-white flex items-center justify-center text-sm flex-shrink-0">
-                <i className="fa-solid fa-image" />
-              </div>
-              <div>
-                <div className="text-xs font-semibold text-[#0c0a09] dark:text-white">
-                  {lang === 'th'
-                    ? `บันทึกภาพสไลด์พรีวิวความละเอียดสูง (PNG ${clipAspectRatio})`
-                    : `Export Slide Image (PNG ${clipAspectRatio})`}
-                </div>
-                <div className="text-[10px] text-[#777169] dark:text-[#a8a29e]">
-                  {lang === 'th'
-                    ? 'บันทึกรูปภาพสไลด์คำศัพท์คมชัด ใช้ได้ทันทีบนเว็บ Vercel และทุกอุปกรณ์'
-                    : 'Instant High-Res PNG download on any device'}
-                </div>
-              </div>
-            </div>
-            <i className="fa-solid fa-download text-[#a8a29e] group-hover:text-[#0c0a09] dark:group-hover:text-white text-xs transition" />
-          </button>
-
-          {/* Option 1: MP4 Fit */}
+                    {/* Option 1: MP4 Fit */}
           <button
             type="button"
             id="btn-export-mp4-fit"
