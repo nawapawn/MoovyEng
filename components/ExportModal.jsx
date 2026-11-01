@@ -1,5 +1,7 @@
 'use client';
 
+import { recordPreviewVideoClientSide } from '../lib/services/clientVideoRecorder';
+
 import React, { useState } from 'react';
 import { useVocab } from '../context/VocabContext';
 import { RATIO_META } from '../lib/utils';
@@ -189,50 +191,80 @@ export default function ExportModal() {
       const captured = await capturePhoneSlide(true);
       const cleanWord = (word || 'vocab').replace(/[^a-zA-Z0-9]/g, '_');
 
-      const resp = await fetch('/api/cafe/python-export', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
+      let data = null;
+      let usedClientRecorder = false;
+      let clientRecordedBlob = null;
+      let clientExt = 'mp4';
+
+      try {
+        const resp = await fetch('/api/cafe/python-export', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            clips: exportClips,
+            ratio: clipAspectRatio,
+            word: cleanWord,
+            fitMode: fitMode,
+            slideImage: captured.dataUrl,
+            clipRect: captured.clipRect
+          })
+        });
+        const respText = await resp.text();
+        try {
+          data = JSON.parse(respText);
+        } catch (e) {}
+
+        if (!resp.ok || !data || !data.success) {
+          throw new Error(data?.error || 'Local engine unavailable');
+        }
+      } catch (serverErr) {
+        console.warn('Server python-export unavailable, activating browser-native recorder:', serverErr.message);
+        setStatusMessage(
+          lang === 'th'
+            ? `กำลังประมวลผลและรวมวิดีโออัตโนมัติบนเบราว์เซอร์ (โหมด Vercel Cloud)...`
+            : 'Rendering video directly in browser (Cloud Mode)...'
+        );
+
+        const recResult = await recordPreviewVideoClientSide({
+          slideCanvas: captured.canvas,
+          clipRect: captured.clipRect,
           clips: exportClips,
           ratio: clipAspectRatio,
-          word: cleanWord,
-          fitMode: fitMode,
-          slideImage: captured.dataUrl,
-          clipRect: captured.clipRect
-        })
-      });
+          onProgress: (current, total, title) => {
+            setStatusMessage(
+              lang === 'th'
+                ? `กำลังบันทึกวิดีโอคลิปที่ ${current}/${total}: "${title}"...`
+                : `Recording clip ${current}/${total}...`
+            );
+          }
+        });
 
-      let data;
-      const respText = await resp.text();
-      try {
-        data = JSON.parse(respText);
-      } catch (parseErr) {
-        throw new Error(
-          resp.status >= 500
-            ? (lang === 'th' ? 'เซิร์ฟเวอร์ประมวลผลวิดีโอไม่สำเร็จ (กรุณาลองใหม่อีกครั้ง)' : `Server error (${resp.status})`)
-            : respText.slice(0, 100)
-        );
+        usedClientRecorder = true;
+        clientRecordedBlob = recResult.blob;
+        clientExt = recResult.ext || 'mp4';
       }
 
-      if (!resp.ok || !data.success) {
-        throw new Error(data.error || 'Python video export failed');
-      }
-
-      const dlUrl = `${data.publicUrl}?download=1`;
-      const outFilename = data.filename || `MoovyEng_${cleanWord}_${clipAspectRatio.replace(':', 'x')}.mp4`;
+      const outFilename = data?.filename || `MoovyEng_${cleanWord}_${clipAspectRatio.replace(':', 'x')}.${clientExt}`;
+      const dlUrl = data?.publicUrl ? `${data.publicUrl}?download=1` : URL.createObjectURL(clientRecordedBlob);
 
       setDownloadLink(dlUrl);
       setDownloadFilename(outFilename);
 
-      // Try file picker save, with fallback to direct HTTP download
+      // Try file picker save, with fallback to direct HTTP/Blob download
       let saved = false;
-      try {
-        const videoFetch = await fetch(dlUrl);
-        const videoBlob = await videoFetch.blob();
-        saved = await saveFileToUserChoice(videoBlob, outFilename, 'video/mp4', dlUrl);
-      } catch (saveErr) {
-        saved = await saveFileToUserChoice(null, outFilename, 'video/mp4', dlUrl);
+      if (usedClientRecorder && clientRecordedBlob) {
+        saved = await saveFileToUserChoice(clientRecordedBlob, outFilename, clientExt === 'mp4' ? 'video/mp4' : 'video/webm', dlUrl);
+      } else {
+        try {
+          const videoFetch = await fetch(dlUrl);
+          const videoBlob = await videoFetch.blob();
+          saved = await saveFileToUserChoice(videoBlob, outFilename, 'video/mp4', dlUrl);
+        } catch (saveErr) {
+          saved = await saveFileToUserChoice(null, outFilename, 'video/mp4', dlUrl);
+        }
       }
+
+
 
       if (saved) {
         setStatusMessage(lang === 'th' ? `บันทึกวิดีโอ MP4 (${clipAspectRatio}) สำเร็จ!` : `Video exported successfully!`);
