@@ -123,7 +123,24 @@ export default function ExportModal() {
       allowTaint: false,
       logging: false,
       backgroundColor: bgColor1 || '#ffffff',
-      ignoreElements: (element) => element.getAttribute('data-export-ignore') === 'true'
+      ignoreElements: (element) => {
+        if (!element || !element.getAttribute) return false;
+        if (element.getAttribute('data-export-ignore') === 'true') return true;
+        if (element.id === 'preview-movie-subtitles' || element.id === 'preview-movie-credit-badge') return true;
+        return false;
+      },
+      onclone: (clonedDoc) => {
+        // Completely remove any video, image, subtitles, and badges inside movie-clip-box from the background slide!
+        // This ensures the movie frame on the slide background is a 100% clean black box!
+        const clonedClipBox = clonedDoc.getElementById('movie-clip-box');
+        if (clonedClipBox) {
+          clonedClipBox.innerHTML = '';
+          clonedClipBox.style.backgroundColor = '#0c0a09';
+        }
+        clonedDoc.querySelectorAll('[data-export-ignore="true"]').forEach((el) => {
+          el.remove();
+        });
+      }
     });
 
     return {
