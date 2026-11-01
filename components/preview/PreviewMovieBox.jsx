@@ -116,7 +116,7 @@ export default function PreviewMovieBox({
             id="preview-video"
             onEnded={onEnded}
             onTimeUpdate={onTimeUpdate}
-            className={`movie-uniform-fill bg-[#0c0a09] ${hasStartedVideo ? 'block' : 'hidden'} scale-[1.03]`}
+            className={`movie-uniform-fill bg-[#0c0a09] w-full h-full object-cover object-center rounded-none ${hasStartedVideo ? 'block' : 'hidden'} scale-[1.05]`}
             playsInline
             preload="auto"
           />
@@ -129,7 +129,7 @@ export default function PreviewMovieBox({
               src={thumbUrl}
               alt={currentClip?.title || 'Clip thumbnail'}
               onError={() => setImgError?.(true)}
-              className="movie-uniform-fill transition duration-300 scale-[1.03] group-hover:scale-[1.05]"
+              className="movie-uniform-fill w-full h-full object-cover object-center rounded-none transition duration-300 scale-[1.05] group-hover:scale-[1.07]"
             />
           )}
 
