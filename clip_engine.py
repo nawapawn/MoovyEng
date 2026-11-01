@@ -316,14 +316,7 @@ def merge_and_export_clips(
             in_idx = i + vid_offset
             local_p = downloaded[i]["localPath"]
             debar_crop = "" if "_crop16x9.mp4" in str(local_p) else detect_black_bars_crop(local_p)
-            clip_title = downloaded[i].get("title", "")
             draw_filter = ""
-            if clip_title:
-                safe_title = escape_ffmpeg_drawtext(clip_title)
-                draw_filter = (
-                    f",drawtext=fontfile='{font_file}':text='{safe_title}':"
-                    f"fontsize=20:fontcolor=white:box=1:boxcolor=black@0.65:boxborderw=6:x=16:y=16"
-                )
             v_filter = (
                 f"[{in_idx}:v]{debar_crop}scale={box_w}:{box_h}:force_original_aspect_ratio=increase,"
                 f"crop={box_w}:{box_h}{draw_filter},setsar=1,fps=30,setpts=PTS-STARTPTS,format=yuv420p[v{i}];"
@@ -350,14 +343,7 @@ def merge_and_export_clips(
             in_idx = i + vid_offset
             local_p = downloaded[i]["localPath"]
             debar_crop = "" if "_crop16x9.mp4" in str(local_p) else detect_black_bars_crop(local_p)
-            clip_title = downloaded[i].get("title", "")
             draw_filter = ""
-            if clip_title:
-                safe_title = escape_ffmpeg_drawtext(clip_title)
-                draw_filter = (
-                    f",drawtext=fontfile='{font_file}':text='{safe_title}':"
-                    f"fontsize=22:fontcolor=white:box=1:boxcolor=black@0.65:boxborderw=8:x=20:y=20"
-                )
             v_filter = (
                 f"[{in_idx}:v]{debar_crop}scale={target_w}:{target_h}:force_original_aspect_ratio=increase,"
                 f"crop={target_w}:{target_h}{draw_filter},setsar=1,fps=30,setpts=PTS-STARTPTS,format=yuv420p[v{i}];"

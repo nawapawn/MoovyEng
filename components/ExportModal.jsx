@@ -205,13 +205,30 @@ export default function ExportModal() {
             clipRect: captured.clipRect
           })
         });
-        const respText = await resp.text();
-        try {
-          data = JSON.parse(respText);
-        } catch (e) {}
 
-        if (!resp.ok || !data || !data.success) {
-          throw new Error(data?.error || 'Local engine unavailable');
+        const contentType = (resp.headers.get('content-type') || '').toLowerCase();
+        if (resp.ok && contentType.includes('video/mp4')) {
+          const mp4Blob = await resp.blob();
+          if (mp4Blob && mp4Blob.size > 5000) {
+            usedClientRecorder = true;
+            clientRecordedBlob = mp4Blob;
+            clientExt = 'mp4';
+            const headerName = resp.headers.get('x-export-filename');
+            if (headerName) {
+              data = { filename: headerName };
+            }
+          } else {
+            throw new Error('Server returned empty video buffer');
+          }
+        } else {
+          const respText = await resp.text();
+          try {
+            data = JSON.parse(respText);
+          } catch (e) {}
+
+          if (!resp.ok || !data || !data.success) {
+            throw new Error(data?.error || 'Local engine unavailable');
+          }
         }
       } catch (serverErr) {
         console.warn('Server python-export unavailable, activating browser-native recorder:', serverErr.message);
