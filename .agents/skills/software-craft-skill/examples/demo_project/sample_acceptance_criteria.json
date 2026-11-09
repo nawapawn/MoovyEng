@@ -1,0 +1,19 @@
+[
+  {
+    "id": "AC-1",
+    "description": "Multi-pass secret redaction on mock AWS keys",
+    "command": "python scripts/security_scanner.py examples/demo_project",
+    "evidence": "Ran security_scanner.py on examples/demo_project"
+  },
+  {
+    "id": "AC-2",
+    "description": "Unlabelled emoji buttons flagged in UI/UX screening",
+    "command": "python scripts/slop_detector.py examples/demo_project",
+    "evidence": "Ran slop_detector.py on examples/demo_project"
+  },
+  {
+    "id": "AC-3",
+    "description": "Zero third-party runtime dependencies verified",
+    "evidence": "Verified all scripts in scripts/ use Python standard library only"
+  }
+]
