@@ -4,7 +4,7 @@ import Toast from '../components/Toast';
 import ExportModal from '../components/ExportModal';
 import CustomDialog from '../components/CustomDialog';
 
-const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://moovyeng.com';
+const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://moovyeng.vercel.app';
 
 export const viewport = {
   width: 'device-width',
