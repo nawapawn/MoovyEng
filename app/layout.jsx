@@ -90,6 +90,9 @@ export const metadata = {
     ],
     apple: [{ url: '/icon.png', type: 'image/png' }],
   },
+  verification: {
+    google: 'iE9Vqb3foC8v1eYvD2hrfieGgxJv3MyBfEa6poT2g18',
+  },
   manifest: '/manifest.webmanifest',
 };
 
