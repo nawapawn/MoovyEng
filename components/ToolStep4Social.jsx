@@ -83,7 +83,7 @@ export default function ToolStep4Social() {
       <div className="tool-card-body">
         <div className="tool-card-inner space-y-2.5">
           {/* Profile Avatar Upload + URL */}
-          <div className="flex items-center gap-2.5 p-2.5 bg-[#fafafa] dark:bg-[#201d1a] rounded-xl border border-[#e7e5e4] dark:border-[#292524]">
+          <div className="flex items-center gap-2.5 py-1">
             <div className="w-10 h-10 rounded-full bg-[#292524] text-white flex items-center justify-center overflow-hidden border border-[#d6d3d1] dark:border-zinc-700 flex-shrink-0">
               {avatar ? (
                 <img id="editor-avatar-preview" src={avatar} alt="Avatar" className="w-full h-full object-cover" />

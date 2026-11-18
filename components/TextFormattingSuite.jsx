@@ -66,7 +66,9 @@ export default function TextFormattingSuite({ compact = false }) {
     cafeClipPool,
     activeSelection,
     applySelectionFormat,
-    clearSelectionFormat
+    clearSelectionFormat,
+    bgColor,
+    setBgColor
   } = useVocab();
 
   const currentClip = activeClipSequence?.[currentSequenceIndex] || cafeClipPool?.[0];
@@ -75,6 +77,7 @@ export default function TextFormattingSuite({ compact = false }) {
   // Popover state toggles
   const [showFontMenu, setShowFontMenu] = useState(false);
   const [showColorPicker, setShowColorPicker] = useState(false);
+  const [showBgColorPicker, setShowBgColorPicker] = useState(false);
   const [fontSearch, setFontSearch] = useState('');
 
   // Ref for click outside detection
@@ -188,7 +191,7 @@ export default function TextFormattingSuite({ compact = false }) {
   return (
     <div
       ref={toolbarRef}
-      className="canva-text-tools-container relative z-25 bg-[#fafafa] dark:bg-[#1f1c19] border border-[#e7e5e4] dark:border-[#38332e] rounded-2xl p-2.5 space-y-2.5 shadow-xs transition-all select-none"
+      className="canva-text-tools-container relative z-25 py-1 space-y-2.5 transition-all select-none"
     >
       {/* Active Selection Banner when user highlights text */}
       {activeSelection && (
@@ -431,6 +434,7 @@ export default function TextFormattingSuite({ compact = false }) {
           onMouseDown={(e) => e.preventDefault()}
           onClick={() => {
             setShowColorPicker(!showColorPicker);
+            setShowBgColorPicker(false);
             setShowFontMenu(false);
           }}
           className={`w-8 h-8 rounded-lg flex flex-col items-center justify-center text-xs font-bold hover:bg-[#fafaf9] dark:hover:bg-[#2e2a26] transition t-btn-press flex-shrink-0 ${
@@ -443,6 +447,30 @@ export default function TextFormattingSuite({ compact = false }) {
             className="w-4 h-1 rounded-full mt-0.5"
             style={{
               background: activeColor || 'linear-gradient(90deg, #ef4444, #eab308, #22c55e, #3b82f6, #a855f7)'
+            }}
+          />
+        </button>
+
+        {/* Background Color Button */}
+        <button
+          id="btn-toolbar-bg-color"
+          type="button"
+          onMouseDown={(e) => e.preventDefault()}
+          onClick={() => {
+            setShowBgColorPicker(!showBgColorPicker);
+            setShowColorPicker(false);
+            setShowFontMenu(false);
+          }}
+          className={`w-8 h-8 rounded-lg flex flex-col items-center justify-center text-xs hover:bg-[#fafaf9] dark:hover:bg-[#2e2a26] transition t-btn-press flex-shrink-0 ${
+            showBgColorPicker ? 'bg-[#f0ebf8] dark:bg-[#34244d]' : ''
+          }`}
+          title={lang === 'th' ? 'สีพื้นหลัง (Background Color)' : 'Background Color'}
+        >
+          <i className="fa-solid fa-fill-drip text-[11px] text-[#0c0a09] dark:text-white" />
+          <div
+            className="w-4 h-1 rounded-full mt-0.5 border border-[#e7e5e4] dark:border-[#38332e]"
+            style={{
+              backgroundColor: bgColor || '#ffffff'
             }}
           />
         </button>
@@ -572,23 +600,43 @@ export default function TextFormattingSuite({ compact = false }) {
       </div>
 
       {/* ========================================================================= */}
-      {/* CANVA COLOR PICKER CONTROLS (Underneath Toolbar)                          */}
-      {/* Strictly 4 items + Spectrum Card, NO side drawer                          */}
+      {/* FLOATING COLOR PICKER POPOVER (Overlays without pushing layout down)      */}
       {/* ========================================================================= */}
       {showColorPicker && (
-        <CanvaColorPicker
-          activeColor={activeColor}
-          onColorChange={(newColor) => {
-            if (activeSelection) {
-              applySelectionFormat?.({ color: newColor });
-            } else {
-              updateTextFormat('textColor', newColor);
-            }
-          }}
-          activeTargetLabel={lang === 'th' ? activeTabMeta.labelTh : activeTabMeta.labelEn}
-          onClose={() => setShowColorPicker(false)}
-          lang={lang}
-        />
+        <div
+          style={{ '--transform-origin': 'top right' }}
+          className="popover-origin absolute right-0 top-full mt-1.5 z-[90]"
+        >
+          <CanvaColorPicker
+            activeColor={activeColor}
+            onColorChange={(newColor) => {
+              if (activeSelection) {
+                applySelectionFormat?.({ color: newColor });
+              } else {
+                updateTextFormat('textColor', newColor);
+              }
+            }}
+            onClose={() => setShowColorPicker(false)}
+            lang={lang}
+          />
+        </div>
+      )}
+
+      {/* FLOATING BACKGROUND COLOR PICKER POPOVER */}
+      {showBgColorPicker && (
+        <div
+          style={{ '--transform-origin': 'top right' }}
+          className="popover-origin absolute right-0 top-full mt-1.5 z-[90]"
+        >
+          <CanvaColorPicker
+            activeColor={bgColor}
+            onColorChange={(newColor) => {
+              setBgColor(newColor || '#ffffff');
+            }}
+            onClose={() => setShowBgColorPicker(false)}
+            lang={lang}
+          />
+        </div>
       )}
     </div>
   );

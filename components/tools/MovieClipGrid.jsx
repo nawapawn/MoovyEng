@@ -46,7 +46,7 @@ export default function MovieClipGrid({
   return (
     <div className="space-y-3">
       {/* Step 1 User Input: Target Vocabulary + Thai Translation */}
-      <div className="p-2.5 bg-[#fafafa] dark:bg-[#201d1a] rounded-xl border border-[#e7e5e4] dark:border-[#292524] space-y-2.5">
+      <div className="space-y-2.5 pb-2">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
           <span className="text-[11px] font-semibold text-[#0c0a09] dark:text-white shrink-0">
             {lang === 'th' ? 'ขั้นตอนที่ 1: กรอกคำศัพท์ + คำแปลไทยที่ต้องการ' : 'Step 1: Enter Vocabulary & Intended Thai Meaning'}
@@ -288,7 +288,7 @@ export default function MovieClipGrid({
         {/* 3-Column Grid */}
         <div
           id="clip-grid"
-          className="grid grid-cols-3 gap-2 max-h-[210px] overflow-y-auto no-scrollbar p-2 bg-[#fafafa] dark:bg-[#201d1a] rounded-xl border border-[#e7e5e4] dark:border-[#292524]"
+          className="grid grid-cols-3 gap-2 max-h-[210px] overflow-y-auto no-scrollbar py-1"
         >
           {cafeClipPool.length === 0 ? (
             <div className="col-span-full py-5 text-center text-[#777169] dark:text-[#a8a29e] text-xs">

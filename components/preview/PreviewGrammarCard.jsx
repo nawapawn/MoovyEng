@@ -88,12 +88,16 @@ export default function PreviewGrammarCard({
             id="preview-grammar"
             data-preview-field="grammar"
             onClick={() => setActiveFormatTarget?.('grammar')}
-            className={`w-full bg-stone-50/90 border border-stone-200/90 rounded-xl px-3.5 py-2 text-center transition hover:border-stone-400 cursor-pointer shadow-2xs ${getTextElementClass(
+            className={`w-full ${
+              isDark
+                ? 'bg-stone-900/90 border border-stone-700/80 text-stone-100'
+                : 'bg-stone-50/90 border border-stone-200/90 text-stone-900'
+            } rounded-xl px-3.5 py-2 text-center transition hover:border-stone-400 cursor-pointer shadow-2xs ${getTextElementClass(
               fmtGrammar
             )}`}
-            style={getTextElementStyle(fmtGrammar, false)}
+            style={getTextElementStyle(fmtGrammar, isDark)}
             title={lang === 'th' ? 'คลิกเพื่อปรับสูตรไวยากรณ์' : 'Click to format Grammar Formula'}
-            dangerouslySetInnerHTML={{ __html: formatGrammarHtml(grammar, wordKeyword, false) }}
+            dangerouslySetInnerHTML={{ __html: formatGrammarHtml(grammar, wordKeyword, isDark) }}
           />
         </DraggablePreviewItem>
 
@@ -113,25 +117,29 @@ export default function PreviewGrammarCard({
             <div
               id="preview-ex1"
               onClick={() => setActiveFormatTarget?.('ex1')}
-              className="w-full border-l-[3px] border-stone-900 pl-3 py-0.5 space-y-0.5 cursor-pointer transition hover:opacity-90"
+              className={`w-full border-l-[3px] ${isDark ? 'border-stone-400' : 'border-stone-900'} pl-3 py-0.5 space-y-0.5 cursor-pointer transition hover:opacity-90`}
               style={{ textAlign: fmtEx1?.textAlign || 'left' }}
               title={lang === 'th' ? 'คลิกเพื่อปรับตัวอย่าง 1' : 'Click to format Example 1'}
             >
               {ex1En && (
                 <div
-                  className={`preview-example-en text-[13.5px] sm:text-[14.5px] font-bold text-stone-900 leading-snug tracking-tight ${getTextElementClass(
+                  className={`preview-example-en text-[13.5px] sm:text-[14.5px] font-bold ${
+                    isDark ? 'text-stone-100' : 'text-stone-900'
+                  } leading-snug tracking-tight ${getTextElementClass(
                     fmtEx1
                   )}`}
-                  style={getTextElementStyle(fmtEx1, false)}
+                  style={getTextElementStyle(fmtEx1, isDark)}
                   data-preview-field="ex1En"
                   dangerouslySetInnerHTML={{ __html: ex1En }}
                 />
               )}
               {ex1Th && (
                 <div
-                  className="preview-example-th text-[12px] sm:text-[12.5px] text-stone-600 font-medium leading-normal"
+                  className={`preview-example-th text-[12px] sm:text-[12.5px] ${
+                    isDark ? 'text-stone-300' : 'text-stone-600'
+                  } font-medium leading-normal`}
                   style={{
-                    color: fmtEx1?.rawColor ? `${fmtEx1.rawColor}cc` : '#57534e',
+                    color: fmtEx1?.rawColor ? `${fmtEx1.rawColor}cc` : (isDark ? '#d6d3d1' : '#57534e'),
                     fontFamily: getFontFamilyCss(fmtEx1?.fontFamily)
                   }}
                   data-preview-field="ex1Th"
@@ -155,25 +163,29 @@ export default function PreviewGrammarCard({
             <div
               id="preview-ex2"
               onClick={() => setActiveFormatTarget?.('ex2')}
-              className="w-full border-l-[3px] border-stone-900 pl-3 py-0.5 space-y-0.5 cursor-pointer transition hover:opacity-90"
+              className={`w-full border-l-[3px] ${isDark ? 'border-stone-400' : 'border-stone-900'} pl-3 py-0.5 space-y-0.5 cursor-pointer transition hover:opacity-90`}
               style={{ textAlign: fmtEx2?.textAlign || 'left' }}
               title={lang === 'th' ? 'คลิกเพื่อปรับตัวอย่าง 2' : 'Click to format Example 2'}
             >
               {ex2En && (
                 <div
-                  className={`preview-example-en text-[13.5px] sm:text-[14.5px] font-bold text-stone-900 leading-snug tracking-tight ${getTextElementClass(
+                  className={`preview-example-en text-[13.5px] sm:text-[14.5px] font-bold ${
+                    isDark ? 'text-stone-100' : 'text-stone-900'
+                  } leading-snug tracking-tight ${getTextElementClass(
                     fmtEx2
                   )}`}
-                  style={getTextElementStyle(fmtEx2, false)}
+                  style={getTextElementStyle(fmtEx2, isDark)}
                   data-preview-field="ex2En"
                   dangerouslySetInnerHTML={{ __html: ex2En }}
                 />
               )}
               {ex2Th && (
                 <div
-                  className="preview-example-th text-[12px] sm:text-[12.5px] text-stone-600 font-medium leading-normal"
+                  className={`preview-example-th text-[12px] sm:text-[12.5px] ${
+                    isDark ? 'text-stone-300' : 'text-stone-600'
+                  } font-medium leading-normal`}
                   style={{
-                    color: fmtEx2?.rawColor ? `${fmtEx2.rawColor}cc` : '#57534e',
+                    color: fmtEx2?.rawColor ? `${fmtEx2.rawColor}cc` : (isDark ? '#d6d3d1' : '#57534e'),
                     fontFamily: getFontFamilyCss(fmtEx2?.fontFamily)
                   }}
                   data-preview-field="ex2Th"
